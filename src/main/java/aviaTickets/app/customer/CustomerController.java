@@ -28,18 +28,18 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/users")
 public class CustomerController {
   
-  private final CustomerRepository customerRepository;
+  private final CustomerService customerService;
   private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
 
-  public CustomerController(CustomerRepository customerRepository) {
-    this.customerRepository = customerRepository;
+  public CustomerController(CustomerService customerService) {
+    this.customerService = customerService;
   }
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/")
   List<Customer> findAll() {
     try {
-      List<Customer> customers = customerRepository.getAll();
+      List<Customer> customers = customerService.getAll();
       if(customers.isEmpty()) {
         throw new NotFoundException("Empty set.");
       }
@@ -54,7 +54,7 @@ public class CustomerController {
   @GetMapping("/get/{email}/")
   Customer findById(@PathVariable String email) {
     try {
-      Optional<Customer> customer = customerRepository.getCustomer(email);
+      Optional<Customer> customer = customerService.getCustomer(email);
       if(customer.isEmpty()) {
         throw new NotFoundException("User not found.");
       }
@@ -70,7 +70,7 @@ public class CustomerController {
   Customer findById(@PathVariable Integer id) {
 
     try {
-      Optional<Customer> customer = customerRepository.getCustomer(id);
+      Optional<Customer> customer = customerService.getCustomer(id);
       if(customer.isEmpty()) {
         throw new NotFoundException("User not found.");
       }
@@ -85,9 +85,9 @@ public class CustomerController {
   @PostMapping("/create/")
   void create(@Valid @RequestBody Customer customer) {
     try {
-      Boolean isExist = customerRepository.isCustomerExists(customer.email());
+      Boolean isExist = customerService.isCustomerExists(customer.email());
       if(isExist) throw new BadRequestException("Bad request. Email is already taken.");
-      customerRepository.createCustomer(customer.name(), customer.password(), customer.email());
+      customerService.createCustomer(customer.name(), customer.password(), customer.email());
     } catch (Exception e) {
       log.info("catch an error at '/api/users/create/' \n->", e.getCause());
       throw new ServerErrorException("Create user was failed with " + e.getMessage());
@@ -98,9 +98,9 @@ public class CustomerController {
   @PutMapping("/update/{id}/")
   void update(@Valid @RequestBody Customer customer, @PathVariable Integer id) {
     try {
-      Boolean isExist = customerRepository.isCustomerExists(customer.email());
+      Boolean isExist = customerService.isCustomerExists(customer.email());
       if(!isExist) throw new BadRequestException("Bad request. User not found.");
-      customerRepository.updateProfile(customer, id);
+      customerService.updateProfile(customer, id);
     } catch (Exception e) {
       log.info("catch an error at '/api/users/update/{id}/' \n->", e.getCause());
       throw new ServerErrorException("Update user was failed with " + e.getMessage());
@@ -111,9 +111,9 @@ public class CustomerController {
   @PatchMapping("/change-password/")
   void changePassword( @RequestBody ChangePwdDto dto ) {
     try {
-      Boolean isExist = customerRepository.isCustomerExists(dto.email());
+      Boolean isExist = customerService.isCustomerExists(dto.email());
       if(!isExist) throw new BadRequestException("Bad request. User not found.");
-      customerRepository.changePassword(dto);
+      customerService.changePassword(dto);
     } catch (Exception e) {
       log.info("catch an error at '/api/users/change-password/' \n->", e.getCause());
       throw new ServerErrorException("Change user password was failed with " + e.getMessage());
@@ -124,7 +124,7 @@ public class CustomerController {
   @DeleteMapping("/delete/{idToDelete}/{customerId}")
   void delete(@PathVariable Integer idToDelete, Integer customerId) {
     try {
-      customerRepository.deleteCustomer(idToDelete, customerId);
+      customerService.deleteCustomer(idToDelete, customerId);
     } catch (Exception e) {
       log.info("catch an error at '/api/users/delete/{id}' \n->", e.getCause());
       throw new ServerErrorException();

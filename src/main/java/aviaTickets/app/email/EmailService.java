@@ -1,39 +1,24 @@
 package aviaTickets.app.email;
 
-import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Service;
 
 import aviaTickets.app.customer.dto.ChangePwdDto;
 import aviaTickets.app.email.entity.Email;
+import aviaTickets.app.exception.ServerErrorException;
 
 // import java.text.DateFormat;
 // import java.time.LocalDate;
 // import java.time.LocalDateTime;
 // import java.util.Date;
 
-abstract class Mailer {
-  // -> send forgot password email 
-  abstract void sendForgotPwdEmail(String email);
-  // -> send new password to user email
-  abstract void sendChangePwdEmail(ChangePwdDto dto);
-  // -> send 2fa email to confirm customer action 
-  abstract void sendTwoStepCode(String email);
-  // -> send mail at sign up
-  abstract void sendRegistrationEmail(String email);
-} 
 
 
-
-public class EmailService extends Mailer {
-  private final String API_KEY = "";
+@Service
+public class EmailService implements EmailInteraction {
+  private final String API_KEY = "test";
   // private String EMAIL_FROM = "";
 
-  private final JdbcClient jdbcClient;
-
-  // private
-
-  public EmailService(JdbcClient jdbcClient) {
-    this.jdbcClient = jdbcClient;
-  };
+  public EmailService() {};
 
 
   public void sendForgotPwdEmail(String email) {
@@ -55,7 +40,7 @@ public class EmailService extends Mailer {
     String limk = ""; // -> link for the sign up confirmation
     String ctx = getLetterContent("signUp");
     Email dto = new Email(email, limk, ctx, "");
-    this.sendEmail(dto);
+    sendEmail(dto);
   }
   
   // ### ----------------------------------------------------------------------------------- ###
@@ -73,16 +58,16 @@ public class EmailService extends Mailer {
         // }
         return ctx;
       default:
-        return "";
+        throw new ServerErrorException("Can't get a html file.");
         
     }
 
   }
 
-  // sendEmail -> send email use email API
-  private void sendEmail(Email dto) {   
-    String headers = String.format("'Content-type':'application/json', 'API_KEY': '%s'", this.API_KEY); // as example
-    // api.send(this.EMAIL_FROM, headers, ctx);
-  }
+    // sendEmail -> send email use email API
+    private void sendEmail(Email dto) {   
+      String headers = String.format("'Content-type':'application/json', 'API_KEY': '%s'", API_KEY); // as example
+      // api.send(this.EMAIL_FROM, headers, ctx);
+    }
 
 }
