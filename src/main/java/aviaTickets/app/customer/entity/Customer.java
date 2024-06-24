@@ -1,18 +1,17 @@
-package aviaTickets.app.user.entity;
+package aviaTickets.app.customer.entity;
 
 import java.time.LocalDateTime;
-// import jakarta.validation.constraints.NotEmpty;
-// import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 
-// enum Role {
-//   USER,
-//   ADMIN
-// }
-
-public record User(
+public record Customer(
+  @Positive
   Integer id,
+  @NotEmpty
   String name,
+  @NotEmpty
   String email,
+  @NotEmpty
   String password,
   LocalDateTime createdAt,
   LocalDateTime updatedAt,
@@ -25,3 +24,4 @@ public record User(
   //   }
   // }
 }
+

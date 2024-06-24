@@ -1,0 +1,77 @@
+
+
+-> impl an admin panel for aviatickets app 
+
+controllers: 
+-> auth:
+    - signUp ---> +++
+    - signIn --->
+    - activate --->
+    - forgot pwd ---> 
+
+-> admin: 
+  - login
+  - get user list
+  - create new user 
+  - edit user 
+  - get admin permission to user 
+  - delete user 
+  - manage tickets 
+  - get user log history
+  - create notification to user (it'll send via email)
+  
+-> user ---> +++ 
+
+-> ticket:
+  - entity:
+    - name (from-to)
+    - date (date, time)
+    - transfers
+    - avia company
+    - company logo
+  - list:
+    - destinations:
+      - from 
+      - to
+      - dates 
+      - one way 0/1
+      - transfers int
+  - user form:
+    - name
+    - surname
+    - id number (passport)
+    - phone number
+    - 
+  - bought ticket: 
+    - generate QR-code
+    - generate PDF ticket
+    - send it to user by email
+    - .. etc ..
+
+-> actions ---> +++
+
+services: 
+-> auth
+-> user --- > +++ 
+-> admin
+-> ticket
+-> email
+-> notification => send info messages via email
+
+-> exceptionInterceptor: ===> ++
+    - not found  ---> ++
+    - permission denied --> ++
+    - bad request ---> ++
+    - unauthorized --->  ++
+    - server error  ---> ++
+
+-> tests ***
+
+* _> roles, validate roles --- > +++
+
+
+-> h2 -- for development env
+  ** use mysql for production ready app
+
+-> put database into docker container
+-> caching ?*

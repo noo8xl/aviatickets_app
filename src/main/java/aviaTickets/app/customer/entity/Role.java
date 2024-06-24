@@ -1,4 +1,4 @@
-package aviaTickets.app.user.entity;
+package aviaTickets.app.customer.entity;
 
 public enum Role {
   USER,

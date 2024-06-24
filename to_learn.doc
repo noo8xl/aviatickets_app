@@ -1,0 +1,36 @@
+
+@SpringBootApplication
+-> @Component
+-> @Bean - inst of a class with metadata 
+-> @Override
+-> @PostConstruct
+-> @Repository
+-> @PathVariable
+-> @Autowired (not sugested to use*)
+-> dependencies *
+-> validations constraints **** 
+-> @Valid (validations lib)
+
+
+
+-> final ?
+-> record, enum, object, etc.
+-> Optional
+-> set, indexOf, isPresent
+-> -- this -- keyword usage *
+-> var 
+-> assert
+-> this::method
+-> lambda expression
+
+
+
+
+### ---------------
+
+-> spring dev tools === nodemon *
+-> resourses -> application.properties === .env  => (should dive deeper in it) *
+
+### ---------------
+-> good impl of jwt auth
+https://github.com/dolyw/ShiroJwt

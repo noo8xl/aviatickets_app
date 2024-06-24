@@ -11,4 +11,11 @@ public class ServerErrorException extends RuntimeException {
     // to the support service (to the developer?) 
     // -> and save log to the file ?* 
   }
+
+  public ServerErrorException(String msg) {
+    super(msg);
+    // do some here to send notif 
+    // to the support service (to the developer?) 
+    // -> and save log to the file ?* 
+  }
 }

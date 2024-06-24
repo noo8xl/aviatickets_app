@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
-public class PermissionDeniedExceprion extends RuntimeException {
-  public PermissionDeniedExceprion() {
+public class PermissionDeniedException extends RuntimeException {
+  public PermissionDeniedException() {
     super("Rejected. Permission denied!");
   }
 }
