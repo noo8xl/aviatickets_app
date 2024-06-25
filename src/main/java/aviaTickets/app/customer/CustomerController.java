@@ -100,7 +100,7 @@ public class CustomerController {
     try {
       Boolean isExist = customerService.isCustomerExists(customer.email());
       if(!isExist) throw new BadRequestException("Bad request. User not found.");
-      customerService.updateProfile(customer, id);
+      customerService.updateProfile(id, customer);
     } catch (Exception e) {
       log.info("catch an error at '/api/users/update/{id}/' \n->", e.getCause());
       throw new ServerErrorException("Update user was failed with " + e.getMessage());
@@ -113,7 +113,7 @@ public class CustomerController {
     try {
       Boolean isExist = customerService.isCustomerExists(dto.email());
       if(!isExist) throw new BadRequestException("Bad request. User not found.");
-      customerService.changePassword(dto);
+      customerService.changePassword(dto.email(), dto.pwd());
     } catch (Exception e) {
       log.info("catch an error at '/api/users/change-password/' \n->", e.getCause());
       throw new ServerErrorException("Change user password was failed with " + e.getMessage());

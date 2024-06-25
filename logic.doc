@@ -5,9 +5,11 @@
 controllers: 
 -> auth:
     - signUp ---> +++
-    - signIn --->
-    - activate --->
-    - forgot pwd ---> 
+    - signIn ---> 
+    - forgot pwd ---> +++
+    - 2fa check ---> 
+    - 2fa send code ---> 
+    - 2fa validate --->  
 
 -> admin: 
   - login

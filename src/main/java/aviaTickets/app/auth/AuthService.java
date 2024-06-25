@@ -7,9 +7,8 @@ import org.springframework.stereotype.Service;
 
 import aviaTickets.app.actions.ActionService;
 import aviaTickets.app.actions.entity.ActionLog;
-import aviaTickets.app.auth.dto.ForgotPwdDto;
-import aviaTickets.app.auth.dto.SignInDto;
-import aviaTickets.app.auth.dto.SignUpDto;
+import aviaTickets.app.auth.dto.request.SignInDto;
+import aviaTickets.app.auth.dto.request.SignUpDto;
 import aviaTickets.app.auth.dto.response.SignInResponse;
 import aviaTickets.app.customer.CustomerService;
 import aviaTickets.app.customer.entity.Customer;
@@ -26,35 +25,30 @@ public class AuthService implements AuthInteraction {
   private final CustomerService customerService;
   private final EmailService emailService;
   private final ActionService actionService;
-  // private final TokenService tokenService;
+  // private final JwtService jwtService;
 
   public AuthService(
     HelperService helperService, 
     EmailService emailService, 
     CustomerService customerService, 
     ActionService actionService
-    // TokenService tokenService
+    // JwtService jwtService
     ) {
     this.helperService = helperService;
     this.emailService = emailService;
     this.customerService = customerService;
     this.actionService = actionService;
-    // this.tokenService = tokenService;
+    // this.jwtService = jwtService;
   }
 
 
   public SignInResponse signIn(SignInDto dto) {
-    // String email,
-    // String password,
-    // Boolean twoStep,
-    // String code
-
     Optional<Customer> customer = customerService.getCustomer(dto.email());
     if(customer.isEmpty()) throw new NotFoundException("User not found.");
     if(customer.get().password() != dto.password()) throw new BadRequestException("Whong email or password.");
 
-    // Token t = tokenService.createToken(customer.get());
-    // tokenService.save(t.get().refreshToken());
+    // Token t = jwtService.createToken(customer.get());
+    // jwtService.save(t.get().refreshToken());
 
     return new SignInResponse(); // token pair, customer obj <-
   }
@@ -64,30 +58,29 @@ public class AuthService implements AuthInteraction {
     customerService.createCustomer(dto.name(), dto.password(), dto.email());
     Optional<Customer> c = customerService.getCustomer(dto.email());
     emailService.sendRegistrationEmail(dto.email());
-    ActionLog a = new ActionLog(
-      null,
-      dto.email(),
-      LocalDateTime.now(),
-      "User successfully signed up.",
-      c.get().id()
-    );
-    actionService.saveCustomerAction(a);
+    setActionLog(c.get().id(), dto.email(), "User successfully signed up.");
   }
 
-  public void forgotPassword(ForgotPwdDto dto) {
+  public void forgotPassword(String email) {
     String pwd = helperService.generateUniqueString(16);
-    System.out.print("new pwd -> ");
-    System.out.println(pwd);
-
-  }
-
-  public void activateByLink(String link) {
-
-
+    Integer customerId = customerService.changePassword(email, pwd);
+    emailService.sendForgotPwdEmail(email);
+    setActionLog(customerId, email, "User password was changed.");
   }
 
   
   // ### ----------------------------------------------------------------------------------- ###
 
+  private void setActionLog(Integer customerId, String email, String action) {
+    ActionLog a = new ActionLog(
+      null,
+      email,
+      LocalDateTime.now(),
+      action,
+      customerId
+    );
+    
+    actionService.saveCustomerAction(a);
+  }
 
 }

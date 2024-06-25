@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import aviaTickets.app.customer.dto.ChangePwdDto;
 import aviaTickets.app.customer.entity.Customer;
 import aviaTickets.app.customer.entity.Role;
 import aviaTickets.app.exception.PermissionDeniedException;
@@ -39,6 +38,7 @@ public class CustomerService implements CustomerInteraction{
       password, 
       LocalDateTime.now(), 
       LocalDateTime.now(),
+      false,
       Role.USER
     );
 
@@ -54,17 +54,21 @@ public class CustomerService implements CustomerInteraction{
   public Optional<Customer> getCustomer(String email) {
     return customerRepository.findByEmail(email);
   }
+
   
   public List<Customer> getAll() {
     return customerRepository.findAll();
   }
 
-  public void updateProfile(Customer c , Integer id) {
+  public void updateProfile(Integer id, Customer c) {
     customerRepository.update(c, id);
   }
 
-  public void changePassword(ChangePwdDto dto) {
-
+  public Integer changePassword(String email, String pwd) {
+    Optional<Customer> c = getCustomer(email);
+    Customer updated = new Customer(null, c.get().name(), email, pwd, c.get().createdAt(), LocalDateTime.now(), c.get().isBanned(), c.get().role());
+    customerRepository.update(updated, c.get().id());
+    return c.get().id();
   }
 
   public void deleteCustomer(Integer idToDelete, Integer customerId) {

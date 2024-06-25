@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import aviaTickets.app.auth.dto.ForgotPwdDto;
-import aviaTickets.app.auth.dto.SignInDto;
-import aviaTickets.app.auth.dto.SignUpDto;
+import aviaTickets.app.auth.dto.request.SignInDto;
+import aviaTickets.app.auth.dto.request.SignUpDto;
 import aviaTickets.app.auth.dto.response.SignInResponse;
 import aviaTickets.app.customer.CustomerController;
 import aviaTickets.app.customer.CustomerService;
@@ -64,30 +63,16 @@ public class AuthController {
 
   // forgotPassword -> send new pwd to user email
   @ResponseStatus(HttpStatus.ACCEPTED)
-  @PatchMapping("/forgot-password/")
-  void forgotPassword(@Valid @RequestBody ForgotPwdDto dto) {
+  @PatchMapping("/forgot-password/{email}")
+  void forgotPassword(@PathVariable String email) {
     try {
-      Boolean isExist = customerService.isCustomerExists(dto.email());
+      Boolean isExist = customerService.isCustomerExists(email);
       if(!isExist) throw new NotFoundException("User not found.");
-      // handle request here <-
+      authService.forgotPassword(email);
     } catch (Exception e) {
       log.info("catch an error at '/auth/signIn/' \n->", e.getCause());
       throw new ServerErrorException("Send new password failed with " + e.getMessage());
     }
   }
-
-  // activateAccount -> activate account by link
-  @ResponseStatus(HttpStatus.ACCEPTED)
-  @PatchMapping("/activate/{link}")
-  void activateAccount(@PathVariable String link) {
-    try {
-      // handle request here <-
-    } catch (Exception e) {
-      log.info("catch an error at '/auth/signIn/' \n->", e.getCause());
-      throw new ServerErrorException("Account activation failed with " + e.getMessage());
-    }
-  }
-
-
 
 }

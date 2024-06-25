@@ -23,11 +23,10 @@ public class CustomerRepository  {
     this.jdbcClient = jdbcClient;
   }
 
-  
   public void save(Customer customer) {
 
     String userBase = "INSERT INTO customer (name, email, password) VALUES (?,?,?)"; 
-    String userParams = "INSERT INTO customer_details (created_at, updated_at, is_activated, role, customer_id) VALUES (?,?,?,?,?)";
+    String userParams = "INSERT INTO customer_details (created_at, updated_at, is_banned, role, customer_id) VALUES (?,?,?,?,?)";
     // base user data 
 
     var updated = jdbcClient.sql(userBase)
@@ -41,7 +40,7 @@ public class CustomerRepository  {
 
     // user params data
     updated += jdbcClient.sql(userParams) 
-      .params(List.of(customer.createdAt(), customer.updatedAt(), false, customer.role(), savedCusromer.get().id()))
+      .params(List.of(customer.createdAt(), customer.updatedAt(), customer.isBanned(), customer.role(), savedCusromer.get().id()))
       .update();
 
     Assert.state(updated == 2, "Failed to create user " + customer.name());
@@ -85,12 +84,26 @@ public class CustomerRepository  {
       .optional();
   }
 
-  public void update(Customer u, Integer id) {
+  public void update(Customer c, Integer id) {
+    String updateBase = "UPDATE customer SET name=?, email=?, password=? WHERE id=?";
+    String updateParams = "UPDATE customer_details SET updated_at=?, is_banned=?, role=? WHERE customer_id=?";
+
+    var updated = jdbcClient.sql(updateBase)
+      .params(List.of(c.name(), c.email(), c.password(), c.id()))
+      .update();
+
+    Assert.state(updated == 1, "Failed to update customer " + c.name());
+
+    updated += jdbcClient.sql(updateParams)
+      .params(List.of(c.updatedAt(), c.isBanned(), c.role(), c.id()))
+      .update();
+
+    Assert.state(updated == 2, "Failed to update customer params " + c.name());
 
   }
 
   public void delete(Integer id) {
-
+    // delete each record in each table by userId *
   }
 
   // validatePermission -> validate user permission by id
@@ -104,11 +117,8 @@ public class CustomerRepository  {
       .query(Role.class)
       .optional();
 
-    if(c.get() != Role.ADMIN) {
-      return false;
-    } else {
-      return true;
-    }
+    if(c.get() != Role.ADMIN) return false;
+    return true;
   }
 
 }

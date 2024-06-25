@@ -57,8 +57,14 @@ public class EmailService implements EmailInteraction {
         //   throw e;
         // }
         return ctx;
+      case "twoStep":
+        return ctx;
+      case "forgotPwd":
+        return ctx;
+      case "changePwd":
+        return ctx;
       default:
-        throw new ServerErrorException("Can't get a html file.");
+        throw new ServerErrorException("Can't get html file.");
         
     }
 

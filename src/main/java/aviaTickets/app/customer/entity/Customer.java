@@ -15,6 +15,7 @@ public record Customer(
   String password,
   LocalDateTime createdAt,
   LocalDateTime updatedAt,
+  Boolean isBanned,
   Role role // false -> is a customer; true -> is an admin; 
 ) {
 

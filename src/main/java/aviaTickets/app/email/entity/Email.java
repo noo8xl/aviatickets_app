@@ -10,5 +10,5 @@ public record Email(
   @NotEmpty
   String content,
   @NotEmpty
-  String date // -> update type
+  String date // -> update type (should display smt like "2020/10/06 12:30:55") 
 ) {} 
