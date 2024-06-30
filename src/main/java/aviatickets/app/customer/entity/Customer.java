@@ -15,5 +15,4 @@ public record Customer(
 		Boolean isBanned,
 		Role role) {
 
-			
 }
