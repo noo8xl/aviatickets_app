@@ -5,18 +5,17 @@
 controllers: 
 -> auth:
     - signUp ---> +++
-    - signIn ---> 
     - forgot pwd ---> +++
-    - 2fa check ---> 
-    - 2fa send code ---> 
-    - 2fa validate --->  
+    - signIn:
+      - 2fa check ---> 
+      - 2fa send code ---> 
+      - 2fa validate --->  
 
 -> admin: 
-  - login
   - get user list
   - create new user 
   - edit user 
-  - get admin permission to user 
+  - set admin permission to user 
   - delete user 
   - manage tickets 
   - get user log history

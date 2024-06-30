@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS customer_details (
   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   is_banned Boolean NOT NULL DEFAULT 0,
-  role varchar(10) NOT NULL DEFAULT "USER",
+  role varchar(10) NOT NULL DEFAULT USER,
   customer_id INT NOT NULL,
   FOREIGN KEY (customer_id) REFERENCES customer (id),
   PRIMARY KEY (id)

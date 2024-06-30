@@ -1,0 +1,76 @@
+package aviatickets.app.email;
+
+import org.springframework.stereotype.Service;
+
+import aviatickets.app.customer.dto.ChangePwdDto;
+import aviatickets.app.email.entity.Email;
+import aviatickets.app.exception.ServerErrorException;
+
+// import java.text.DateFormat;
+// import java.time.LocalDate;
+// import java.time.LocalDateTime;
+// import java.util.Date;
+
+@Service
+public class EmailService implements EmailInteraction {
+  private static String apiKey = "test";
+  // private String EMAIL_FROM = "";
+
+  public void sendForgotPwdEmail(String email) {
+    // TODO
+  }
+
+  public void sendChangePwdEmail(ChangePwdDto dto) {
+    // String ctx = getLetterContent("signUp");
+    // Email dto = new Email(dto.userEmail(), dto.(), ctx, "");
+    // this.sendEmail(dto);
+  }
+
+  public void sendTwoStepCode(String email) {
+
+  }
+
+  public void sendRegistrationEmail(String email) {
+    // Date d = DateFormat.getDateTimeInstance(1, "LONG");
+    String limk = ""; // -> link for the sign up confirmation
+    String ctx = getLetterContent("signUp");
+    Email dto = new Email(email, limk, ctx, "");
+    sendEmail(dto);
+  }
+
+  // ###
+  // -----------------------------------------------------------------------------------
+  // ###
+
+  // getLetterContent -> get html file and convert it to string by name
+  private String getLetterContent(String pageName) {
+    String ctx = "test";
+
+    switch (pageName) {
+      case "signUp": // ==> html pages stores in resources -> static -> html -> email
+        // ctx = fs.get("signUp.html");
+        // try {
+        // } catch (Exception e) {
+        // throw e;
+        // }
+        return ctx;
+      case "twoStep":
+        return ctx;
+      case "forgotPwd":
+        return ctx;
+      case "changePwd":
+        return ctx;
+      default:
+        throw new ServerErrorException("Can't get html file.");
+
+    }
+
+  }
+
+  // sendEmail -> send email use email API
+  private void sendEmail(Email dto) {
+    String headers = String.format("'Content-type':'application/json', 'API_KEY': {}", this.apiKey); // as example
+    // api.send(this.EMAIL_FROM, headers, ctx);
+  }
+
+}
