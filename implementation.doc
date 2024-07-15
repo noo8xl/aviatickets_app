@@ -8,11 +8,78 @@ DDD architectur and TDD techtiques were used
 
 #--------------------------------------------#
 
+localhost:1111/api === APINAME
+
+--> main page: (>APINAME/avia/get-hot/)
+  - search bar
+    -> search bar fields:
+      - departure date 
+      - back (Optional param)
+      - direction location
+      - departure location
+  - list of hot tickets
 
 #--------------------------------------------#
 
+--> auth page:
+  - signUp:
+    -> fields:
+      - name
+      - email
+      - pwd
+  - forgot pwd:
+    -> fields:
+      - email
+  - signIn
+    -> fields:
+      - email
+      - pwd
+      - 2fa
 
 #--------------------------------------------#
 
+--> customer profile page:
+  - profile details:
+    -> fields: 
+      - name
+      - email
+      - join date
+      - 2fa status
+      - kyc status
+      - miles
 
+  - kyc:
+    -> fields:
+      - name 
+      - surname
+      - postal code
+      - address
+      - phone number
+      - id card photo
+
+  - settings:
+    - change name
+    - change pwd
+    - update 2fa status (on/off)
+
+#--------------------------------------------#
+
+--> tickets page:
+  - active ticket short card
+    -> detail page: 
+      - date
+      - ...
+
+  - tickets history
+    - (list of tickets short card )
+
+
+#--------------------------------------------#
+
+#--------------------------------------------#
+#--------------------------------------------#
+#--------------------------------------------#
+#--------------------------------------------#
+#--------------------------------------------#
+#--------------------------------------------#
 #--------------------------------------------#

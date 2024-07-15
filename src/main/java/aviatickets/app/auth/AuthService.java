@@ -30,7 +30,6 @@ public class AuthService implements AuthInteraction {
     this.emailService = emailService;
     this.customerService = customerService;
     this.actionService = actionService;
-
   }
 
   public SignInResponse signIn(SignInDto dto) {

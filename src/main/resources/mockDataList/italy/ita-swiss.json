@@ -1,0 +1,343 @@
+[
+  {
+      "flightNumber": "AZ1001",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "I-BIXA",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2019
+      },
+      "departureAirport": {
+          "code": "FCO",
+          "name": "Leonardo da Vinci–Fiumicino Airport",
+          "city": "Rome",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T09:00:00Z",
+      "arrivalTime": "2024-07-16T10:30:00Z",
+      "status": "Scheduled",
+      "duration": "1h 30m",
+      "price": {
+          "currency": "EUR",
+          "amount": 150.00
+      },
+      "passengerCount": 170
+  },
+  {
+      "flightNumber": "LX2002",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Airbus A220",
+          "registration": "HB-JCF",
+          "seatingCapacity": 145,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "MXP",
+          "name": "Milan Malpensa Airport",
+          "city": "Milan",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T12:00:00Z",
+      "arrivalTime": "2024-07-16T13:00:00Z",
+      "status": "On Time",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 120.00
+      },
+      "passengerCount": 130
+  },
+  {
+      "flightNumber": "AZ1003",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A319",
+          "registration": "I-BIGI",
+          "seatingCapacity": 144,
+          "yearOfManufacture": 2018
+      },
+      "departureAirport": {
+          "code": "NAP",
+          "name": "Naples International Airport",
+          "city": "Naples",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "GVA",
+          "name": "Geneva Airport",
+          "city": "Geneva",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T10:15:00Z",
+      "arrivalTime": "2024-07-16T11:45:00Z",
+      "status": "Scheduled",
+      "duration": "1h 30m",
+      "price": {
+          "currency": "EUR",
+          "amount": 140.00
+      },
+      "passengerCount": 135
+  },
+  {
+      "flightNumber": "LX2004",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Embraer E190",
+          "registration": "HB-JVM",
+          "seatingCapacity": 100,
+          "yearOfManufacture": 2017
+      },
+      "departureAirport": {
+          "code": "TRN",
+          "name": "Turin Airport",
+          "city": "Turin",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "GVA",
+          "name": "Geneva Airport",
+          "city": "Geneva",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T08:00:00Z",
+      "arrivalTime": "2024-07-16T09:00:00Z",
+      "status": "On Time",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 110.00
+      },
+      "passengerCount": 95
+  },
+  {
+      "flightNumber": "AZ1005",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Boeing 737-800",
+          "registration": "I-ADJV",
+          "seatingCapacity": 189,
+          "yearOfManufacture": 2016
+      },
+      "departureAirport": {
+          "code": "VCE",
+          "name": "Venice Marco Polo Airport",
+          "city": "Venice",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T13:30:00Z",
+      "arrivalTime": "2024-07-16T15:00:00Z",
+      "status": "Scheduled",
+      "duration": "1h 30m",
+      "price": {
+          "currency": "EUR",
+          "amount": 160.00
+      },
+      "passengerCount": 180
+  },
+  {
+      "flightNumber": "LX2006",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Airbus A321",
+          "registration": "HB-IOT",
+          "seatingCapacity": 200,
+          "yearOfManufacture": 2015
+      },
+      "departureAirport": {
+          "code": "BGY",
+          "name": "Orio al Serio International Airport",
+          "city": "Bergamo",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T18:00:00Z",
+      "arrivalTime": "2024-07-16T19:15:00Z",
+      "status": "On Time",
+      "duration": "1h 15m",
+      "price": {
+          "currency": "EUR",
+          "amount": 145.00
+      },
+      "passengerCount": 190
+  },
+  {
+      "flightNumber": "AZ1007",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A330",
+          "registration": "I-ADJP",
+          "seatingCapacity": 250,
+          "yearOfManufacture": 2014
+      },
+      "departureAirport": {
+          "code": "ROM",
+          "name": "Rome Fiumicino Airport",
+          "city": "Rome",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T20:00:00Z",
+      "arrivalTime": "2024-07-16T21:30:00Z",
+      "status": "Scheduled",
+      "duration": "1h 30m",
+      "price": {
+          "currency": "EUR",
+          "amount": 200.00
+      },
+      "passengerCount": 240
+  },
+  {
+      "flightNumber": "LX2008",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "HB-JLP",
+          "seatingCapacity": 150,
+          "yearOfManufacture": 2018
+      },
+      "departureAirport": {
+          "code": "LIN",
+          "name": "Linate Airport",
+          "city": "Milan",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "GVA",
+          "name": "Geneva Airport",
+          "city": "Geneva",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T17:00:00Z",
+      "arrivalTime": "2024-07-16T18:15:00Z",
+      "status": "Scheduled",
+      "duration": "1h 15m",
+      "price": {
+          "currency": "EUR",
+          "amount": 125.00
+      },
+      "passengerCount": 140
+  },
+  {
+      "flightNumber": "AZ1009",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Boeing 777",
+          "registration": "I-DAVX",
+          "seatingCapacity": 300,
+          "yearOfManufacture": 2013
+      },
+      "departureAirport": {
+          "code": "CTA",
+          "name": "Catania-Fontanarossa Airport",
+          "city": "Catania",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T22:00:00Z",
+      "arrivalTime": "2024-07-16T23:30:00Z",
+      "status": "Scheduled",
+      "duration": "1h 30m",
+      "price": {
+          "currency": "EUR",
+          "amount": 250.00
+      },
+      "passengerCount": 280
+  },
+  {
+      "flightNumber": "LX2010",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Airbus A220",
+          "registration": "HB-JCL",
+          "seatingCapacity": 145,
+          "yearOfManufacture": 2019
+      },
+      "departureAirport": {
+          "code": "FCO",
+          "name": "Leonardo da Vinci–Fiumicino Airport",
+          "city": "Rome",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T15:00:00Z",
+      "arrivalTime": "2024-07-16T16:30:00Z",
+      "status": "On Time",
+      "duration": "1h 30m",
+      "price": {
+          "currency": "EUR",
+          "amount": 155.00
+      },
+      "passengerCount": 140
+  },
+  {
+      "flightNumber": "AZ1011",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "I-BIAY",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "PMO",
+          "name": "Palermo Airport",
+          "city": "Palermo",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "GVA",
+          "name": "Geneva Airport",
+          "city": "Geneva",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T19:00:00Z",
+      "arrivalTime": "2024-07-16T20:30:00Z",
+      "status": "Scheduled",
+      "duration": "1h 30m",
+      "price": {
+          "currency": "EUR",
+          "amount": 165.00
+      },
+      "passengerCount": 160
+  }
+]

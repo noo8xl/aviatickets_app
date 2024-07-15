@@ -1,18 +1,16 @@
 package aviatickets.app.ticket;
 
-import java.util.Date;
-import java.util.List;
+// import java.util.Date;
+// import java.util.List;
+
+// import aviatickets.app.flight.entity.FlightsItem;
 
 public interface TicketInteraction {
 
-  public List<Integer> getTicketList(String from, String to, Date date);
+  // public List<FlightsItem> getHotList(Date d);
 
-  public List<Integer> getCompanyList();
+  // public List<Ticket> getTicketList(String from, String to, Date d);
 
-  public Integer getCompatyDetails(String companyName, Integer companyId);
-  // public List<Integer>
-  // public List<Integer>
-  // public List<Integer>
-  // public List<Integer>
+  // public FlightsItem findTicketByFilter();
 
 }

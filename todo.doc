@@ -1,9 +1,35 @@
 
 ---- TODO: 
 
--> connect to h2 in-mem db to test 
-
--> test User area 
+-> connect to h2 in-mem db to test  ++
+ 
+-> test User area  ++
 
 -> mysql migrations via java
 
+
+
+
+
+=============
+
+-> if one-way - get one ticket like:
+[
+  "1": {
+    from: {
+      ...
+    },
+    to: {
+      ...
+    }
+  },
+  "2": {
+    ...
+  }
+]
+== else:
+[
+  "1": {},
+  "2": {},
+  ....
+]

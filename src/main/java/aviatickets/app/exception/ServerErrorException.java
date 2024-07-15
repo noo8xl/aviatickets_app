@@ -7,15 +7,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ServerErrorException extends RuntimeException {
   public ServerErrorException() {
     super("Internal server error..");
-    // do some here to send notif 
-    // to the support service (to the developer?) 
-    // -> and save log to the file ?* 
+    this.sendMessage();
   }
 
   public ServerErrorException(String msg) {
     super(msg);
-    // do some here to send notif 
-    // to the support service (to the developer?) 
-    // -> and save log to the file ?* 
+    this.sendMessage();
+  }
+
+  private void sendMessage() {
+    // do some here to send notif
+    // to the support service (to the developer?)
+    // -> and save log to the file ?*
+    // will updated soon
   }
 }

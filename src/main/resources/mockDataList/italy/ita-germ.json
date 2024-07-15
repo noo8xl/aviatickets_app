@@ -1,0 +1,560 @@
+[
+  {
+      "flightNumber": "AZ3001",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "I-BIXA",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2019
+      },
+      "departureAirport": {
+          "code": "FCO",
+          "name": "Leonardo da Vinci–Fiumicino Airport",
+          "city": "Rome",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T10:00:00Z",
+      "arrivalTime": "2024-07-16T12:00:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 150.00
+      },
+      "passengerCount": 160
+  },
+  {
+      "flightNumber": "LH4002",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Airbus A321",
+          "registration": "D-AIDA",
+          "seatingCapacity": 200,
+          "yearOfManufacture": 2018
+      },
+      "departureAirport": {
+          "code": "MXP",
+          "name": "Milan Malpensa Airport",
+          "city": "Milan",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T11:30:00Z",
+      "arrivalTime": "2024-07-16T13:30:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 130.00
+      },
+      "passengerCount": 180
+  },
+  {
+      "flightNumber": "AZ3003",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A319",
+          "registration": "I-BIGI",
+          "seatingCapacity": 144,
+          "yearOfManufacture": 2017
+      },
+      "departureAirport": {
+          "code": "VCE",
+          "name": "Venice Marco Polo Airport",
+          "city": "Venice",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "BER",
+          "name": "Berlin Brandenburg Airport",
+          "city": "Berlin",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T14:00:00Z",
+      "arrivalTime": "2024-07-16T16:00:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 140.00
+      },
+      "passengerCount": 130
+  },
+  {
+      "flightNumber": "LH4004",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Boeing 737-800",
+          "registration": "D-ABBS",
+          "seatingCapacity": 189,
+          "yearOfManufacture": 2016
+      },
+      "departureAirport": {
+          "code": "NAP",
+          "name": "Naples International Airport",
+          "city": "Naples",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "STR",
+          "name": "Stuttgart Airport",
+          "city": "Stuttgart",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T12:15:00Z",
+      "arrivalTime": "2024-07-16T14:15:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 125.00
+      },
+      "passengerCount": 160
+  },
+  {
+      "flightNumber": "AZ3005",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "I-BIXB",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2019
+      },
+      "departureAirport": {
+          "code": "LIN",
+          "name": "Linate Airport",
+          "city": "Milan",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T09:30:00Z",
+      "arrivalTime": "2024-07-16T11:30:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 160.00
+      },
+      "passengerCount": 150
+  },
+  {
+      "flightNumber": "LH4006",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Airbus A321",
+          "registration": "D-AIDB",
+          "seatingCapacity": 200,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "BGY",
+          "name": "Orio al Serio International Airport",
+          "city": "Bergamo",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T15:00:00Z",
+      "arrivalTime": "2024-07-16T17:00:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 145.00
+      },
+      "passengerCount": 170
+  },
+  {
+      "flightNumber": "AZ3007",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A319",
+          "registration": "I-BIGK",
+          "seatingCapacity": 144,
+          "yearOfManufacture": 2017
+      },
+      "departureAirport": {
+          "code": "TRN",
+          "name": "Turin Airport",
+          "city": "Turin",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "BER",
+          "name": "Berlin Brandenburg Airport",
+          "city": "Berlin",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T11:00:00Z",
+      "arrivalTime": "2024-07-16T13:00:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 135.00
+      },
+      "passengerCount": 130
+  },
+  {
+      "flightNumber": "LH4008",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Boeing 737-800",
+          "registration": "D-ABBI",
+          "seatingCapacity": 189,
+          "yearOfManufacture": 2015
+      },
+      "departureAirport": {
+          "code": "VCE",
+          "name": "Venice Marco Polo Airport",
+          "city": "Venice",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "STR",
+          "name": "Stuttgart Airport",
+          "city": "Stuttgart",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T16:00:00Z",
+      "arrivalTime": "2024-07-16T18:00:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 155.00
+      },
+      "passengerCount": 170
+  },
+  {
+      "flightNumber": "AZ3009",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "I-BIXC",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "NAP",
+          "name": "Naples International Airport",
+          "city": "Naples",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T09:45:00Z",
+      "arrivalTime": "2024-07-16T11:45:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 160.00
+      },
+      "passengerCount": 150
+  },
+  {
+      "flightNumber": "LH4010",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Airbus A321",
+          "registration": "D-AIDF",
+          "seatingCapacity": 200,
+          "yearOfManufacture": 2021
+      },
+      "departureAirport": {
+          "code": "LIN",
+          "name": "Linate Airport",
+          "city": "Milan",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T10:15:00Z",
+      "arrivalTime": "2024-07-16T12:15:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 145.00
+      },
+      "passengerCount": 180
+  },
+  {
+      "flightNumber": "AZ4011",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Boeing 737-800",
+          "registration": "I-ADJK",
+          "seatingCapacity": 189,
+          "yearOfManufacture": 2016
+      },
+      "departureAirport": {
+          "code": "VCE",
+          "name": "Venice Marco Polo Airport",
+          "city": "Venice",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T12:30:00Z",
+      "arrivalTime": "2024-07-16T14:30:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 135.00
+      },
+      "passengerCount": 160
+  },
+  {
+      "flightNumber": "LH4012",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "D-AIDG",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2019
+      },
+      "departureAirport": {
+          "code": "MXP",
+          "name": "Milan Malpensa Airport",
+          "city": "Milan",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "STR",
+          "name": "Stuttgart Airport",
+          "city": "Stuttgart",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T14:45:00Z",
+      "arrivalTime": "2024-07-16T16:45:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 125.00
+      },
+      "passengerCount": 150
+  },
+  {
+      "flightNumber": "AZ4013",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "I-BIXD",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "TRN",
+          "name": "Turin Airport",
+          "city": "Turin",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "BER",
+          "name": "Berlin Brandenburg Airport",
+          "city": "Berlin",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T17:00:00Z",
+      "arrivalTime": "2024-07-16T19:00:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 130.00
+      },
+      "passengerCount": 140
+  },
+  {
+      "flightNumber": "LH4014",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Boeing 737-800",
+          "registration": "D-ABHE",
+          "seatingCapacity": 189,
+          "yearOfManufacture": 2018
+      },
+      "departureAirport": {
+          "code": "FCO",
+          "name": "Leonardo da Vinci–Fiumicino Airport",
+          "city": "Rome",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T13:00:00Z",
+      "arrivalTime": "2024-07-16T15:00:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 140.00
+      },
+      "passengerCount": 160
+  },
+  {
+      "flightNumber": "AZ4015",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A321",
+          "registration": "I-BIGK",
+          "seatingCapacity": 200,
+          "yearOfManufacture": 2021
+      },
+      "departureAirport": {
+          "code": "BGY",
+          "name": "Orio al Serio International Airport",
+          "city": "Bergamo",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T16:15:00Z",
+      "arrivalTime": "2024-07-16T18:15:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 150.00
+      },
+      "passengerCount": 175
+  },
+  {
+      "flightNumber": "LH4016",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "D-AIDH",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "VCE",
+          "name": "Venice Marco Polo Airport",
+          "city": "Venice",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T18:00:00Z",
+      "arrivalTime": "2024-07-16T20:00:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 155.00
+      },
+      "passengerCount": 160
+  },
+  {
+      "flightNumber": "AZ4017",
+      "airline": "Alitalia",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "I-BIXE",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2019
+      },
+      "departureAirport": {
+          "code": "MXP",
+          "name": "Milan Malpensa Airport",
+          "city": "Milan",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "BER",
+          "name": "Berlin Brandenburg Airport",
+          "city": "Berlin",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T20:30:00Z",
+      "arrivalTime": "2024-07-16T22:30:00Z",
+      "status": "Scheduled",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 165.00
+      },
+      "passengerCount": 150
+  },
+  {
+      "flightNumber": "LH4018",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Boeing 737-800",
+          "registration": "D-ABDJ",
+          "seatingCapacity": 189,
+          "yearOfManufacture": 2016
+      },
+      "departureAirport": {
+          "code": "NAP",
+          "name": "Naples International Airport",
+          "city": "Naples",
+          "country": "Italy"
+      },
+      "arrivalAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "departureTime": "2024-07-16T21:00:00Z",
+      "arrivalTime": "2024-07-16T23:00:00Z",
+      "status": "On Time",
+      "duration": "2h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 150.00
+      },
+      "passengerCount": 165
+  }
+]

@@ -1,0 +1,312 @@
+[
+  {
+      "flightNumber": "LH1001",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "D-AIZH",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2019
+      },
+      "departureAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T08:00:00Z",
+      "arrivalTime": "2024-07-16T09:00:00Z",
+      "status": "Scheduled",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 120.00
+      },
+      "passengerCount": 150
+  },
+  {
+      "flightNumber": "LX1002",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Airbus A220",
+          "registration": "HB-JCA",
+          "seatingCapacity": 145,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "GVA",
+          "name": "Geneva Airport",
+          "city": "Geneva",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T10:30:00Z",
+      "arrivalTime": "2024-07-16T11:30:00Z",
+      "status": "On Time",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 140.00
+      },
+      "passengerCount": 130
+  },
+  {
+      "flightNumber": "LH1003",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Boeing 737-800",
+          "registration": "D-ABCB",
+          "seatingCapacity": 189,
+          "yearOfManufacture": 2018
+      },
+      "departureAirport": {
+          "code": "DUS",
+          "name": "Düsseldorf Airport",
+          "city": "Düsseldorf",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T12:00:00Z",
+      "arrivalTime": "2024-07-16T13:00:00Z",
+      "status": "Scheduled",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 125.00
+      },
+      "passengerCount": 160
+  },
+  {
+      "flightNumber": "LX1004",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Airbus A321",
+          "registration": "HB-IOM",
+          "seatingCapacity": 200,
+          "yearOfManufacture": 2021
+      },
+      "departureAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "GVA",
+          "name": "Geneva Airport",
+          "city": "Geneva",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T14:00:00Z",
+      "arrivalTime": "2024-07-16T15:00:00Z",
+      "status": "On Time",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 135.00
+      },
+      "passengerCount": 175
+  },
+  {
+      "flightNumber": "LH1005",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Airbus A320",
+          "registration": "D-AIHB",
+          "seatingCapacity": 180,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T16:30:00Z",
+      "arrivalTime": "2024-07-16T17:30:00Z",
+      "status": "Scheduled",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 130.00
+      },
+      "passengerCount": 150
+  },
+  {
+      "flightNumber": "LX1006",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Boeing 777",
+          "registration": "HB-JNA",
+          "seatingCapacity": 340,
+          "yearOfManufacture": 2017
+      },
+      "departureAirport": {
+          "code": "DUS",
+          "name": "Düsseldorf Airport",
+          "city": "Düsseldorf",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T19:15:00Z",
+      "arrivalTime": "2024-07-16T20:15:00Z",
+      "status": "On Time",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 150.00
+      },
+      "passengerCount": 200
+  },
+  {
+      "flightNumber": "LH1007",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Airbus A319",
+          "registration": "D-AILC",
+          "seatingCapacity": 144,
+          "yearOfManufacture": 2016
+      },
+      "departureAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "GVA",
+          "name": "Geneva Airport",
+          "city": "Geneva",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T09:45:00Z",
+      "arrivalTime": "2024-07-16T10:45:00Z",
+      "status": "Scheduled",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 145.00
+      },
+      "passengerCount": 165
+  },
+  {
+      "flightNumber": "LX1008",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Airbus A220",
+          "registration": "HB-JCA",
+          "seatingCapacity": 145,
+          "yearOfManufacture": 2020
+      },
+      "departureAirport": {
+          "code": "FRA",
+          "name": "Frankfurt Airport",
+          "city": "Frankfurt",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T11:15:00Z",
+      "arrivalTime": "2024-07-16T12:15:00Z",
+      "status": "On Time",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 120.00
+      },
+      "passengerCount": 130
+  },
+  {
+      "flightNumber": "LH1009",
+      "airline": "Lufthansa",
+      "aircraft": {
+          "model": "Boeing 737-800",
+          "registration": "D-ABEF",
+          "seatingCapacity": 189,
+          "yearOfManufacture": 2017
+      },
+      "departureAirport": {
+          "code": "DUS",
+          "name": "Düsseldorf Airport",
+          "city": "Düsseldorf",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "GVA",
+          "name": "Geneva Airport",
+          "city": "Geneva",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T15:30:00Z",
+      "arrivalTime": "2024-07-16T16:30:00Z",
+      "status": "Scheduled",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 140.00
+      },
+      "passengerCount": 160
+  },
+  {
+      "flightNumber": "LX1010",
+      "airline": "Swiss International Air Lines",
+      "aircraft": {
+          "model": "Airbus A321",
+          "registration": "HB-IOM",
+          "seatingCapacity": 200,
+          "yearOfManufacture": 2021
+      },
+      "departureAirport": {
+          "code": "MUC",
+          "name": "Munich Airport",
+          "city": "Munich",
+          "country": "Germany"
+      },
+      "arrivalAirport": {
+          "code": "ZRH",
+          "name": "Zurich Airport",
+          "city": "Zurich",
+          "country": "Switzerland"
+      },
+      "departureTime": "2024-07-16T18:00:00Z",
+      "arrivalTime": "2024-07-16T19:00:00Z",
+      "status": "On Time",
+      "duration": "1h 00m",
+      "price": {
+          "currency": "EUR",
+          "amount": 135.00
+      },
+      "passengerCount": 175
+  }
+]
