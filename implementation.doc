@@ -13,11 +13,15 @@ localhost:1111/api === APINAME
 --> main page: (>APINAME/avia/get-hot/)
   - search bar
     -> search bar fields:
-      - departure date 
-      - back (Optional param)
-      - direction location
-      - departure location
-  - list of hot tickets
+        - flightDate
+        - departureAirport
+        - arrivalAirport
+        - departureDate
+        - returnDate
+        - passengerCount
+        - cabinClass
+        - filterOptions
+  - list of hot tickets (today cheapest flights)
 
 #--------------------------------------------#
 

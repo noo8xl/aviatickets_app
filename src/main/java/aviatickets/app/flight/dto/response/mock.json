@@ -11,7 +11,11 @@
                 "wifi": true,
                 "inFlightEntertainment": true,
                 "powerOutlets": true,
-                "cabinClass": ["Economy", "Business"]
+                "cabinClass": {
+                    "economy": true,
+                    "business": true,
+                    "first": false
+                }
             }
         },
         "itinerary": [
@@ -22,18 +26,27 @@
                     "name": "Frankfurt Airport",
                     "city": "Frankfurt",
                     "country": "Germany",
-                    "terminal": "1"
+                    "terminal": "1",
+                    "location": {
+                        "longitude": "50.0354",
+                        "latitude": "8.5518"
+                    }
                 },
                 "arrivalAirport": {
                     "code": "MUC",
                     "name": "Munich Airport",
                     "city": "Munich",
                     "country": "Germany",
-                    "terminal": "2"
+                    "terminal": "2",
+                    "location": {
+                        "longitude": "48.3536",
+                        "latitude": "11.7832"
+                    }
                 },
                 "departureTime": "2024-07-16T09:00:00Z",
                 "arrivalTime": "2024-07-16T10:00:00Z",
                 "duration": "1h 00m",
+                "distance": 2000,
                 "status": "On Time"
             },
             {
@@ -43,30 +56,68 @@
                     "name": "Munich Airport",
                     "city": "Munich",
                     "country": "Germany",
-                    "terminal": "2"
+                    "terminal": "2",
+                    "location": {
+                        "longitude": "48.3536",
+                        "latitude": "11.7832"
+                    }
                 },
                 "arrivalAirport": {
                     "code": "ATH",
                     "name": "Athens International Airport",
                     "city": "Athens",
                     "country": "Greece",
-                    "terminal": "B"
+                    "terminal": "B",
+                    "location": {
+                        "longitude": "37.9362",
+                        "latitude": "23.9481"
+                    }
                 },
                 "departureTime": "2024-07-16T11:30:00Z",
                 "arrivalTime": "2024-07-16T14:30:00Z",
                 "duration": "3h 00m",
+                "distance": 1891,
                 "status": "Scheduled"
             }
         ],
+        "totalDistance": 3891,
         "totalDuration": "4h 00m",
         "price": {
             "currency": "EUR",
             "amount": 220.00,
-            "baggageAllowance": "1 checked bag up to 23kg"
+            "baggageAllowance": {
+                "cabinBag": true,
+                "storedBaggage": true,
+                "extraBaggage": false
+            }
         },
         "passengerCount": 150
     },
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		{
 			"flightNumber": "LH2001",
 			"airline": "Lufthansa",

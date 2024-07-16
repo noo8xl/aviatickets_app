@@ -12,6 +12,7 @@ public record FlightsItem(
 		List<Leg> itinerary,
 		Aitcraft aitcraft,
 
+		Integer totalDistance, // => leg distance += leg distance
 		String totalDuration,
 		Price price,
 		Short passengerCount

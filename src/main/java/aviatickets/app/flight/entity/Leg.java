@@ -8,7 +8,7 @@ public record Leg(
 		Airport arrivalAirport,
 		LocalDateTime departureTime,
 		LocalDateTime arrivalTime,
-		String status // scheduled, active, landed, cancelled, incident, diverted
-) {
+		Integer distance,
+		FlightStatus status) {
 
 }

@@ -1,0 +1,93 @@
+
+### Get hot flights
+GET http://localhost:9832/flights/get-hot/
+
+### Get filtred flights
+POST http://localhost:9832/flights/
+
+{
+  "departureAirport": "Frankfurt",
+  "arrivalAirport": "Bremen",
+  "location": {
+      "longitude": "50.0354",
+      "latitude": "8.5518"
+  },
+  "departureDate": "2024-02-10T15:00:12.49766", 
+  "returnDate": "2024-02-17T13:00:12.49766", 
+  "passengerCount": 2, 
+  "cabinClass": {
+    "economy": true,
+    "business": false,
+    "first": false
+  },
+  "filterOptions": CHEAPEST 
+}
+
+### Get filtred flights
+POST http://localhost:9832/flights/
+
+{
+  "departureAirport": "Frankfurt",
+  "arrivalAirport": "Bremen",
+  "location": {
+      "longitude": "50.0354",
+      "latitude": "8.5518"
+  },
+  "departureDate": "2024-02-10T15:00:12.49766", 
+  "returnDate": "2024-02-17T13:00:12.49766", 
+  "passengerCount": 2, 
+  "cabinClass": {
+    "economy": true,
+    "business": false,
+    "first": false
+  },
+  "filterOptions": FASTEST 
+}
+
+### Get filtred flights
+POST http://localhost:9832/flights/
+
+{
+  "departureAirport": "Frankfurt",
+  "arrivalAirport": "Bremen",
+  "location": {
+      "longitude": "50.0354",
+      "latitude": "8.5518"
+  },
+  "departureDate": "2024-02-10T15:00:12.49766", 
+  "returnDate": "2024-02-17T13:00:12.49766", 
+  "passengerCount": 2, 
+  "cabinClass": {
+    "economy": true,
+    "business": false,
+    "first": false
+  },
+  "filterOptions": DIRECT 
+}
+
+### Get filtred flights
+POST http://localhost:9832/flights/
+
+{
+  "departureAirport": "Frankfurt",
+  "arrivalAirport": "Bremen",
+  "location": {
+      "longitude": "50.0354",
+      "latitude": "8.5518"
+  },
+  "departureDate": "2024-02-10T15:00:12.49766", 
+  "returnDate": null, 
+  "passengerCount": 2, 
+  "cabinClass": {
+    "economy": true,
+    "business": false,
+    "first": false
+  },
+  "filterOptions": DIRECT 
+}
+
+
+### Add a new Airport 
+
+
+### Add a new direction

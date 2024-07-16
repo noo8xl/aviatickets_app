@@ -6,6 +6,8 @@ public record Airport(
 		String city,
 		String country,
 		Character terminal,
-		String timezone) {
+		String timezone,
+		Location location
 
+) {
 }

@@ -1,15 +1,16 @@
 package aviatickets.app.flight;
 
-import java.util.Date;
+import java.util.List;
 
-import aviatickets.app.flight.dto.response.FlightList;
+import aviatickets.app.flight.dto.request.GetFiltredFlight;
+import aviatickets.app.flight.entity.FlightsItem;
 
 public interface FlightInteraction {
 
-  public FlightList getHotFlightList();
+  // getHotFlightList -> get list of cheapest today flights
+  public List<FlightsItem> getHotFlightList();
 
-  public FlightList getFlightList(String from, String to, Date d);
-
-  public FlightList findFlightByFilter();
+  // findFlightByFilter -> get list of flights by filter
+  public List<FlightsItem> findFlightByFilter(GetFiltredFlight filter);
 
 }
