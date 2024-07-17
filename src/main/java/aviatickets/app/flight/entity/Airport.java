@@ -7,7 +7,7 @@ public record Airport(
 		String country,
 		Character terminal,
 		String timezone,
-		Location location
-
+		Location location,
+		AirportContacts contacts
 ) {
 }

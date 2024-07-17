@@ -1,6 +1,6 @@
 package aviatickets.app.flight.entity;
 
-public record Aitcraft(
+public record Aircraft(
 		String model,
 		String registration,
 		Short seatingCapacity,

@@ -2,6 +2,7 @@ package aviatickets.app.flight;
 
 import java.util.List;
 
+import aviatickets.app.flight.dto.request.GetFilteredFlight;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import aviatickets.app.exception.NotFoundException;
 import aviatickets.app.exception.ServerErrorException;
-import aviatickets.app.flight.dto.request.GetFiltredFlight;
 import aviatickets.app.flight.entity.FlightsItem;
 
 @RestController
@@ -43,7 +43,7 @@ public class FlightController {
   // findFlight -> find flights by request body filter, and return list of it
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/find-filtered-flight/")
-  List<FlightsItem> findFlight(@RequestBody GetFiltredFlight filter) {
+  List<FlightsItem> findFlight(@RequestBody GetFilteredFlight filter) {
     try {
       List<FlightsItem> flights = flightService.findFlightByFilter(filter);
       if (flights.isEmpty()) {
@@ -54,5 +54,15 @@ public class FlightController {
       throw new ServerErrorException();
     }
   }
+
+//	admin handlers only *
+
+  @ResponseStatus(HttpStatus.OK)
+  @PostMapping("/create-new-flight/")
+  void createNewFlight(@RequestBody FlightsItem flight) {
+		System.out.println(flight);
+		flightService.createFlight(flight);
+	}
+
 
 }

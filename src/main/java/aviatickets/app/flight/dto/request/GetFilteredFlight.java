@@ -6,7 +6,7 @@ import aviatickets.app.flight.entity.CabinClass;
 import aviatickets.app.flight.entity.Location;
 
 // GetTicketList -> can contain null fields if shouldn't be filtred *
-public record GetFiltredFlight(
+public record GetFilteredFlight(
 		String departureAirport,
 		String arrivalAirport,
 		Location location,

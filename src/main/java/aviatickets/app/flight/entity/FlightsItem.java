@@ -10,12 +10,12 @@ public record FlightsItem(
 		// Itinerary with Transfer: the legs of the journey are detailed,
 		// showing the transfer at some Airport.
 		List<Leg> itinerary,
-		Aitcraft aitcraft,
+		Aircraft aircraft,
 
 		Integer totalDistance, // => leg distance += leg distance
 		String totalDuration,
 		Price price,
-		Short passengerCount
-
+		Short passengerCount,
+		Short availableSits
 ) {
 }
