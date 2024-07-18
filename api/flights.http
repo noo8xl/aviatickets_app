@@ -1,6 +1,8 @@
 
 ### Get hot flights
 GET http://localhost:9832/flights/get-hot/
+Content-Type: application/json
+
 
 ### Get filtred flights
 POST http://localhost:9832/flights/
@@ -87,7 +89,209 @@ POST http://localhost:9832/flights/
 }
 
 
-### Add a new Airport 
+### Add a new flight with transfer (a few legs)
+POST http://localhost:9832/flights/create-new-flight/
+Content-Type: application/json
 
+{
+  "flightNumber": "LH2001",
+  "airline": "Lufthansa",
+  "aircraft": {
+    "model": "Airbus A320",
+    "registration": "D-AIZB",
+    "seatingCapacity": 180,
+    "yearOfManufacture": 2020,
+    "features": {
+      "wifi": true,
+      "inFlightEntertainment": true,
+      "powerOutlets": true,
+      "cabinClass": {
+        "economy": true,
+        "business": true,
+        "first": false
+      }
+    }
+  },
+  "itinerary": [
+    {
+      "leg": 1,
+      "departureAirport": {
+        "code": "FRA",
+        "airportName": "Frankfurt Airport",
+        "city": "Frankfurt",
+        "country": "Germany",
+        "terminal": "1",
+        "timezone": "Europe/Berlin",
+        "location": {
+          "longitude": "50.0354",
+          "latitude": "8.5518",
+          "altitude": "111.25"
+        },
+        "contactInformation": {
+          "phone": "+49 69 6900",
+          "email": "info@fraport.de",
+          "website": "https://www.frankfurt-airport.com"
+        }
+      },
+      "arrivalAirport": {
+        "code": "MUC",
+        "airportName": "Munich Airport",
+        "city": "Munich",
+        "country": "Germany",
+        "terminal": "2",
+        "timezone": "Europe/Berlin",
+        "location": {
+          "longitude": "48.3536",
+          "latitude": "11.7832",
+          "altitude": "1487.53"
+        },
+        "contactInformation": {
+          "phone": "+49 89 97500",
+          "email": "info@munich-airport.de",
+          "website": "https://www.munich-airport.de"
+        }
+      },
+      "departureTime": "2024-07-16T09:00:00Z",
+      "arrivalTime": "2024-07-16T10:00:00Z",
+      "duration": "1h 00m",
+      "distance": 2000,
+      "status": "On Time"
+    },
+    {
+      "leg": 2,
+      "departureAirport": {
+        "code": "MUC",
+        "airportName": "Munich Airport",
+        "city": "Munich",
+        "country": "Germany",
+        "terminal": "2",
+        "timezone": "Europe/Berlin",
+        "location": {
+          "longitude": "48.3536",
+          "latitude": "11.7832",
+          "altitude": "1487.53"
+        },
+        "contactInformation": {
+          "phone": "+49 89 97500",
+          "email": "info@munich-airport.de",
+          "website": "https://www.munich-airport.de"
+        }
+      },
+      "arrivalAirport": {
+        "code": "ATH",
+        "airportName": "Athens International Airport",
+        "city": "Athens",
+        "country": "Greece",
+        "terminal": "B",
+        "timezone": "Europe/Athens",
+        "location": {
+          "longitude": "37.9362",
+          "latitude": "23.9481",
+          "altitude": "544.53"
+        },
+        "contactInformation": {
+          "phone": "+45 89 231118",
+          "email": "info@athens-airport.de",
+          "website": "https://www.athens-airport.de"
+        }
+      },
+      "departureTime": "2024-07-16T11:30:00Z",
+      "arrivalTime": "2024-07-16T14:30:00Z",
+      "duration": "3h 00m",
+      "distance": 1891,
+      "status": "Scheduled"
+    }
+  ],
+  "totalDistance": 3891,
+  "totalDuration": "4h 00m",
+  "price": {
+    "currency": "EUR",
+    "amount": 220.00,
+    "discount": 9,
+    "baggageAllowance": "1 checked bag up to 23kg"
+  },
+  "passengerCount": 150,
+  "availableSits": 94
+}
 
-### Add a new direction
+### Add a new direct flight without transfer (only one leg)
+POST http://localhost:9832/flights/create-new-flight/
+Content-Type: application/json
+
+{
+  "flightNumber": "LH2001",
+  "airline": "Lufthansa",
+  "aircraft": {
+    "model": "Airbus A320",
+    "registration": "D-AIZB",
+    "seatingCapacity": 180,
+    "yearOfManufacture": 2020,
+    "features": {
+      "wifi": true,
+      "inFlightEntertainment": true,
+      "powerOutlets": true,
+      "cabinClass": {
+        "economy": true,
+        "business": true,
+        "first": false
+      }
+    }
+  },
+  "itinerary": [
+    {
+      "leg": 1,
+      "departureAirport": {
+        "code": "FRA",
+        "airportName": "Frankfurt Airport",
+        "city": "Frankfurt",
+        "country": "Germany",
+        "terminal": "1",
+        "timezone": "Europe/Berlin",
+        "location": {
+          "longitude": "50.0354",
+          "latitude": "8.5518",
+          "altitude": "111.25"
+        },
+        "contactInformation": {
+          "phone": "+49 69 6900",
+          "email": "info@fraport.de",
+          "website": "https://www.frankfurt-airport.com"
+        }
+      },
+      "arrivalAirport": {
+        "code": "ATH",
+        "airportName": "Athens International Airport",
+        "city": "Athens",
+        "country": "Greece",
+        "terminal": "B",
+        "timezone": "Europe/Athens",
+        "location": {
+          "longitude": "37.9362",
+          "latitude": "23.9481",
+          "altitude": "544.53"
+        },
+        "contactInformation": {
+          "phone": "+45 89 231118",
+          "email": "info@athens-airport.de",
+          "website": "https://www.athens-airport.de"
+        }
+      },
+      "departureTime": "2024-07-16T09:00:00Z",
+      "arrivalTime": "2024-07-16T10:00:00Z",
+      "duration": "1h 00m",
+      "distance": 2000,
+      "status": "On Time"
+    }
+  ],
+  "totalDistance": 3891,
+  "totalDuration": "4h 00m",
+  "price": {
+    "currency": "EUR",
+    "amount": 220.00,
+    "discount": 9,
+    "baggageAllowance": "1 checked bag up to 23kg"
+  },
+  "passengerCount": 150,
+  "availableSits": 94
+}
+

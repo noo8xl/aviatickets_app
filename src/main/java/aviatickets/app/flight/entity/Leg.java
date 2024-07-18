@@ -1,14 +1,15 @@
 package aviatickets.app.flight.entity;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
 
 public record Leg(
 		Integer id,
-		Short leg,
+		Short legNumber,
 		Airport departureAirport,
 		Airport arrivalAirport,
-		LocalDateTime departureTime,
-		LocalDateTime arrivalTime,
+		Date departureTime,
+		Date arrivalTime,
+		String duration,
 		Integer distance,
 		String status) {
 

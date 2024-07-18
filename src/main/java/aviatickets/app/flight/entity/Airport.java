@@ -1,6 +1,7 @@
 package aviatickets.app.flight.entity;
 
 public record Airport(
+		Integer id,
 		String code,
 		String airportName,
 		String city,

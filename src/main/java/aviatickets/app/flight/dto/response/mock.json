@@ -23,10 +23,11 @@
         "leg": 1,
         "departureAirport": {
           "code": "FRA",
-          "name": "Frankfurt Airport",
+          "airportName": "Frankfurt Airport",
           "city": "Frankfurt",
           "country": "Germany",
           "terminal": "1",
+          "timezone": "Europe/Berlin",
           "location": {
             "longitude": "50.0354",
             "latitude": "8.5518",
@@ -40,10 +41,11 @@
         },
         "arrivalAirport": {
           "code": "MUC",
-          "name": "Munich Airport",
+          "airportName": "Munich Airport",
           "city": "Munich",
           "country": "Germany",
           "terminal": "2",
+          "timezone": "Europe/Berlin",
           "location": {
             "longitude": "48.3536",
             "latitude": "11.7832",
@@ -65,10 +67,11 @@
         "leg": 2,
         "departureAirport": {
           "code": "MUC",
-          "name": "Munich Airport",
+          "airportName": "Munich Airport",
           "city": "Munich",
           "country": "Germany",
           "terminal": "2",
+          "timezone": "Europe/Berlin",
           "location": {
             "longitude": "48.3536",
             "latitude": "11.7832",
@@ -77,10 +80,11 @@
           },
           "arrivalAirport": {
             "code": "ATH",
-            "name": "Athens International Airport",
+            "airportName": "Athens International Airport",
             "city": "Athens",
             "country": "Greece",
             "terminal": "B",
+            "timezone": "Europe/Athens",
             "location": {
               "longitude": "37.9362",
               "latitude": "23.9481",

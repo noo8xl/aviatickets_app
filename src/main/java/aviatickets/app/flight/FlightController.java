@@ -2,6 +2,7 @@ package aviatickets.app.flight;
 
 import java.util.List;
 
+import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class FlightController {
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-hot/")
   List<FlightsItem> getHotList() {
+		System.out.println("test routes");
     try {
       List<FlightsItem> flights = flightService.getHotFlightList();
       if (flights.isEmpty()) {
@@ -57,9 +59,9 @@ public class FlightController {
 
 //	admin handlers only *
 
-  @ResponseStatus(HttpStatus.OK)
+  @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create-new-flight/")
-  void createNewFlight(@RequestBody FlightsItem flight) {
+  void createNewFlight(@RequestBody FlightsItem flight) throws BadRequestException {
 		System.out.println(flight);
 		flightService.createFlight(flight);
 	}

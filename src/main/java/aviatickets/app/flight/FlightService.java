@@ -1,5 +1,6 @@
 package aviatickets.app.flight;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
@@ -38,8 +39,8 @@ public class FlightService implements FlightInteraction {
   }
 
 	@Override
-	public void createFlight(FlightsItem flight) {
-
+	public void createFlight(FlightsItem flight) throws RuntimeException, SQLException, ClassNotFoundException {
+		flightRepository.createNewFlight(flight);
 	}
 
 	@Override

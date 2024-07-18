@@ -17,6 +17,6 @@ public interface FlightInteraction {
 
 	void updateFlight(FlightsItem flight);
 
-	void createFlight(FlightsItem flight);
+	void createFlight(FlightsItem flight) throws Exception;
 
 }

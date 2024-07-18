@@ -8,11 +8,16 @@ DROP TABLE IF EXISTS customer_orders;
 DROP TABLE IF EXISTS customer_two_step_auth;
 DROP TABLE IF EXISTS airport;
 DROP TABLE IF EXISTS airport_location;
+DROP TABLE IF EXISTS airport_contacts;
+DROP TABLE IF EXISTS flight_itinerary;
+DROP TABLE IF EXISTS leg_details;
 DROP TABLE IF EXISTS aircraft;
 DROP TABLE IF EXISTS aircraft_features;
 DROP TABLE IF EXISTS cabin_class;
 DROP TABLE IF EXISTS price_details;
 DROP TABLE IF EXISTS baggage_allowance;
+DROP TABLE IF EXISTS flight;
+
 
 -- -------------------------------------------------------------------------------------
 
@@ -65,15 +70,15 @@ CREATE TABLE IF NOT EXISTS aircraft_features (
   wifi Boolean NOT NULL,
   entertainment Boolean NOT NULL,
   power_outlets Boolean NOT NULL,
-	aircraft INT NOT NULL,
-	FOREIGN KEY (aircraft) REFERENCES aircraft (id),
+  aircraft INT NOT NULL,
+  FOREIGN KEY (aircraft) REFERENCES aircraft (id),
   PRIMARY KEY (id)
 );
 
 
 CREATE TABLE IF NOT EXISTS cabin_class (
   id INT NOT NULL AUTO_INCREMENT,
-	economy Boolean NOT NULL,
+  economy Boolean NOT NULL,
   business Boolean NOT NULL,
   first Boolean NOT NULL,
   aircraft INT NOT NULL,
@@ -84,7 +89,7 @@ CREATE TABLE IF NOT EXISTS cabin_class (
 
 CREATE TABLE IF NOT EXISTS price_details (
   id INT NOT NULL AUTO_INCREMENT,
-  currency varchar(5) NOT NULL DEFAULT "EUR",
+  currency varchar(5) NOT NULL DEFAULT 'EUR',
   amount FLOAT NOT NULL,
 	discount SMALLINT NOT NULL DEFAULT 0,
   baggage varchar(150) NOT NULL,
@@ -122,7 +127,7 @@ CREATE TABLE IF NOT EXISTS flight_itinerary (
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS flight (
+CREATE TABLE IF NOT EXISTS flights (
   id INT NOT NULL AUTO_INCREMENT,
   flight_number varchar(50) NOT NULL,
   airline varchar(50) NOT NULL,
@@ -134,9 +139,9 @@ CREATE TABLE IF NOT EXISTS flight (
   total_duration varchar(30) NOT NULL,
   price INT NOT NULL,
   passenger_count SMALLINT NOT NULL,
-	availableSits SMALLINT NOT NULL,
+  availableSits SMALLINT NOT NULL,
 
-	FOREIGN KEY (itinerary) REFERENCES flight_itinerary (id),
+  FOREIGN KEY (itinerary) REFERENCES flight_itinerary (id),
   FOREIGN KEY (price) REFERENCES price_details (id),
   FOREIGN KEY (aircraft) REFERENCES aircraft (id),
 
