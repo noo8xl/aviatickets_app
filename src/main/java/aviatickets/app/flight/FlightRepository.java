@@ -47,6 +47,9 @@ public class FlightRepository {
 
   public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 
+
+		// select * from leg_details where flight_number=3; ---<
+
 		// --> get flights list here ->
 		// --> get sold ticket with the same flights numbers
 
@@ -66,6 +69,7 @@ public class FlightRepository {
 // ################################## admin area only #####################################
 // ########################################################################################
 
+	// createNewFlight -> add new flight and its details to db as admin
 	public void createNewFlight(FlightsItem flight) throws RuntimeException, SQLException, ClassNotFoundException {
 
 		Integer flightId = this.getFlightId(flight.flightNumber());
@@ -76,13 +80,16 @@ public class FlightRepository {
 		if(flight.itinerary().size() == 1) {
 			this.saveAirport(flight.itinerary().getFirst().departureAirport());
 			this.saveAirport(flight.itinerary().getFirst().arrivalAirport());
-			this.saveLegItem(flight.itinerary().getFirst());
+			this.saveLegItem(flight.itinerary().getFirst(), flight.flightNumber());
 		} else {
-			for (int i = 0; i <= flight.itinerary().size(); i++) {
+			for (int i = 0; i < flight.itinerary().size(); i++) {
+				// run through the itinerary list to save each
+				// leg and airport details
 				Leg item = flight.itinerary().get(i);
+				System.out.println("Itinerary item: " + item);
 				this.saveAirport(item.departureAirport());
 				this.saveAirport(item.arrivalAirport());
-				this.saveLegItem(item);
+				this.saveLegItem(item, flight.flightNumber());
 			}
 		}
 		this.saveFlight(flight);
@@ -98,14 +105,15 @@ public class FlightRepository {
 	private void saveAircraft(Aircraft aircraft) throws RuntimeException, SQLException, ClassNotFoundException {
 
 		int updated = 0;
+		Integer aircraftId = 0;
 
 		String airStr = "INSERT INTO aircraft (model, registration, seating_capacity, year_of_manufacture) VALUES (?,?,?,?)";
-		String featuresStr = "INSERT INTO aircraft_features (wifi, entertainment, power_outlets, aircraft) VALUES (?,?,?,?)";
-		String cabinStr = "INSERT INTO cabin_class (economy, business, first, aircraft) VALUES (?,?,?,?)";
+		String featuresStr = "INSERT INTO aircraft_features (wifi, entertainment, power_outlets, aircraft_id) VALUES (?,?,?,?)";
+		String cabinStr = "INSERT INTO cabin_class (economy, business, first, aircraft_id) VALUES (?,?,?,?)";
 
 		try {
 
-			Integer aircraftId = this.getAircraftId(aircraft.registration());
+			aircraftId = this.getAircraftId(aircraft.registration());
 			if(aircraftId != 0) {
 				System.out.println("Flight aircraft exists");
 				return;
@@ -118,8 +126,11 @@ public class FlightRepository {
 
 			preparedAircraft.setString(1, aircraft.model());
 			preparedAircraft.setString(2, aircraft.registration());
-			preparedAircraft.setInt(3, aircraft.seatingCapacity());
-			preparedAircraft.setInt(4, aircraft.yearOfManufacture());
+			preparedAircraft.setShort(3, aircraft.seatingCapacity());
+			preparedAircraft.setShort(4, aircraft.yearOfManufacture());
+
+			updated += preparedAircraft.executeUpdate();
+			aircraftId = this.getAircraftId(aircraft.registration());
 
 			preparedFeatures.setBoolean(1, aircraft.features().wifi());
 			preparedFeatures.setBoolean(2, aircraft.features().inFlightEntertainment());
@@ -129,9 +140,8 @@ public class FlightRepository {
 			preparedCabinClass.setBoolean(1, aircraft.features().cabinClass().economy());
 			preparedCabinClass.setBoolean(2, aircraft.features().cabinClass().business());
 			preparedCabinClass.setBoolean(3, aircraft.features().cabinClass().first());
-			preparedCabinClass.setInt(1, aircraftId);
+			preparedCabinClass.setInt(4, aircraftId);
 
-			updated += preparedAircraft.executeUpdate();
 			updated += preparedFeatures.executeUpdate();
 			updated += preparedCabinClass.executeUpdate();
 
@@ -158,18 +168,21 @@ public class FlightRepository {
 	private void saveAirport(Airport airport) throws RuntimeException, SQLException, ClassNotFoundException {
 
 		int updated = 0;
+		Integer airportId = 0;
 
 		String airStr = "INSERT INTO airport (code, airport_name, city, country, terminal, timezone) VALUES (?,?,?,?,?,?)";
-		String locationStr = "INSERT INTO airport_location (longitude, latitude, altitude, airport) VALUES (?,?,?,?)";
-		String contactStr = "INSERT INTO airport_contact (phone, email, website, airport) VALUES (?,?,?,?)";
+		String locationStr = "INSERT INTO airport_location (longitude, latitude, altitude, airport_id) VALUES (?,?,?,?)";
+		String contactStr = "INSERT INTO airport_contacts (phone, email, website, airport_id) VALUES (?,?,?,?)";
 
 		try {
 
-			Integer airportId = this.getAirportId(airport.airportName());
+			airportId = this.getAirportId(airport.airportName());
 			if(airportId != 0) {
 				System.out.println("Flight already exists");
 				return;
 			}
+
+			System.out.println("airportId is -> " + airportId);
 
 			this.initConnection();
 			PreparedStatement preparedAirport = this.connection.prepareStatement(airStr);
@@ -183,6 +196,9 @@ public class FlightRepository {
 			preparedAirport.setString(5, String.valueOf(airport.terminal()));
 			preparedAirport.setString(6, airport.timezone());
 
+			updated += preparedAirport.executeUpdate();
+			airportId = this.getAirportId(airport.airportName());
+
 			preparedLocation.setString(1, airport.location().longitude());
 			preparedLocation.setString(2, airport.location().latitude());
 			preparedLocation.setString(3, airport.location().altitude());
@@ -193,7 +209,6 @@ public class FlightRepository {
 			preparedContacts.setString(3, airport.contacts().website());
 			preparedContacts.setInt(4, airportId);
 
-			updated += preparedAirport.executeUpdate();
 			updated += preparedLocation.executeUpdate();
 			updated += preparedContacts.executeUpdate();
 
@@ -208,11 +223,12 @@ public class FlightRepository {
 		}
 	}
 
-	private void saveLegItem(Leg leg) throws SQLException, ClassNotFoundException {
+	// saveLegItem -> call it to save each leg in flight
+	private void saveLegItem(Leg leg, String flightNumber) throws SQLException, ClassNotFoundException {
 
 		String sql = "INSERT INTO leg_details " +
-				"(departure_airport, arrival_airport, departure_time, arrival_time, duration, distance, status) " +
-				"VALUES (?,?,?,?,?,?,?)";
+				"(flight_number, departure_airport, arrival_airport, departure_time, arrival_time, duration, distance, status) " +
+				"VALUES (?,?,?,?,?,?,?,?)";
 
 		try {
 			Integer arrivalAirportId = this.getAirportId(leg.arrivalAirport().airportName());
@@ -220,13 +236,14 @@ public class FlightRepository {
 
 			this.initConnection();
 			PreparedStatement preparedLeg = this.connection.prepareStatement(sql);
-			preparedLeg.setInt(1, arrivalAirportId);
-			preparedLeg.setInt(2, departureAirportId);
-			preparedLeg.setDate(3, leg.departureTime());
-			preparedLeg.setDate(4, leg.arrivalTime());
-			preparedLeg.setString(5, leg.duration());
-			preparedLeg.setInt(6, leg.distance());
-			preparedLeg.setString(7, leg.status());
+			preparedLeg.setString(1, flightNumber);
+			preparedLeg.setInt(2, arrivalAirportId);
+			preparedLeg.setInt(3, departureAirportId);
+			preparedLeg.setDate(4, leg.departureTime());
+			preparedLeg.setDate(5, leg.arrivalTime());
+			preparedLeg.setString(6, leg.duration());
+			preparedLeg.setInt(7, leg.distance());
+			preparedLeg.setString(8, leg.status());
 
 			int updated = preparedLeg.executeUpdate();
 			if(updated < 1) {
@@ -242,12 +259,63 @@ public class FlightRepository {
 	// saveFlight -> save flight obj
 	// if flightNumber == flight.flightNumber -> continue without saving flight
 	private void saveFlight(FlightsItem flight) throws SQLException, ClassNotFoundException {
-		Integer flightId = 0;
 
-		this.saveAircraft(flight.aircraft());
-		Integer savedAircraftId = this.getAircraftId(flight.aircraft().registration());
+		Integer aircraftId;
+		Integer priceId;
+		int updated;
 
-		flightId = this.getFlightId(flight.flightNumber());
+		String priceSql = "INSERT INTO price_details (flight_number, currency, amount, discount, baggage) VALUES (?,?,?,?,?)";
+		String flightSql = "INSERT INTO flights " +
+				"(flight_number, airline, aircraft_id, distance, total_duration, price, passenger_count, available_sits) " +
+				"VALUES(?,?,?,?,?,?,?,?)";
+
+		try {
+			aircraftId = this.getAircraftId(flight.aircraft().registration());
+			if(aircraftId != 0) {
+				System.out.println("Aircraft already exists");
+			} else {
+				this.saveAircraft(flight.aircraft());
+				aircraftId = this.getAircraftId(flight.aircraft().registration());
+				if(aircraftId == 0) {
+					throw new ServerErrorException("Failed to save aircraft data.");
+				}
+			}
+
+			this.initConnection();
+			PreparedStatement preparedPrice = this.connection.prepareStatement(priceSql);
+			PreparedStatement preparedFlight = this.connection.prepareStatement(flightSql);
+
+			preparedPrice.setString(1, flight.flightNumber());
+			preparedPrice.setString(2, flight.price().currency());
+			preparedPrice.setFloat(3, flight.price().amount());
+			preparedPrice.setInt(4, flight.price().discount());
+			preparedPrice.setString(5, flight.price().baggageAllowance());
+
+			updated = preparedPrice.executeUpdate();
+
+			priceId = this.getPriceId(flight.flightNumber());
+			if(priceId == 0) {
+				throw new ServerErrorException("Failed to save price data.");
+			}
+
+			preparedFlight.setString(1, flight.flightNumber());
+			preparedFlight.setString(2, flight.airline());
+			preparedFlight.setInt(3, aircraftId);
+			preparedFlight.setShort(4, flight.totalDistance());
+			preparedFlight.setString(5, flight.totalDuration());
+			preparedFlight.setInt(6, priceId);
+			preparedFlight.setShort(7,flight.passengerCount());
+			preparedFlight.setShort(8, flight.availableSits());
+
+			updated += preparedFlight.executeUpdate();
+			if(updated != 2) {
+				throw new ServerErrorException("Failed to create new flight.");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
 	}
 
 // ########################################################################################
@@ -272,6 +340,13 @@ public class FlightRepository {
 	// and return 0 if not
 	private Integer getFlightId(String flightNumber) throws SQLException, ClassNotFoundException {
 		String sql = "SELECT id FROM flights WHERE flight_number=?";
+		return this.getItemId(sql, flightNumber);
+	}
+
+	// getLegId -> return leg id by flight number
+	// if it exists and return 0 if not
+	private Integer getPriceId(String flightNumber) throws SQLException, ClassNotFoundException {
+		String sql = "SELECT id FROM price_details WHERE flight_number=?";
 		return this.getItemId(sql, flightNumber);
 	}
 
@@ -308,9 +383,10 @@ public class FlightRepository {
 	// initConnection -> init database connection before use any repo method
 	private void initConnection() throws ClassNotFoundException, SQLException {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			this.connection = DriverManager.getConnection(this.dbUrl, this.dbUsername, this.dbPassword);
 			this.statement = this.connection.createStatement();
+			System.out.println("database is connected.");
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;
 		}
@@ -330,6 +406,7 @@ public class FlightRepository {
 			if (this.connection != null) {
 				this.connection.close();
 			}
+			System.out.println("connection is  closed");
 		} catch (Exception e) {
 			throw e;
 		}

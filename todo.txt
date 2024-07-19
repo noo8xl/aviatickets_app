@@ -1,0 +1,40 @@
+
+---- DONE:
+
+-> mysql migrations via java +++
+-> test User area  ++
+
+-> create mock data +++ <
+-> create tables  +++ <
+-> test requests via $curl +++ <
+
+-> setup mysql container ++ <
+
+_________________________________________________________________________________
+---- TODO:
+
+-> create sql views to store flight data in the most convenient way **
+-> create complicated joined select queries to get filtered flight data **
+-> research how to get the closest flight by location near me **
+
+
+-> bye ticket form **
+-> generate ticket QR-code to customer **
+-> send email with QR-code to customer **
+-> bought history as guest or as signed customer ??
+
+-> auth area ---  (almost done)
+
+-> setup redis configs **
+-> enable caching to flight area ***
+-> setup jwt configs **
+
+-> actions -> save, get
+-> logs -> save ??
+-> notifications -> via email ?*
+
+####################################### -- >
+
+-> application unit tests !!! *
+-> run database as docker container *** ?
+-> containerizing app *** ?

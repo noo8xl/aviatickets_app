@@ -1,5 +1,6 @@
 package aviatickets.app.flight;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import aviatickets.app.exception.BadRequestException;
@@ -61,7 +62,7 @@ public class FlightController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create-new-flight/")
-  void createNewFlight(@RequestBody FlightsItem flight) throws BadRequestException {
+  void createNewFlight(@RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
 		System.out.println(flight);
 		flightService.createFlight(flight);
 	}

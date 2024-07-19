@@ -1,93 +1,4 @@
-
-### Get hot flights
-GET http://localhost:9832/flights/get-hot/
-Content-Type: application/json
-
-
-### Get filtred flights
-POST http://localhost:9832/flights/
-
-{
-  "departureAirport": "Frankfurt",
-  "arrivalAirport": "Bremen",
-  "location": {
-      "longitude": "50.0354",
-      "latitude": "8.5518"
-  },
-  "departureDate": "2024-02-10T15:00:12.49766", 
-  "returnDate": "2024-02-17T13:00:12.49766", 
-  "passengerCount": 2, 
-  "cabinClass": {
-    "economy": true,
-    "business": false,
-    "first": false
-  },
-  "filterOptions": CHEAPEST 
-}
-
-### Get filtred flights
-POST http://localhost:9832/flights/
-
-{
-  "departureAirport": "Frankfurt",
-  "arrivalAirport": "Bremen",
-  "location": {
-      "longitude": "50.0354",
-      "latitude": "8.5518"
-  },
-  "departureDate": "2024-02-10T15:00:12.49766", 
-  "returnDate": "2024-02-17T13:00:12.49766", 
-  "passengerCount": 2, 
-  "cabinClass": {
-    "economy": true,
-    "business": false,
-    "first": false
-  },
-  "filterOptions": FASTEST 
-}
-
-### Get filtred flights
-POST http://localhost:9832/flights/
-
-{
-  "departureAirport": "Frankfurt",
-  "arrivalAirport": "Bremen",
-  "location": {
-      "longitude": "50.0354",
-      "latitude": "8.5518"
-  },
-  "departureDate": "2024-02-10T15:00:12.49766", 
-  "returnDate": "2024-02-17T13:00:12.49766", 
-  "passengerCount": 2, 
-  "cabinClass": {
-    "economy": true,
-    "business": false,
-    "first": false
-  },
-  "filterOptions": DIRECT 
-}
-
-### Get filtred flights
-POST http://localhost:9832/flights/
-
-{
-  "departureAirport": "Frankfurt",
-  "arrivalAirport": "Bremen",
-  "location": {
-      "longitude": "50.0354",
-      "latitude": "8.5518"
-  },
-  "departureDate": "2024-02-10T15:00:12.49766", 
-  "returnDate": null, 
-  "passengerCount": 2, 
-  "cabinClass": {
-    "economy": true,
-    "business": false,
-    "first": false
-  },
-  "filterOptions": DIRECT 
-}
-
+# Create flight requests only
 
 ### Add a new flight with transfer (a few legs)
 POST http://localhost:9832/flights/create-new-flight/
@@ -114,7 +25,7 @@ Content-Type: application/json
   },
   "itinerary": [
     {
-      "leg": 1,
+      "legNumber": 1,
       "departureAirport": {
         "code": "FRA",
         "airportName": "Frankfurt Airport",
@@ -127,7 +38,7 @@ Content-Type: application/json
           "latitude": "8.5518",
           "altitude": "111.25"
         },
-        "contactInformation": {
+        "contacts": {
           "phone": "+49 69 6900",
           "email": "info@fraport.de",
           "website": "https://www.frankfurt-airport.com"
@@ -145,7 +56,7 @@ Content-Type: application/json
           "latitude": "11.7832",
           "altitude": "1487.53"
         },
-        "contactInformation": {
+        "contacts": {
           "phone": "+49 89 97500",
           "email": "info@munich-airport.de",
           "website": "https://www.munich-airport.de"
@@ -158,7 +69,7 @@ Content-Type: application/json
       "status": "On Time"
     },
     {
-      "leg": 2,
+      "legNumber": 2,
       "departureAirport": {
         "code": "MUC",
         "airportName": "Munich Airport",
@@ -171,7 +82,7 @@ Content-Type: application/json
           "latitude": "11.7832",
           "altitude": "1487.53"
         },
-        "contactInformation": {
+        "contacts": {
           "phone": "+49 89 97500",
           "email": "info@munich-airport.de",
           "website": "https://www.munich-airport.de"
@@ -189,7 +100,7 @@ Content-Type: application/json
           "latitude": "23.9481",
           "altitude": "544.53"
         },
-        "contactInformation": {
+        "contacts": {
           "phone": "+45 89 231118",
           "email": "info@athens-airport.de",
           "website": "https://www.athens-airport.de"
@@ -239,7 +150,7 @@ Content-Type: application/json
   },
   "itinerary": [
     {
-      "leg": 1,
+      "legNumber": 1,
       "departureAirport": {
         "code": "FRA",
         "airportName": "Frankfurt Airport",
@@ -252,7 +163,7 @@ Content-Type: application/json
           "latitude": "8.5518",
           "altitude": "111.25"
         },
-        "contactInformation": {
+        "contacts": {
           "phone": "+49 69 6900",
           "email": "info@fraport.de",
           "website": "https://www.frankfurt-airport.com"
@@ -270,7 +181,7 @@ Content-Type: application/json
           "latitude": "23.9481",
           "altitude": "544.53"
         },
-        "contactInformation": {
+        "contacts": {
           "phone": "+45 89 231118",
           "email": "info@athens-airport.de",
           "website": "https://www.athens-airport.de"
@@ -295,3 +206,83 @@ Content-Type: application/json
   "availableSits": 94
 }
 
+### Add a new flight with error data
+POST http://localhost:9832/flights/create-new-flight/
+Content-Type: application/json
+
+{
+  "flightNumber": "LH2001",
+  "airlineName": "Lufthansa",
+  "aircraftData": {
+    "model": "Airbus A320",
+    "registration": "D-AIZB",
+    "seatingCapacity": -80,
+    "yearOfManufacture": 2020,
+    "features": {
+      "wifi": true,
+      "inFlightEntertainment": true,
+      "powerOutlets": true,
+      "cabinClass": {
+        "economy": true,
+        "business": true,
+        "first": false
+      }
+    }
+  },
+  "itinerary": [
+    {
+      "legNumber": 1,
+      "departureAirport": {
+        "code": "FRA",
+        "airportName": "Frankfurt Airport",
+        "cityName": "null",
+        "country": "Germany",
+        "terminal": "1",
+        "timezone": "Europe/Berlin",
+        "locationData": {
+          "longitudeB": "50.0354",
+          "latitude": "8.5518",
+          "altitude": "111.25"
+        },
+        "contacts": {
+          "phoneNumber": "+49 69 6900",
+          "email": "info@fraport.de",
+          "website": "https://www.frankfurt-airport.com"
+        }
+      },
+      "arrivalAirport": {
+        "code": "ATH",
+        "airportName": "Athens International Airport",
+        "city": "Athens",
+        "countryName": "Greece",
+        "terminalNum": "B",
+        "timezone": "Europe/Athens",
+        "locations": {
+          "longitude": "37.9362",
+          "latitude": "23.9481",
+          "altitude": "544.53"
+        },
+        "contactInfo": {
+          "phone": "+45 89 231118",
+          "emailAddr": "info@athens-airport.de",
+          "website": "https://www.athens-airport.de"
+        }
+      },
+      "departureTime": "2024-07-16T09:00:00Z",
+      "arrivalTime": "2024-07-16T10:00:00Z",
+      "duration": "1h 00m",
+      "distance": -2000,
+      "status": "On Time"
+    }
+  ],
+  "totalDistance": 3891,
+  "totalDuration": "4h 00m",
+  "price": {
+    "currency": "EUR",
+    "amount": 220.00,
+    "discount": -4,
+    "baggageAllowance": "1 checked bag up to 23kg"
+  },
+  "passengerCount": 150,
+  "availableSits": 94
+}

@@ -6,18 +6,31 @@ DROP TABLE IF EXISTS ticket_details;
 DROP TABLE IF EXISTS actions;
 DROP TABLE IF EXISTS customer_orders;
 DROP TABLE IF EXISTS customer_two_step_auth;
-DROP TABLE IF EXISTS airport;
+
 DROP TABLE IF EXISTS airport_location;
 DROP TABLE IF EXISTS airport_contacts;
-DROP TABLE IF EXISTS flight_itinerary;
-DROP TABLE IF EXISTS leg_details;
-DROP TABLE IF EXISTS aircraft;
 DROP TABLE IF EXISTS aircraft_features;
 DROP TABLE IF EXISTS cabin_class;
+DROP TABLE IF EXISTS flights;
 DROP TABLE IF EXISTS price_details;
 DROP TABLE IF EXISTS baggage_allowance;
-DROP TABLE IF EXISTS flight;
+DROP TABLE IF EXISTS aircraft;
+DROP TABLE IF EXISTS leg_details;
+DROP TABLE IF EXISTS airport;
 
+DROP VIEW IF EXISTS FULL_FLIGHT_INFO;
+DROP VIEW  IF EXISTS SHORT_FLIGHT_DATA;
+
+-- this view is for collect full flight info
+-- and send it to the customer as <flight details>
+CREATE VIEW FULL_FLIGHT_INFO AS
+    SELECT * from flights WHERE id=1;
+
+-- this view collect main flight data to one row
+-- by filter like |destination, from-to, airports|
+-- and send it as list (skip=20,limit=20) to customer
+CREATE VIEW SHORT_FLIGHT_DATA AS
+    SELECT * from flights WHERE id=1;
 
 -- -------------------------------------------------------------------------------------
 
@@ -40,8 +53,8 @@ CREATE TABLE IF NOT EXISTS airport_location (
 	longitude varchar(30) NOT NULL,
 	latitude varchar(30) NOT NULL,
 	altitude varchar(30),
-	airport INT NOT NULL,
-	FOREIGN KEY (airport) REFERENCES airport (id),
+	airport_id INT NOT NULL,
+	FOREIGN KEY (airport_id) REFERENCES airport (id),
 	PRIMARY KEY (id)
 );
 
@@ -50,8 +63,8 @@ CREATE TABLE IF NOT EXISTS airport_contacts (
 	phone varchar(50) NOT NULL,
 	email varchar(150) NOT NULL,
 	website varchar(255) NOT NULL,
-	airport INT NOT NULL,
-	FOREIGN KEY (airport) REFERENCES airport (id),
+    airport_id INT NOT NULL,
+	FOREIGN KEY (airport_id) REFERENCES airport (id),
 	PRIMARY KEY (id)
 );
 
@@ -70,8 +83,8 @@ CREATE TABLE IF NOT EXISTS aircraft_features (
   wifi Boolean NOT NULL,
   entertainment Boolean NOT NULL,
   power_outlets Boolean NOT NULL,
-  aircraft INT NOT NULL,
-  FOREIGN KEY (aircraft) REFERENCES aircraft (id),
+  aircraft_id INT NOT NULL,
+  FOREIGN KEY (aircraft_id) REFERENCES aircraft (id),
   PRIMARY KEY (id)
 );
 
@@ -81,17 +94,18 @@ CREATE TABLE IF NOT EXISTS cabin_class (
   economy Boolean NOT NULL,
   business Boolean NOT NULL,
   first Boolean NOT NULL,
-  aircraft INT NOT NULL,
-  FOREIGN KEY (aircraft) REFERENCES aircraft (id),
+  aircraft_id INT NOT NULL,
+  FOREIGN KEY (aircraft_id) REFERENCES aircraft (id),
   PRIMARY KEY (id)
 );
 
 
 CREATE TABLE IF NOT EXISTS price_details (
   id INT NOT NULL AUTO_INCREMENT,
+  flight_number varchar(50) NOT NULL,
   currency varchar(5) NOT NULL DEFAULT 'EUR',
   amount FLOAT NOT NULL,
-	discount SMALLINT NOT NULL DEFAULT 0,
+  discount SMALLINT NOT NULL DEFAULT 0,
   baggage varchar(150) NOT NULL,
   PRIMARY KEY (id)
 );
@@ -100,6 +114,7 @@ CREATE TABLE IF NOT EXISTS price_details (
 CREATE TABLE IF NOT EXISTS leg_details (
 	id INT NOT NULL AUTO_INCREMENT,
 
+    flight_number varchar(50) NOT NULL,
 	departure_airport INT NOT NULL,
 	arrival_airport INT NOT NULL,
 	departure_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
@@ -113,37 +128,22 @@ CREATE TABLE IF NOT EXISTS leg_details (
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS flight_itinerary (
-	id INT NOT NULL AUTO_INCREMENT,
-	first_leg INT NOT NULL,
-	second_leg INT,
-	third_leg INT,
-	fifth_leg INT,
-
-	FOREIGN KEY (first_leg) REFERENCES leg_details (id),
-	FOREIGN KEY (second_leg) REFERENCES leg_details (id),
-	FOREIGN KEY (third_leg) REFERENCES leg_details (id),
-	FOREIGN KEY (fifth_leg) REFERENCES leg_details (id),
-	PRIMARY KEY (id)
-);
 
 CREATE TABLE IF NOT EXISTS flights (
   id INT NOT NULL AUTO_INCREMENT,
+
   flight_number varchar(50) NOT NULL,
   airline varchar(50) NOT NULL,
-
-  itinerary INT NOT NULL,
-  aircraft INT NOT NULL,
+  aircraft_id INT NOT NULL,
 
   distance SMALLINT NOT NULL,
   total_duration varchar(30) NOT NULL,
   price INT NOT NULL,
   passenger_count SMALLINT NOT NULL,
-  availableSits SMALLINT NOT NULL,
+  available_sits SMALLINT NOT NULL,
 
-  FOREIGN KEY (itinerary) REFERENCES flight_itinerary (id),
   FOREIGN KEY (price) REFERENCES price_details (id),
-  FOREIGN KEY (aircraft) REFERENCES aircraft (id),
+  FOREIGN KEY (aircraft_id) REFERENCES aircraft (id),
 
   PRIMARY KEY (id)
 );

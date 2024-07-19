@@ -1,0 +1,96 @@
+# Get flitred response flights only
+
+### Get hot flights
+GET http://localhost:9832/flights/get-hot/
+Content-Type: application/json
+
+
+### Get filtred flights ("CHEAPEST" option)
+POST http://localhost:9832/flights/
+Content-Type: application/json
+
+{
+  "departureAirport": "Frankfurt",
+  "arrivalAirport": "Bremen",
+  "location": {
+    "longitude": "50.0354",
+    "latitude": "8.5518"
+  },
+  "departureDate": "2024-02-10T15:00:12.49766",
+  "returnDate": "2024-02-17T13:00:12.49766",
+  "passengerCount": 2,
+  "cabinClass": {
+    "economy": true,
+    "business": false,
+    "first": false
+  },
+  "filterOptions": "CHEAPEST"
+}
+
+### Get filtred flights ("FASTEST" option)
+POST http://localhost:9832/flights/
+Content-Type: application/json
+
+{
+  "departureAirport": "Frankfurt",
+  "arrivalAirport": "Bremen",
+  "location": {
+      "longitude": "50.0354",
+      "latitude": "8.5518"
+  },
+  "departureDate": "2024-02-10T15:00:12.49766",
+  "returnDate": "2024-02-17T13:00:12.49766",
+  "passengerCount": 2,
+  "cabinClass": {
+    "economy": true,
+    "business": false,
+    "first": false
+  },
+  "filterOptions": "FASTEST"
+}
+
+### Get filtred flights ("DIRECT" option)
+POST http://localhost:9832/flights/
+Content-Type: application/json
+
+{
+  "departureAirport": "Frankfurt",
+  "arrivalAirport": "Bremen",
+  "location": {
+      "longitude": "50.0354",
+      "latitude": "8.5518"
+  },
+  "departureDate": "2024-02-10T15:00:12.49766",
+  "returnDate": "2024-02-17T13:00:12.49766",
+  "passengerCount": 2,
+  "cabinClass": {
+    "economy": true,
+    "business": false,
+    "first": false
+  },
+  "filterOptions": "DIRECT"
+}
+
+
+### Wrong <filterOptions> data request
+POST http://localhost:9832/flights/
+Content-Type: application/json
+
+{
+  "departureAirport": "Frankfurt",
+  "arrivalAirport": "Bremen",
+  "location": {
+    "longitude": "50.0354",
+    "latitude": "8.5518"
+  },
+  "departureDate": "2024-02-10T15:00:12.49766",
+  "returnDate": "2024-02-17T13:00:12.49766",
+  "passengerCount": 2,
+  "cabinClass": {
+    "economy": true,
+    "business": false,
+    "first": false
+  },
+  "filterOptions": "different"
+}
+

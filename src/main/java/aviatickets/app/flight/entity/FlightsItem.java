@@ -1,8 +1,11 @@
 package aviatickets.app.flight.entity;
 
+import jakarta.validation.constraints.Positive;
+
 import java.util.List;
 
 public record FlightsItem(
+		@Positive
 		Integer id,
 		String flightNumber,
 		String airline,
@@ -12,10 +15,13 @@ public record FlightsItem(
 		List<Leg> itinerary,
 		Aircraft aircraft,
 
-		Integer totalDistance, // => leg distance += leg distance
+		@Positive
+		Short totalDistance, // => leg distance += leg distance
 		String totalDuration,
 		Price price,
+		@Positive
 		Short passengerCount,
+		@Positive
 		Short availableSits
 ) {
 }
