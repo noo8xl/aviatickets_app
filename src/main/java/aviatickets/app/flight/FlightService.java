@@ -17,8 +17,8 @@ public class FlightService implements FlightInteraction {
     this.flightRepository = flightRepository;
   }
 
-  public List<FlightsItem> getHotFlightList() {
-    return flightRepository.getHotFlights();
+  public List<FlightsItem> getHotFlightList(Short offset) throws SQLException {
+    return flightRepository.getHotFlights(offset);
   }
 
   public List<FlightsItem> findFlightByFilter(GetFilteredFlight filter) {

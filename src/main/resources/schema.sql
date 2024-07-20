@@ -1,8 +1,8 @@
 -- drop tables before create a new one:
 DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS customer_details;
-DROP TABLE IF EXISTS ticket;
-DROP TABLE IF EXISTS ticket_details;
+-- DROP TABLE IF EXISTS ticket;
+-- DROP TABLE IF EXISTS ticket_details;
 DROP TABLE IF EXISTS actions;
 DROP TABLE IF EXISTS customer_orders;
 DROP TABLE IF EXISTS customer_two_step_auth;
@@ -19,18 +19,111 @@ DROP TABLE IF EXISTS leg_details;
 DROP TABLE IF EXISTS airport;
 
 DROP VIEW IF EXISTS FULL_FLIGHT_INFO;
-DROP VIEW  IF EXISTS SHORT_FLIGHT_DATA;
+DROP VIEW IF EXISTS SHORT_FLIGHT_DATA;
+
+DROP PROCEDURE IF EXISTS count_available_sits;
+DROP FUNCTION IF EXISTS update_available_sits;
+
+
+-- CREATE FUNCTION calculate_test()
+--    RETURNS FLOAT DETERMINISTIC
+--    RETURN 200.89 - (200.89 * 10 / 100);
+
+-- SELECT calculate_test();
+
 
 -- this view is for collect full flight info
 -- and send it to the customer as <flight details>
-CREATE VIEW FULL_FLIGHT_INFO AS
-    SELECT * from flights WHERE id=1;
+-- CREATE VIEW FULL_FLIGHT_INFO AS
+--    SELECT * from flights WHERE id=1;
 
 -- this view collect main flight data to one row
 -- by filter like |destination, from-to, airports|
 -- and send it as list (skip=20,limit=20) to customer
 CREATE VIEW SHORT_FLIGHT_DATA AS
-    SELECT * from flights WHERE id=1;
+  SELECT
+      flights.id, flights.flight_number, flights.total_duration,
+      price_details.amount=(calculate_current_price(flights.flight_number))
+    FROM flights
+    JOIN price_details
+    ON flights.flight_number = price_details.flight_number
+      ;
+
+
+-- calculate_current_price -> calculate value by (price - discount)
+CREATE FUNCTION calculate_current_price(
+    flightNum VARCHAR(50)
+)
+RETURNS SMALLINT DETERMINISTIC
+BEGIN
+    DECLARE amount FLOAT;
+    DECLARE discount SMALLINT;
+
+    SELECT price_details.amount
+        INTO amount
+        FROM price_details
+        WHERE flight_number=flightNum;
+
+    SELECT price_details.discount
+        INTO discount
+        FROM price_details
+        WHERE flight_number=flightNum;
+
+    return amount - (amount * discount / 100);
+END;
+
+
+-- get_departure_time_filter -> get range for the hot tickets list view
+CREATE FUNCTION get_departure_time_filter()
+    RETURNS timestamp
+    RETURN CURRENT_TIMESTAMP() + 3600000;
+
+-- update_available_sits -> update flight available sits after sold tickets check
+CREATE PROCEDURE update_available_sits (
+    IN flightNum VARCHAR(50)
+)
+BEGIN
+    DECLARE sitsNum INT;
+    SELECT sitsNum=(count_available_sits(flightNum));
+
+    UPDATE flights
+        SET available_sits = sitsNum
+        WHERE flight_number = flightNum;
+
+    COMMIT;
+END;
+
+
+-- https://stackoverflow.com/questions/26015160/deterministic-no-sql-or-reads-sql-data-in-its-declaration-and-binary-logging-i
+
+
+-- count_available_sits -> count sits by (total sits - sold tickets)
+CREATE FUNCTION count_available_sits(
+    flightNum VARCHAR(50)
+)
+RETURNS SMALLINT DETERMINISTIC
+BEGIN
+    DECLARE sold_tickets SMALLINT;
+    DECLARE total_sits SMALLINT;
+
+    SELECT COUNT(id)
+        INTO sold_tickets
+        FROM flights # should be updated to orders instead flights table
+        WHERE flight_number=flightNum;
+
+    SELECT flights.passenger_count
+        INTO total_sits
+        FROM flights
+        WHERE flight_number=flightNum;
+
+    return total_sits - sold_tickets;
+END;
+
+
+--
+--
+--
+--
 
 -- -------------------------------------------------------------------------------------
 
@@ -117,8 +210,8 @@ CREATE TABLE IF NOT EXISTS leg_details (
     flight_number varchar(50) NOT NULL,
 	departure_airport INT NOT NULL,
 	arrival_airport INT NOT NULL,
-	departure_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-	arrival_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+	departure_time timestamp NOT NULL,
+	arrival_time timestamp NOT NULL,
 	duration varchar(15) NOT NULL,
 	distance SMALLINT NOT NULL,
 	status varchar(20) NOT NULL,

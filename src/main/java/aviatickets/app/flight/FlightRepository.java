@@ -3,6 +3,7 @@ package aviatickets.app.flight;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Date;
 
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.exception.ServerErrorException;
@@ -39,13 +40,34 @@ public class FlightRepository {
 
 
 @Cacheable("hotFlight")
-  public List<FlightsItem> getHotFlights() {
-    String sqlStr = "SELECT * FROM flights WHERE departure_time=?"; // as example
+  public List<FlightsItem> getHotFlights(Short offset) throws SQLException, ClassNotFoundException {
+
+		String sql = "SELECT * FROM SHORT_FLIGHT_DATA " +
+				"WHERE leg_details.departure_time=get_departure_time_filter() " +
+				"LIMIT 10 " +
+				"OFFSET ?";
+
+		try {
+			this.initConnection();
+
+			PreparedStatement preparedFlight = this.connection.prepareStatement(sql);
+			preparedFlight.setShort(1, offset);
+
+			int up = preparedFlight.executeUpdate();
+			if (up == 0) {
+				throw new ServerErrorException("Server error");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.closeAndStopDBInteraction();
+		};
+
 
     return null;
   }
 
-  public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
+public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 
 
 		// select * from leg_details where flight_number=3; ---<
@@ -93,6 +115,7 @@ public class FlightRepository {
 			}
 		}
 		this.saveFlight(flight);
+
 	}
 
 // saveAircraft -> save new aircraft to db if it doesn't exist by:
@@ -311,6 +334,8 @@ public class FlightRepository {
 			if(updated != 2) {
 				throw new ServerErrorException("Failed to create new flight.");
 			}
+
+
 		} catch (Exception e) {
 			throw e;
 		} finally {

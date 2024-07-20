@@ -6,12 +6,7 @@ import java.util.List;
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import aviatickets.app.exception.NotFoundException;
 import aviatickets.app.exception.ServerErrorException;
@@ -29,11 +24,11 @@ public class FlightController {
 
   // getHotList -> get a list of a cheapest flights of the day by request
   @ResponseStatus(HttpStatus.OK)
-  @GetMapping("/get-hot/")
-  List<FlightsItem> getHotList() {
+  @GetMapping("/get-hot/{offset}/")
+  List<FlightsItem> getHotList(@PathVariable Short offset) {
 		System.out.println("test routes");
     try {
-      List<FlightsItem> flights = flightService.getHotFlightList();
+      List<FlightsItem> flights = flightService.getHotFlightList(offset);
       if (flights.isEmpty()) {
         throw new NotFoundException("Empty set.");
       }
@@ -58,7 +53,9 @@ public class FlightController {
     }
   }
 
-//	admin handlers only *
+	// #############################################################################
+	// ########################## admin handlers only ##############################
+	// #############################################################################
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create-new-flight/")
