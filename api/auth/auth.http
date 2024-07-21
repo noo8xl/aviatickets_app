@@ -1,0 +1,69 @@
+# Auth endpoints only
+
+### Singup new customer
+POST http://localhost:9832/auth/signUp/
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "email": "email@example.com",
+  "password": "qwerty123456"
+}
+
+### Sign in without 2fa
+POST http://localhost:9832/auth/signIn/
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "email": "email@example.com",
+  "password": "qwerty123456",
+  "twoStep": false,
+  "code": null
+}
+
+### Sign in with enabled 2fa
+POST http://localhost:9832/auth/signIn/
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "email": "email@example.com",
+  "password": "qwerty123456",
+  "twoStep": true,
+  "code": "12345"
+}
+
+### Sign in with enabled 2fa and WRONG code
+POST http://localhost:9832/auth/signIn/
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "email": "email@example.com",
+  "password": "qwerty123456",
+  "twoStep": true,
+  "code": "54321"
+}
+
+### Sign up with WRONG data
+POST http://localhost:9832/auth/signUp/
+Content-Type: application/json
+
+{
+  "name": "wrongName",
+  "email": "test@wrong.com",
+  "password": "123qwe"
+}
+
+### Sign in with WRONG data
+POST http://localhost:9832/auth/signIn/
+Content-Type: application/json
+
+{
+  "name": "wrongName",
+  "email": "test@wrong.com",
+  "password": "123qwe",
+  "twoStep": false,
+  "code": ""
+}

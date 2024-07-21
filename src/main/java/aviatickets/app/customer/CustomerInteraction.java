@@ -1,5 +1,6 @@
 package aviatickets.app.customer;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,5 +30,5 @@ public interface CustomerInteraction {
   public Integer changePassword(String email, String password);
 
   // delete user by id
-  public void deleteCustomer(Integer idToDelete, Integer customerId);
+  public void deleteCustomer(Integer idToDelete, Integer customerId) throws SQLException, ClassNotFoundException;
 }

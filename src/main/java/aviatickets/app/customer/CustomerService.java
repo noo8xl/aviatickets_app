@@ -1,5 +1,6 @@
 package aviatickets.app.customer;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -75,10 +76,11 @@ public class CustomerService implements CustomerInteraction {
     throw new ServerErrorException();
   }
 
-  public void deleteCustomer(Integer idToDelete, Integer customerId) {
-    Boolean hasAccess = customerRepository.validatePermission(customerId);
-    if (Boolean.FALSE.equals(hasAccess))
-      throw new PermissionDeniedException();
-    customerRepository.delete(idToDelete);
+  public void deleteCustomer(Integer idToDelete, Integer customerId) throws SQLException, ClassNotFoundException {
+    customerRepository.delete(customerId, idToDelete);
   }
+
+	public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
+		return customerRepository.getTwoStepStatus(email);
+	}
 }

@@ -9,11 +9,11 @@
 -> test requests via $curl +++ <
 
 -> setup mysql container ++ <
+-> create sql views to store flight data in the most convenient way +++
 
 _________________________________________________________________________________
 ---- TODO:
 
--> create sql views to store flight data in the most convenient way **
 -> create complicated joined select queries to get filtered flight data **
 -> research how to get the closest flight by location near me **
 

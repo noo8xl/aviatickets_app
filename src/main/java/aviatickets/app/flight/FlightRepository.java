@@ -2,12 +2,16 @@ package aviatickets.app.flight;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
+import aviatickets.app.databaseInit.DatabaseInit;
+import aviatickets.app.databaseInit.dto.DatabaseDto;
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.exception.ServerErrorException;
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
+import aviatickets.app.flight.dto.response.ShortFlightItem;
 import aviatickets.app.flight.entity.Aircraft;
 import aviatickets.app.flight.entity.Airport;
 import aviatickets.app.flight.entity.FlightsItem;
@@ -32,43 +36,62 @@ public class FlightRepository {
 	private Statement statement = null;
 	private ResultSet resultSet = null;
 
-  public FlightRepository() {	}
+	private DatabaseInit databaseInit;
+
+  public FlightRepository(DatabaseInit databaseInit) {
+		this.databaseInit = databaseInit;
+	}
 
 // ########################################################################################
 // ################################# customer area  #######################################
 // ########################################################################################
 
 
-@Cacheable("hotFlight")
-  public List<FlightsItem> getHotFlights(Short offset) throws SQLException, ClassNotFoundException {
+	@Cacheable("hotFlights")
+  public List<ShortFlightItem> getHotFlights(Short offset) throws SQLException, ClassNotFoundException {
 
+		List<ShortFlightItem> flights = new ArrayList<>();
 		String sql = "SELECT * FROM SHORT_FLIGHT_DATA " +
-				"WHERE leg_details.departure_time=get_departure_time_filter() " +
+				"WHERE leg_details.departure_time " +
+				"BETWEEN CURRENT_TIMESTAMP() " +
+				"AND get_departure_time_filter() " +
 				"LIMIT 10 " +
 				"OFFSET ?";
 
 		try {
-			this.initConnection();
+			this.initConnection((byte) 1);
 
 			PreparedStatement preparedFlight = this.connection.prepareStatement(sql);
 			preparedFlight.setShort(1, offset);
 
-			int up = preparedFlight.executeUpdate();
-			if (up == 0) {
-				throw new ServerErrorException("Server error");
+			this.resultSet = preparedFlight.executeQuery();
+			System.out.println("result set is \n->" + resultSet);
+
+			while(this.resultSet.next()) {
+				ShortFlightItem item = new ShortFlightItem(
+					this.resultSet.getInt("id"),
+					this.resultSet.getString("flight_number"),
+					this.resultSet.getString("total_duration"),
+					this.resultSet.getFloat("price")
+				);
+				flights.add(item);
 			}
+			System.out.println(flights.size());
+
 		} catch (Exception e) {
 			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
-		};
-
-
-    return null;
+		}
+		return flights;
   }
 
-public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
+	@Cacheable("filteredFlights")
+	public List<ShortFlightItem> findFlightsByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
 
+		List<ShortFlightItem> flights = new ArrayList<>();
+		String sql = "";
+		System.out.println(filter);
 
 		// select * from leg_details where flight_number=3; ---<
 
@@ -80,11 +103,35 @@ public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 
 		// -> then update flight.availableSeats = total / bought
 		// -> return list to user
+		try {
+			this.initConnection((byte) 1);
 
-		System.out.println(filter);
-    String sqlStr = "SELECT ... ";
+			// check filtered fields for not null value **
+			// -> set filter ..
 
-    return null;
+			PreparedStatement preparedFlight = this.connection.prepareStatement(sql);
+//			preparedFlight.setShort(1, offset);
+
+			this.resultSet = preparedFlight.executeQuery();
+//			System.out.println("result set is \n->" + resultSet);
+
+			while (this.resultSet.next()) {
+				ShortFlightItem item = new ShortFlightItem(
+					this.resultSet.getInt("id"),
+					this.resultSet.getString("flight_number"),
+					this.resultSet.getString("total_duration"),
+					this.resultSet.getFloat("price")
+				);
+				flights.add(item);
+			}
+
+		}	catch (Exception e) {
+			throw e;
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
+
+    return flights;
   }
 
 // ########################################################################################
@@ -142,7 +189,7 @@ public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 				return;
 			}
 
-			this.initConnection();
+			this.initConnection((byte) 1);
 			PreparedStatement preparedAircraft = this.connection.prepareStatement(airStr);
 			PreparedStatement preparedFeatures = this.connection.prepareStatement(featuresStr);
 			PreparedStatement preparedCabinClass = this.connection.prepareStatement(cabinStr);
@@ -207,7 +254,7 @@ public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 
 			System.out.println("airportId is -> " + airportId);
 
-			this.initConnection();
+			this.initConnection((byte) 1);
 			PreparedStatement preparedAirport = this.connection.prepareStatement(airStr);
 			PreparedStatement preparedLocation = this.connection.prepareStatement(locationStr);
 			PreparedStatement preparedContacts = this.connection.prepareStatement(contactStr);
@@ -257,7 +304,7 @@ public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 			Integer arrivalAirportId = this.getAirportId(leg.arrivalAirport().airportName());
 			Integer departureAirportId = this.getAirportId(leg.departureAirport().airportName());
 
-			this.initConnection();
+			this.initConnection((byte) 1);
 			PreparedStatement preparedLeg = this.connection.prepareStatement(sql);
 			preparedLeg.setString(1, flightNumber);
 			preparedLeg.setInt(2, arrivalAirportId);
@@ -304,7 +351,7 @@ public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 				}
 			}
 
-			this.initConnection();
+			this.initConnection((byte) 1);
 			PreparedStatement preparedPrice = this.connection.prepareStatement(priceSql);
 			PreparedStatement preparedFlight = this.connection.prepareStatement(flightSql);
 
@@ -379,7 +426,7 @@ public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 	private Integer getItemId(String sql, String filter) throws SQLException, ClassNotFoundException {
 		int itemId = 0;
 		try {
-			this.initConnection();
+			this.initConnection((byte) 1);
 
 			PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
 			preparedStatement.setString(1, filter);
@@ -406,35 +453,17 @@ public List<FlightsItem> findFlightsByFilter(GetFilteredFlight filter) {
 // ########################################################################################
 
 	// initConnection -> init database connection before use any repo method
-	private void initConnection() throws ClassNotFoundException, SQLException {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			this.connection = DriverManager.getConnection(this.dbUrl, this.dbUsername, this.dbPassword);
-			this.statement = this.connection.createStatement();
-			System.out.println("database is connected.");
-		} catch (ClassNotFoundException | SQLException e) {
-			throw e;
-		}
+	private void initConnection(Byte type) throws ClassNotFoundException, SQLException {
+		DatabaseDto dto = this.databaseInit.initConnection(type);
+		this.connection = dto.connection();
+		this.statement = dto.statement();
+		this.resultSet = dto.resultSet();
 	}
 
 	// closeAndStopDBInteraction -> close any active connection before end interaction with each repository method
 	private void closeAndStopDBInteraction() throws SQLException {
-		try {
-			if (this.resultSet != null) {
-				this.resultSet.close();
-			}
-
-			if (this.statement != null) {
-				this.statement.close();
-			}
-
-			if (this.connection != null) {
-				this.connection.close();
-			}
-			System.out.println("connection is  closed");
-		} catch (Exception e) {
-			throw e;
-		}
+		DatabaseDto dto = new DatabaseDto(this.connection, this.statement, this.resultSet);
+		this.databaseInit.closeAndStopDBInteraction(dto);
 	}
 
 }

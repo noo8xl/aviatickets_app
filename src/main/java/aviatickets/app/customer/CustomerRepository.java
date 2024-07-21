@@ -1,30 +1,40 @@
 package aviatickets.app.customer;
 
+import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
+import aviatickets.app.databaseInit.DatabaseInit;
+import aviatickets.app.databaseInit.dto.DatabaseDto;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import aviatickets.app.customer.entity.Role;
 import aviatickets.app.customer.entity.Customer;
 
 @Repository
 public class CustomerRepository {
 
-  private final JdbcClient jdbcClient;
+	private Connection connection = null;
+	private Statement statement = null;
+	private ResultSet resultSet = null;
 
-  public CustomerRepository(JdbcClient jdbcClient) {
-    this.jdbcClient = jdbcClient;
-  }
+	private final DatabaseInit databaseInit;
+	private JdbcClient jdbcClient;
+
+	public CustomerRepository(DatabaseInit databaseInit, JdbcClient jdbcClient) {
+		this.databaseInit = databaseInit;
+		this.jdbcClient = jdbcClient;
+	}
 
   public void save(Customer customer) {
 
     String userBase = "INSERT INTO customer (name, email, password) VALUES (?,?,?)";
     String userParams = "INSERT INTO customer_details (created_at, updated_at, is_banned, role, customer_id) VALUES (?,?,?,?,?)";
     // base user data
+
+
 
     var updated = jdbcClient.sql(userBase)
         .params(List.of(customer.name(), customer.email(), customer.password()))
@@ -101,28 +111,64 @@ public class CustomerRepository {
 
   }
 
-  public void delete(Integer id) {
+  public void delete(Integer idToDelete, Integer customerId) throws SQLException, ClassNotFoundException {
     // delete each record in each table by userId *
+
+		String sql = String.format("CALL delete_customer(%d, %d)", customerId, idToDelete);
+		try {
+			// only ADMIN db user has access to delete method *
+			this.initConnection((byte) 0);
+
+			PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
+			int updated = preparedStatement.executeUpdate();
+			if (updated < 1) {
+				throw new SQLException("Failed to delete customer " + idToDelete);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
   }
 
-  // validatePermission -> validate user permission by id
-  public Boolean validatePermission(Integer id) {
+	public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
 
-    var r = Role.USER;
-    String sqlString = "SELECT customer_details.role"
-        + "FROM customer_details "
-        + "WHERE customer_id=?";
+		boolean isEnabled = false;
+		String sql = "SELECT customer_two_step_auth.is_enabled FROM customer_two_step_auth WHERE email=?";
 
-    Optional<Role> c = jdbcClient.sql(sqlString)
-        .param(id)
-        .query(Role.class)
-        .optional();
+		try {
+			this.initConnection((byte) 1);
 
-    if (c.isPresent())
-      r = c.get();
+			PreparedStatement preparedStatus = this.connection.prepareStatement(sql);
+			preparedStatus.setString(1, email);
 
-    return r == Role.ADMIN;
+			this.resultSet = preparedStatus.executeQuery();
+			while (this.resultSet.next()) {
+				isEnabled = this.resultSet.getBoolean("is_enabled");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
+		return isEnabled;
+	}
 
-  }
+
+
+// initConnection -> init database connection before use any repo method
+private void initConnection(Byte type) throws ClassNotFoundException, SQLException {
+	DatabaseDto dto = this.databaseInit.initConnection(type);
+	this.connection = dto.connection();
+	this.statement = dto.statement();
+	this.resultSet = dto.resultSet();
+}
+
+// closeAndStopDBInteraction -> close any active connection before end interaction with each repository method
+private void closeAndStopDBInteraction() throws SQLException {
+	DatabaseDto dto = new DatabaseDto(this.connection, this.statement, this.resultSet);
+	this.databaseInit.closeAndStopDBInteraction(dto);
+}
+
 
 }

@@ -1,11 +1,12 @@
 -- drop tables before create a new one:
-DROP TABLE IF EXISTS customer;
-DROP TABLE IF EXISTS customer_details;
+
 -- DROP TABLE IF EXISTS ticket;
 -- DROP TABLE IF EXISTS ticket_details;
+DROP TABLE IF EXISTS customer_two_step_auth;
+DROP TABLE IF EXISTS customer_details;
+DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS actions;
 DROP TABLE IF EXISTS customer_orders;
-DROP TABLE IF EXISTS customer_two_step_auth;
 
 DROP TABLE IF EXISTS airport_location;
 DROP TABLE IF EXISTS airport_contacts;
@@ -18,11 +19,22 @@ DROP TABLE IF EXISTS aircraft;
 DROP TABLE IF EXISTS leg_details;
 DROP TABLE IF EXISTS airport;
 
+# REVOKE ALL ON avia_tickets.* TO 'testUser'@'localhost';
+DROP USER IF EXISTS testUser;
+
 DROP VIEW IF EXISTS FULL_FLIGHT_INFO;
 DROP VIEW IF EXISTS SHORT_FLIGHT_DATA;
 
+DROP FUNCTION IF EXISTS get_departure_time_filter;
+DROP FUNCTION IF EXISTS calculate_current_price;
+
+DROP PROCEDURE IF EXISTS delete_customer;
 DROP PROCEDURE IF EXISTS count_available_sits;
 DROP FUNCTION IF EXISTS update_available_sits;
+
+CREATE USER 'testUser'@'localhost' IDENTIFIED BY '*test_Pa$$w0rd%';
+GRANT SELECT, INSERT, UPDATE ON avia_tickets.* TO 'testUser'@'localhost';
+FLUSH PRIVILEGES;
 
 
 -- CREATE FUNCTION calculate_test()
@@ -40,90 +52,7 @@ DROP FUNCTION IF EXISTS update_available_sits;
 -- this view collect main flight data to one row
 -- by filter like |destination, from-to, airports|
 -- and send it as list (skip=20,limit=20) to customer
-CREATE VIEW SHORT_FLIGHT_DATA AS
-  SELECT
-      flights.id, flights.flight_number, flights.total_duration,
-      price_details.amount=(calculate_current_price(flights.flight_number))
-    FROM flights
-    JOIN price_details
-    ON flights.flight_number = price_details.flight_number
-      ;
 
-
--- calculate_current_price -> calculate value by (price - discount)
-CREATE FUNCTION calculate_current_price(
-    flightNum VARCHAR(50)
-)
-RETURNS SMALLINT DETERMINISTIC
-BEGIN
-    DECLARE amount FLOAT;
-    DECLARE discount SMALLINT;
-
-    SELECT price_details.amount
-        INTO amount
-        FROM price_details
-        WHERE flight_number=flightNum;
-
-    SELECT price_details.discount
-        INTO discount
-        FROM price_details
-        WHERE flight_number=flightNum;
-
-    return amount - (amount * discount / 100);
-END;
-
-
--- get_departure_time_filter -> get range for the hot tickets list view
-CREATE FUNCTION get_departure_time_filter()
-    RETURNS timestamp
-    RETURN CURRENT_TIMESTAMP() + 3600000;
-
--- update_available_sits -> update flight available sits after sold tickets check
-CREATE PROCEDURE update_available_sits (
-    IN flightNum VARCHAR(50)
-)
-BEGIN
-    DECLARE sitsNum INT;
-    SELECT sitsNum=(count_available_sits(flightNum));
-
-    UPDATE flights
-        SET available_sits = sitsNum
-        WHERE flight_number = flightNum;
-
-    COMMIT;
-END;
-
-
--- https://stackoverflow.com/questions/26015160/deterministic-no-sql-or-reads-sql-data-in-its-declaration-and-binary-logging-i
-
-
--- count_available_sits -> count sits by (total sits - sold tickets)
-CREATE FUNCTION count_available_sits(
-    flightNum VARCHAR(50)
-)
-RETURNS SMALLINT DETERMINISTIC
-BEGIN
-    DECLARE sold_tickets SMALLINT;
-    DECLARE total_sits SMALLINT;
-
-    SELECT COUNT(id)
-        INTO sold_tickets
-        FROM flights # should be updated to orders instead flights table
-        WHERE flight_number=flightNum;
-
-    SELECT flights.passenger_count
-        INTO total_sits
-        FROM flights
-        WHERE flight_number=flightNum;
-
-    return total_sits - sold_tickets;
-END;
-
-
---
---
---
---
 
 -- -------------------------------------------------------------------------------------
 
@@ -246,34 +175,34 @@ CREATE TABLE IF NOT EXISTS flights (
 -- customer area
 --
 
--- CREATE TABLE IF NOT EXISTS customer (
---   id INT NOT NULL AUTO_INCREMENT,
---   name varchar(30) NOT NULL,
---   email varchar(250) NOT NULL,
---   password varchar(30) NOT NULL,
---   PRIMARY KEY (id)
--- );
---
--- CREATE TABLE IF NOT EXISTS customer_details (
---   id INT NOT NULL AUTO_INCREMENT,
---   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
---   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
---   is_banned Boolean NOT NULL DEFAULT 0,
---   role varchar(10) NOT NULL DEFAULT USER,
---   customer_id INT NOT NULL,
---   FOREIGN KEY (customer_id) REFERENCES customer (id),
---   PRIMARY KEY (id)
--- );
---
--- CREATE TABLE IF NOT EXISTS customer_two_step_auth (
---   id INT NOT NULL AUTO_INCREMENT,
---   email varchar(250) NOT NULL,
---   is_enabled Boolean NOT NULL DEFAULT 0,
---   expired_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP() + 600000,
---   code varchar(30) NOT NULL,
---   PRIMARY KEY (id)
--- );
---
+CREATE TABLE IF NOT EXISTS customer (
+    id INT NOT NULL AUTO_INCREMENT,
+    name varchar(30) NOT NULL,
+    email varchar(250) NOT NULL,
+    password varchar(30) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS customer_details (
+    id INT NOT NULL AUTO_INCREMENT,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    is_banned Boolean NOT NULL DEFAULT 0,
+    role varchar(10) NOT NULL DEFAULT 'USER',
+    customer_id INT NOT NULL,
+    FOREIGN KEY (customer_id) REFERENCES customer (id),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS customer_two_step_auth (
+    id INT NOT NULL AUTO_INCREMENT,
+    email varchar(250) NOT NULL,
+    is_enabled Boolean NOT NULL DEFAULT 0,
+    expired_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    code varchar(30) NOT NULL,
+    PRIMARY KEY (id)
+);
+
 -- CREATE TABLE IF NOT EXISTS customer_orders (
 --   id INT NOT NULL AUTO_INCREMENT,
 --   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
@@ -317,3 +246,122 @@ CREATE TABLE IF NOT EXISTS flights (
 --
 
 -- -------------------------------------------------------------------------------------
+
+
+-- get_departure_time_filter -> get range for the hot tickets list view
+-- CREATE FUNCTION get_departure_time_filter()
+--    RETURNS timestamp
+--    RETURN CURRENT_TIMESTAMP() + 3600000;
+
+
+#
+# -- calculate_current_price -> calculate value by (price - discount)
+# DELIMITER $
+# CREATE FUNCTION calculate_current_price(
+# 	flightNum VARCHAR(50)
+# )
+# RETURNS FLOAT
+# DETERMINISTIC
+# BEGIN
+#     DECLARE amount FLOAT;
+#     DECLARE discount SMALLINT;
+#
+#     SELECT price_details.amount
+#         INTO amount
+#         FROM price_details
+#         WHERE flight_number=flightNum;
+#
+#     SELECT price_details.discount
+#         INTO discount
+#         FROM price_details
+#         WHERE flight_number=flightNum;
+#
+#     return amount - (amount * discount / 100);
+# END $;
+#
+#
+# CREATE VIEW SHORT_FLIGHT_DATA AS
+# SELECT
+#     flights.id, flights.flight_number, flights.total_duration,
+#     price_details.amount=(calculate_current_price(flights.flight_number)) AS price
+# FROM flights
+#          JOIN price_details
+#               ON flights.flight_number = price_details.flight_number
+# ;
+#
+#
+# CREATE PROCEDURE delete_customer(
+#     IN userId INT,
+#     IN customerToDeleteId INT
+# )
+# BEGIN
+#     DECLARE userRole VARCHAR(10);
+#
+#     SELECT customer_details.role
+#         INTO userRole
+#         FROM customer_details
+#         WHERE customer_details.customer_id=userId;
+#
+#     IF userRole = 'ADMIN' THEN
+#         DELETE FROM customer_details WHERE customer_id=customerToDeleteId;
+#         DELETE FROM customer_two_step_auth WHERE email=(SELECT email FROM customer WHERE id=customerToDeleteId);
+#
+#         # delete orders, details, tickets, etc ...
+#         # delete <customer> table at last
+#         DELETE FROM customer WHERE id=customerToDeleteId;
+#
+#     END IF;
+#
+#     COMMIT;
+# END;
+#
+# -- https://stackoverflow.com/questions/26015160/deterministic-no-sql-or-reads-sql-data-in-its-declaration-and-binary-logging-i
+#
+#
+# -- count_available_sits -> count sits by (total sits - sold tickets)
+# CREATE FUNCTION count_available_sits(
+#     flightNum VARCHAR(50)
+# )
+# RETURNS SMALLINT
+# DETERMINISTIC
+# BEGIN
+#     DECLARE sold_tickets SMALLINT;
+#     DECLARE total_sits SMALLINT;
+#
+#     SELECT COUNT(id)
+#     INTO sold_tickets
+#     FROM flights # should be updated to orders instead flights table
+#     WHERE flight_number=flightNum;
+#
+#     SELECT flights.passenger_count
+#     INTO total_sits
+#     FROM flights
+#     WHERE flight_number=flightNum;
+#
+#     return total_sits - sold_tickets;
+# END;
+#
+#
+# -- update_available_sits -> update flight available sits after sold tickets check
+# CREATE PROCEDURE update_available_sits (
+#     IN flightNum VARCHAR(50)
+# )
+# BEGIN
+#     DECLARE sitsNum INT;
+#     SELECT sitsNum=(count_available_sits(flightNum));
+#
+#     UPDATE flights
+#     SET available_sits = sitsNum
+#     WHERE flight_number = flightNum;
+#
+#     COMMIT;
+# END;
+#
+#
+#
+
+
+--
+--
+--
+--

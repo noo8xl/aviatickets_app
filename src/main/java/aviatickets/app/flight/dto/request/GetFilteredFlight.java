@@ -5,11 +5,12 @@ import java.time.LocalDateTime;
 import aviatickets.app.flight.entity.CabinClass;
 import aviatickets.app.flight.entity.Location;
 
-// GetTicketList -> can contain null fields if shouldn't be filtred *
+// GetTicketList -> can contain null fields if it shouldn't be filtered *
 public record GetFilteredFlight(
 		String departureAirport,
 		String arrivalAirport,
 		Location location,
+		Short offset,
 		LocalDateTime departureDate, // null or Date
 		LocalDateTime returnDate, // null or Date
 		Short passengerCount, // -> passenger * price

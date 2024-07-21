@@ -1,10 +1,14 @@
 
 #------------------- main things ------------------#
 
-hear I implemented singleton, DI, *** IoC design principes ***
+hear I implemented singleton, DI, *** IoC design principles ***
 also I used abstractions to describe classes before using it
 
-DDD architectur and TDD techtiques were used 
+DDD project architecture and TDD techniques were used
+
+*** to start you should change
+-> spring.datasource.username
+->
 
 #--------------------------------------------#
 

@@ -1,5 +1,6 @@
 package aviatickets.app.auth;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -37,13 +38,17 @@ public class AuthService implements AuthInteraction {
     if (customer.isEmpty())
       throw new NotFoundException("User not found.");
     if (!customer.get().password().equals(dto.password()))
-      throw new BadRequestException("Whong email or password.");
+      throw new BadRequestException("Wrong email or password.");
 
     // Token t = jwtService.createToken(customer.get());
     // jwtService.save(t.get().refreshToken());
 
     return new SignInResponse(); // token pair, customer obj <-
   }
+
+	public Boolean checkTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
+		return customerService.getTwoStepStatus(email);
+	}
 
   public void signUp(SignUpDto dto) {
     var customerId = 0;
