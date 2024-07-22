@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS customer_two_step_auth (
     email varchar(250) NOT NULL,
     is_enabled Boolean NOT NULL DEFAULT 0,
     expired_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    code varchar(30) NOT NULL,
+    code varchar(30),
     PRIMARY KEY (id)
 );
 

@@ -34,11 +34,11 @@ public class AuthService implements AuthInteraction {
   }
 
   public SignInResponse signIn(SignInDto dto) {
-    Optional<Customer> customer = customerService.getCustomer(dto.email());
-    if (customer.isEmpty())
-      throw new NotFoundException("User not found.");
-    if (!customer.get().password().equals(dto.password()))
-      throw new BadRequestException("Wrong email or password.");
+    Customer c = customerService.getCustomer(dto.email());
+//    if (c.isEmpty())
+//      throw new NotFoundException("User not found.");
+//    if (!c.get().password().equals(dto.password()))
+//      throw new BadRequestException("Wrong email or password.");
 
     // Token t = jwtService.createToken(customer.get());
     // jwtService.save(t.get().refreshToken());
@@ -51,13 +51,10 @@ public class AuthService implements AuthInteraction {
 	}
 
   public void signUp(SignUpDto dto) {
-    var customerId = 0;
     customerService.createCustomer(dto.name(), dto.password(), dto.email());
-    Optional<Customer> c = customerService.getCustomer(dto.email());
+    Customer c = customerService.getCustomer(dto.email());
     emailService.sendRegistrationEmail(dto.email());
-    if (c.isPresent())
-      customerId = c.get().id();
-    setActionLog(customerId, dto.email(), "User successfully signed up.");
+    setActionLog(c.id(), dto.email(), "User successfully signed up.");
   }
 
   public void forgotPassword(String email) {

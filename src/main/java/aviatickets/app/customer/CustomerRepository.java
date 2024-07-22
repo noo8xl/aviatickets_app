@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
+import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.databaseInit.DatabaseInit;
 import aviatickets.app.databaseInit.dto.DatabaseDto;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,7 +22,7 @@ public class CustomerRepository {
 	private ResultSet resultSet = null;
 
 	private final DatabaseInit databaseInit;
-	private JdbcClient jdbcClient;
+	private final JdbcClient jdbcClient;
 
 	public CustomerRepository(DatabaseInit databaseInit, JdbcClient jdbcClient) {
 		this.databaseInit = databaseInit;
@@ -30,27 +31,25 @@ public class CustomerRepository {
 
   public void save(Customer customer) {
 
-    String userBase = "INSERT INTO customer (name, email, password) VALUES (?,?,?)";
-    String userParams = "INSERT INTO customer_details (created_at, updated_at, is_banned, role, customer_id) VALUES (?,?,?,?,?)";
-    // base user data
+    String customerSql = "INSERT INTO customer (name, email, password) VALUES (?,?,?)";
+    String detailsSql = "INSERT INTO customer_details (created_at, updated_at, is_banned, role, customer_id) VALUES (?,?,?,?,?)";
+		String twoStepParamsSql = "INSERT INTO customer_two_step_auth () VALUES(?,?,?)";
+		// base user data
 
 
 
-    var updated = jdbcClient.sql(userBase)
+    var updated = jdbcClient.sql(customerSql)
         .params(List.of(customer.name(), customer.email(), customer.password()))
         .update();
 
     Assert.state(updated == 1, "Failed to create user " + customer.name());
 
     // get saved user
-    Optional<Customer> savedCusromer = this.findByEmail(customer.email());
-    var customerId = 0;
-    if (savedCusromer.isPresent())
-      customerId = savedCusromer.get().id();
+    Customer savedCustomer = this.findOne(customer.email());
     // user params data
-    updated += jdbcClient.sql(userParams)
+    updated += jdbcClient.sql(detailsSql)
         .params(List.of(customer.createdAt(), customer.updatedAt(), customer.isBanned(), customer.role(),
-            customerId))
+						savedCustomer.id()))
         .update();
 
     Assert.state(updated == 2, "Failed to create user " + customer.name());
@@ -59,7 +58,8 @@ public class CustomerRepository {
   public List<Customer> findAll() {
     String sqlStr = "SELECT customer.id, customer.name, customer.email, customer_details.created_at, customer_details.updated_at, customer_details.role "
         + "FROM customer "
-        + "INNER JOIN customer_details ON customer.id = customer_details.customer_id ";
+        + "INNER JOIN customer_details ON customer.id = customer_details.customer_id "
+				+ "ORDER BY customer.id";;
 
     return jdbcClient.sql(sqlStr)
         .query(Customer.class)
@@ -67,30 +67,39 @@ public class CustomerRepository {
   }
 
   @Cacheable("userList")
-  public Optional<Customer> findById(Integer id) {
+  public Customer findOne(Integer id) {
 
     String sqlStr = "SELECT customer.id, customer.name, customer.email, customer_details.created_at, customer_details.updated_at, customer_details.role "
         + "FROM customer "
         + "INNER JOIN customer_details ON customer.id = customer_details.customer_id "
-        + "WHERE customer.id=?";
+        + "WHERE customer.id=? ";
 
-    return jdbcClient.sql(sqlStr)
+
+    Optional<Customer> c = jdbcClient.sql(sqlStr)
         .param(id)
         .query(Customer.class)
         .optional();
+
+		if(c.isPresent()) {
+			return c.get();
+		} else throw new RuntimeException("No customer found for id " + id);
   }
 
-  public Optional<Customer> findByEmail(String email) {
+  public Customer findOne(String email) {
 
     String sqlStr = "SELECT customer.id, customer.name, customer.email, customer_details.created_at, customer_details.updated_at, customer_details.role "
         + "FROM customer "
         + "INNER JOIN customer_details ON customer.id = customer_details.customer_id "
         + "WHERE customer.email=?";
 
-    return jdbcClient.sql(sqlStr)
-        .param(email)
-        .query(Customer.class)
-        .optional();
+		Optional<Customer> c = jdbcClient.sql(sqlStr)
+				.param(email)
+				.query(Customer.class)
+				.optional();
+
+		if(c.isPresent()) {
+			return c.get();
+		} else throw new RuntimeException("No customer found for email " + email);
   }
 
   public void update(Customer c, Integer id) {
@@ -154,21 +163,43 @@ public class CustomerRepository {
 		return isEnabled;
 	}
 
+	public void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
+
+		int updated = 0;
+		String sql = "UPDATE customer_two_step_auth SET is_enabled=? WHERE email=?";
+
+		try {
+			this.initConnection((byte) 1);
+
+			PreparedStatement preparedStatus = this.connection.prepareStatement(sql);
+			preparedStatus.setBoolean(1, dto.status());
+			preparedStatus.setString(2, dto.email());
+
+			updated += preparedStatus.executeUpdate();
+			if (updated < 1) {
+				throw new SQLException("Failed to update customer " + dto.email());
+			}
+		}	catch (Exception e) {
+			throw e;
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
+	}
 
 
-// initConnection -> init database connection before use any repo method
-private void initConnection(Byte type) throws ClassNotFoundException, SQLException {
-	DatabaseDto dto = this.databaseInit.initConnection(type);
-	this.connection = dto.connection();
-	this.statement = dto.statement();
-	this.resultSet = dto.resultSet();
-}
+	// initConnection -> init database connection before use any repo method
+	private void initConnection(Byte type) throws ClassNotFoundException, SQLException {
+		DatabaseDto dto = this.databaseInit.initConnection(type);
+		this.connection = dto.connection();
+		this.statement = dto.statement();
+		this.resultSet = dto.resultSet();
+	}
 
-// closeAndStopDBInteraction -> close any active connection before end interaction with each repository method
-private void closeAndStopDBInteraction() throws SQLException {
-	DatabaseDto dto = new DatabaseDto(this.connection, this.statement, this.resultSet);
-	this.databaseInit.closeAndStopDBInteraction(dto);
-}
+	// closeAndStopDBInteraction -> close any active connection before end interaction with each repository method
+	private void closeAndStopDBInteraction() throws SQLException {
+		DatabaseDto dto = new DatabaseDto(this.connection, this.statement, this.resultSet);
+		this.databaseInit.closeAndStopDBInteraction(dto);
+	}
 
 
 }

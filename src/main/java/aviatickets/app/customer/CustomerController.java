@@ -1,10 +1,11 @@
 package aviatickets.app.customer;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,7 +25,7 @@ import aviatickets.app.exception.ServerErrorException;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/customer")
 public class CustomerController {
 
   private final CustomerService customerService;
@@ -34,95 +35,68 @@ public class CustomerController {
   }
 
   @ResponseStatus(HttpStatus.OK)
-  @GetMapping("/")
-  List<Customer> findAll() {
-    try {
-      List<Customer> customers = customerService.getAll();
-      if (customers.isEmpty()) {
-        throw new NotFoundException("Empty set.");
-      }
-      return customers;
-    } catch (Exception e) {
-      throw new ServerErrorException("Get user list was failed with " + e.getMessage());
-    }
-  }
-
-  @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get/{email}/")
-  Customer findById(@PathVariable String email) {
-    try {
-      Optional<Customer> customer = customerService.getCustomer(email);
-      if (customer.isEmpty()) {
-        throw new NotFoundException("User not found.");
-      }
-      return customer.get();
-    } catch (Exception e) {
-      throw new ServerErrorException("Get user was failed with " + e.getMessage());
-    }
+  public Customer findOne(@PathVariable String email) {
+		return customerService.getCustomer(email);
   }
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get/{id}/")
-  Customer findById(@PathVariable Integer id) {
-
-    try {
-      Optional<Customer> customer = customerService.getCustomer(id);
-      if (customer.isEmpty()) {
-        throw new NotFoundException("User not found.");
-      }
-      return customer.get();
-    } catch (RuntimeException e) {
-      throw new ServerErrorException("Get user was failed with " + e.getMessage());
-    }
+  public Customer findOne(@PathVariable Integer id) {
+		return customerService.getCustomer(id);
   }
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create/")
-  void create(@Valid @RequestBody Customer customer) {
-    try {
-      Boolean isExist = customerService.isCustomerExists(customer.email());
-      if (Boolean.TRUE.equals(isExist))
-        throw new BadRequestException("Bad request. Email is already taken.");
-      customerService.createCustomer(customer.name(), customer.password(), customer.email());
-    } catch (Exception e) {
-      throw new ServerErrorException("Create user was failed with " + e.getMessage());
-    }
+  public void create(@Valid @RequestBody Customer customer) {
+		customerService.createCustomer(customer.name(), customer.password(), customer.email());
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @PutMapping("/update/{id}/")
-  void update(@Valid @RequestBody Customer customer, @PathVariable Integer id) {
-    try {
-      Boolean isExist = customerService.isCustomerExists(customer.email());
-      if (Boolean.FALSE.equals(isExist))
-        throw new BadRequestException("Bad request. User not found.");
-      customerService.updateProfile(id, customer);
-    } catch (Exception e) {
-      throw new ServerErrorException("Update user was failed with " + e.getMessage());
-    }
+  public void update(@Valid @RequestBody Customer customer, @PathVariable Integer id) {
+		customerService.updateProfile(id, customer);
   }
 
   @ResponseStatus(HttpStatus.ACCEPTED)
   @PatchMapping("/change-password/")
-  void changePassword(@RequestBody ChangePwdDto dto) {
-    try {
-      Boolean isExist = customerService.isCustomerExists(dto.email());
-      if (Boolean.FALSE.equals(isExist))
-        throw new BadRequestException("Bad request. User not found.");
-      customerService.changePassword(dto.email(), dto.pwd());
-    } catch (Exception e) {
-      throw new ServerErrorException("Change user password was failed with " + e.getMessage());
-    }
+  public void changePassword(@RequestBody ChangePwdDto dto) {
+		customerService.changePassword(dto.email(), dto.pwd());
   }
 
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @DeleteMapping("/delete/{idToDelete}/{customerId}")
-  void delete(@PathVariable Integer idToDelete, @PathVariable Integer customerId) {
-    try {
-      customerService.deleteCustomer(idToDelete, customerId);
-    } catch (Exception e) {
-      throw new ServerErrorException("catch an error at delete user " + e.getCause());
-    }
-  }
+
+	// changeTwoStepStatus -> change user 2fa status (on/off)
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PostMapping("/change_2fa_status/")
+	public void changeTwoStepStatus(@RequestBody ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
+		customerService.change2faStatus(dto);
+	}
+
+
+// ##########################################################################################################
+// ##################################### ADMIN permission only ##############################################
+// ##########################################################################################################
+
+
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/get-customer-list/{skip}/{limit}/")
+	public List<Customer> findAll(@PathVariable Short skip, @PathVariable Short limit) {
+		List<Customer> customers = customerService.getAll(skip, limit);
+		if (customers.isEmpty()) {
+			throw new NotFoundException("Empty set.");
+		} else return customers;
+	}
+
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping("/delete/{idToDelete}/{customerId}")
+	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer customerId) {
+		try {
+			customerService.deleteCustomer(idToDelete, customerId);
+		} catch (Exception e) {
+			throw new ServerErrorException("catch an error at delete user " + e.getCause());
+		}
+	}
+
+
 
 }
