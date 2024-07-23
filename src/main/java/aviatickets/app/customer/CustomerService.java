@@ -4,13 +4,13 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import aviatickets.app.actions.ActionService;
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.email.EmailService;
 import aviatickets.app.exception.BadRequestException;
+import aviatickets.app.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.customer.entity.Role;
-import aviatickets.app.exception.PermissionDeniedException;
 import aviatickets.app.exception.ServerErrorException;
 
 @Service
@@ -35,51 +34,43 @@ public class CustomerService implements CustomerInteraction {
 		this.actionService = actionService;
 	}
 
-  public void isCustomerExists(String email) throws BadRequestException {
-    Customer c = getCustomer(email);
+	@Override
+  public void isCustomerExists(String email) throws BadRequestException, SQLException, ClassNotFoundException {
+    Customer c = this.getCustomer(email);
+		if (c == null) {
+			throw new NotFoundException("Customer with email '" + email + "' not found.");
+		}
 		// should be updated
 	}
 
-  public void createCustomer(String name, String password, String email) {
+  public void createCustomer(String name, String password, String email) throws SQLException, ClassNotFoundException {
 
 		Customer c = this.getCustomer(email);
 		if (c != null) {
 			throw new BadRequestException("Bad request. Email already taken.");
 		}
-
-    Customer customer = new Customer(
-        null,
-        name,
-        email,
-        password,
-        new Date(),
-        new Date(),
-        false,
-        Role.USER);
-
-    log.info("customer -> {}", customer);
-    customerRepository.save(customer);
+    customerRepository.save(name, email, password);
   }
 
   @Cacheable(key = "#id", value = "customer")
-  public Customer getCustomer(Integer id) {
+  public Customer getCustomer(Integer id) throws SQLException, ClassNotFoundException {
     return customerRepository.findOne(id);
   }
 
-  public Customer getCustomer(String email) {
+  public Customer getCustomer(String email) throws SQLException, ClassNotFoundException {
     return customerRepository.findOne(email);
   }
 
-  public List<Customer> getAll(Short skip, Short limit) {
-    return customerRepository.findAll();
+  public List<Customer> getAll(Integer skip, Integer limit) throws SQLException, ClassNotFoundException {
+    return customerRepository.findAll(skip, limit);
   }
 
-  public void updateProfile(Integer id, Customer c) {
+  public void updateProfile(Customer c) throws SQLException, ClassNotFoundException {
 		this.isCustomerExists(c.email());
-    customerRepository.update(c, id);
+    customerRepository.update(c);
   }
 
-  public Integer changePassword(String email, String pwd) throws ServerErrorException {
+  public Integer changePassword(String email, String pwd) throws ServerErrorException, SQLException, ClassNotFoundException {
 		this.isCustomerExists(email);
 //		Optional<Customer> c = getCustomer(email);
 //

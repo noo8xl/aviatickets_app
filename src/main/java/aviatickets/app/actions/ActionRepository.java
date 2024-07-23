@@ -9,10 +9,10 @@ import org.springframework.util.Assert;
 import aviatickets.app.actions.entity.ActionLog;
 
 @Repository
-public class ActionRepository implements ActionInteraction {
+class ActionRepository implements ActionInteraction {
   public final JdbcClient jdbcClient;
 
-  public ActionRepository(JdbcClient jdbcClient){
+  ActionRepository(JdbcClient jdbcClient){
     this.jdbcClient = jdbcClient;
   }
 

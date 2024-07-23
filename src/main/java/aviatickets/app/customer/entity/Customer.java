@@ -1,9 +1,9 @@
 package aviatickets.app.customer.entity;
 
-import java.util.Date;
-
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+
+import java.sql.Date;
 
 public record Customer(
 		@Positive Integer id,
@@ -11,8 +11,9 @@ public record Customer(
 		@NotEmpty String email,
 		@NotEmpty String password,
 		Date createdAt,
-		Date updatedAt,
+		@NotEmpty String role,
 		Boolean isBanned,
-		Role role) {
+		Boolean twoStepStatus
+) {
 
 }

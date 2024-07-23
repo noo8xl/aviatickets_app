@@ -9,14 +9,14 @@ import aviatickets.app.actions.entity.ActionLog;
 @Service
 public class ActionService {
   
-  public final ActionRepository actionRepository;
+  private final ActionRepository actionRepository;
 
-  public ActionService(ActionRepository actionRepository){
+  ActionService(ActionRepository actionRepository){
     this.actionRepository = actionRepository;
   }
 
   public void saveCustomerAction(ActionLog a) {
-    actionRepository.saveLog(a);
+    this.actionRepository.saveLog(a);
   }
 
   public List<ActionLog> getCustomerLog(Integer customerId, Integer skip, Integer lim) {

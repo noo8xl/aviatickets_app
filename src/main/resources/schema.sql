@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS customer_two_step_auth (
     id INT NOT NULL AUTO_INCREMENT,
     email varchar(250) NOT NULL,
     is_enabled Boolean NOT NULL DEFAULT 0,
-    expired_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    expired_at timestamp,
     code varchar(30),
     PRIMARY KEY (id)
 );

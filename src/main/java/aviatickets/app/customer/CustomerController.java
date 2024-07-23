@@ -36,31 +36,31 @@ public class CustomerController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get/{email}/")
-  public Customer findOne(@PathVariable String email) {
+  public Customer findOne(@PathVariable String email) throws SQLException, ClassNotFoundException {
 		return customerService.getCustomer(email);
   }
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get/{id}/")
-  public Customer findOne(@PathVariable Integer id) {
+  public Customer findOne(@PathVariable Integer id) throws SQLException, ClassNotFoundException {
 		return customerService.getCustomer(id);
   }
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create/")
-  public void create(@Valid @RequestBody Customer customer) {
+  public void create(@Valid @RequestBody Customer customer) throws SQLException, ClassNotFoundException {
 		customerService.createCustomer(customer.name(), customer.password(), customer.email());
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  @PutMapping("/update/{id}/")
-  public void update(@Valid @RequestBody Customer customer, @PathVariable Integer id) {
-		customerService.updateProfile(id, customer);
+  @PutMapping("/update/")
+  public void update(@Valid @RequestBody Customer customer) throws SQLException, ClassNotFoundException {
+		customerService.updateProfile(customer);
   }
 
   @ResponseStatus(HttpStatus.ACCEPTED)
   @PatchMapping("/change-password/")
-  public void changePassword(@RequestBody ChangePwdDto dto) {
+  public void changePassword(@RequestBody ChangePwdDto dto) throws SQLException, ClassNotFoundException {
 		customerService.changePassword(dto.email(), dto.pwd());
   }
 
@@ -80,7 +80,7 @@ public class CustomerController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/get-customer-list/{skip}/{limit}/")
-	public List<Customer> findAll(@PathVariable Short skip, @PathVariable Short limit) {
+	public List<Customer> findAll(@PathVariable Integer skip, @PathVariable Integer limit) throws SQLException, ClassNotFoundException {
 		List<Customer> customers = customerService.getAll(skip, limit);
 		if (customers.isEmpty()) {
 			throw new NotFoundException("Empty set.");
