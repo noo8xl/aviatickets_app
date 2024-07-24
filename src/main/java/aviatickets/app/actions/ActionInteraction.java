@@ -1,5 +1,6 @@
 package aviatickets.app.actions;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import aviatickets.app.actions.entity.ActionLog;
@@ -7,8 +8,10 @@ import aviatickets.app.actions.entity.ActionLog;
 
 // ActionInteraction -> describe an interaction methods 
 interface ActionInteraction {
-  // saveLog -> save customer actions log
-  void saveLog(ActionLog a);
-  // getLog -> get a list of logs 
-  List<ActionLog> getLog(Integer customerId, Integer skip, Integer lim);
+  // saveCustomerAction -> save customer actions log
+  void saveCustomerAction(ActionLog a) throws SQLException, ClassNotFoundException;
+  // getCustomerLog -> get a list of logs
+	List<ActionLog> getCustomerLog(
+			Integer skip, Integer limit, Integer customerId, Integer adminId
+	) throws SQLException, ClassNotFoundException;
 } 

@@ -1,10 +1,8 @@
 package aviatickets.app.flight;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
 import aviatickets.app.databaseInit.DatabaseInit;
 import aviatickets.app.databaseInit.dto.DatabaseDto;
@@ -18,10 +16,11 @@ import aviatickets.app.flight.entity.FlightsItem;
 import aviatickets.app.flight.entity.Leg;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FlightRepository {
+class FlightRepository {
 
 	@Value("${spring.datasource.url}")
 	private String dbUrl;
@@ -38,7 +37,7 @@ public class FlightRepository {
 
 	private DatabaseInit databaseInit;
 
-  public FlightRepository(DatabaseInit databaseInit) {
+  FlightRepository(DatabaseInit databaseInit) {
 		this.databaseInit = databaseInit;
 	}
 
@@ -189,7 +188,7 @@ public class FlightRepository {
 				return;
 			}
 
-			this.initConnection((byte) 1);
+			this.initConnection((byte) 0);
 			PreparedStatement preparedAircraft = this.connection.prepareStatement(airStr);
 			PreparedStatement preparedFeatures = this.connection.prepareStatement(featuresStr);
 			PreparedStatement preparedCabinClass = this.connection.prepareStatement(cabinStr);
@@ -199,8 +198,10 @@ public class FlightRepository {
 			preparedAircraft.setShort(3, aircraft.seatingCapacity());
 			preparedAircraft.setShort(4, aircraft.yearOfManufacture());
 
-			updated += preparedAircraft.executeUpdate();
-			aircraftId = this.getAircraftId(aircraft.registration());
+			this.resultSet = preparedAircraft.executeQuery();
+			while (this.resultSet.next()) {
+				aircraftId = this.resultSet.getInt("id");
+			}
 
 			preparedFeatures.setBoolean(1, aircraft.features().wifi());
 			preparedFeatures.setBoolean(2, aircraft.features().inFlightEntertainment());
@@ -216,7 +217,7 @@ public class FlightRepository {
 			updated += preparedCabinClass.executeUpdate();
 
 			System.out.println("updated count -> " + updated);
-			if(updated != 3) {
+			if(updated != 2) {
 				throw new ServerErrorException("Failed to create new aircraft.");
 			}
 
@@ -254,7 +255,7 @@ public class FlightRepository {
 
 			System.out.println("airportId is -> " + airportId);
 
-			this.initConnection((byte) 1);
+			this.initConnection((byte) 0);
 			PreparedStatement preparedAirport = this.connection.prepareStatement(airStr);
 			PreparedStatement preparedLocation = this.connection.prepareStatement(locationStr);
 			PreparedStatement preparedContacts = this.connection.prepareStatement(contactStr);
@@ -266,8 +267,10 @@ public class FlightRepository {
 			preparedAirport.setString(5, String.valueOf(airport.terminal()));
 			preparedAirport.setString(6, airport.timezone());
 
-			updated += preparedAirport.executeUpdate();
-			airportId = this.getAirportId(airport.airportName());
+			this.resultSet = preparedAirport.executeQuery();
+			while (this.resultSet.next()) {
+				airportId = this.resultSet.getInt("id");
+			}
 
 			preparedLocation.setString(1, airport.location().longitude());
 			preparedLocation.setString(2, airport.location().latitude());
@@ -283,7 +286,7 @@ public class FlightRepository {
 			updated += preparedContacts.executeUpdate();
 
 			System.out.println("updated count -> " + updated);
-			if(updated != 3) {
+			if(updated != 2) {
 				throw new ServerErrorException("Failed to create new airport.");
 			}
 		} catch (Exception e) {
@@ -304,7 +307,7 @@ public class FlightRepository {
 			Integer arrivalAirportId = this.getAirportId(leg.arrivalAirport().airportName());
 			Integer departureAirportId = this.getAirportId(leg.departureAirport().airportName());
 
-			this.initConnection((byte) 1);
+			this.initConnection((byte) 0);
 			PreparedStatement preparedLeg = this.connection.prepareStatement(sql);
 			preparedLeg.setString(1, flightNumber);
 			preparedLeg.setInt(2, arrivalAirportId);
@@ -331,8 +334,8 @@ public class FlightRepository {
 	private void saveFlight(FlightsItem flight) throws SQLException, ClassNotFoundException {
 
 		Integer aircraftId;
-		Integer priceId;
-		int updated;
+		Integer priceId = 0;
+		int updated = 0;
 
 		String priceSql = "INSERT INTO price_details (flight_number, currency, amount, discount, baggage) VALUES (?,?,?,?,?)";
 		String flightSql = "INSERT INTO flights " +
@@ -351,7 +354,7 @@ public class FlightRepository {
 				}
 			}
 
-			this.initConnection((byte) 1);
+			this.initConnection((byte) 0);
 			PreparedStatement preparedPrice = this.connection.prepareStatement(priceSql);
 			PreparedStatement preparedFlight = this.connection.prepareStatement(flightSql);
 
@@ -361,11 +364,9 @@ public class FlightRepository {
 			preparedPrice.setInt(4, flight.price().discount());
 			preparedPrice.setString(5, flight.price().baggageAllowance());
 
-			updated = preparedPrice.executeUpdate();
-
-			priceId = this.getPriceId(flight.flightNumber());
-			if(priceId == 0) {
-				throw new ServerErrorException("Failed to save price data.");
+			this.resultSet = preparedPrice.executeQuery();
+			while (this.resultSet.next()) {
+				priceId = this.resultSet.getInt("id");
 			}
 
 			preparedFlight.setString(1, flight.flightNumber());
@@ -378,10 +379,9 @@ public class FlightRepository {
 			preparedFlight.setShort(8, flight.availableSits());
 
 			updated += preparedFlight.executeUpdate();
-			if(updated != 2) {
+			if(updated < 1) {
 				throw new ServerErrorException("Failed to create new flight.");
 			}
-
 
 		} catch (Exception e) {
 			throw e;
@@ -415,18 +415,18 @@ public class FlightRepository {
 		return this.getItemId(sql, flightNumber);
 	}
 
-	// getLegId -> return leg id by flight number
-	// if it exists and return 0 if not
-	private Integer getPriceId(String flightNumber) throws SQLException, ClassNotFoundException {
-		String sql = "SELECT id FROM price_details WHERE flight_number=?";
-		return this.getItemId(sql, flightNumber);
-	}
+//	// getLegId -> return leg id by flight number
+//	// if it exists and return 0 if not
+//	private Integer getPriceId(String flightNumber) throws SQLException, ClassNotFoundException {
+//		String sql = "SELECT id FROM price_details WHERE flight_number=?";
+//		return this.getItemId(sql, flightNumber);
+//	}
 
 	// getItemId -> get item id from db (airport, aircraft, flight)
 	private Integer getItemId(String sql, String filter) throws SQLException, ClassNotFoundException {
 		int itemId = 0;
 		try {
-			this.initConnection((byte) 1);
+			this.initConnection((byte) 0);
 
 			PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
 			preparedStatement.setString(1, filter);

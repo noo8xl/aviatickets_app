@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,21 +36,17 @@ public class CustomerController {
   }
 
   @ResponseStatus(HttpStatus.OK)
-  @GetMapping("/get/{email}/")
-  public Customer findOne(@PathVariable String email) throws SQLException, ClassNotFoundException {
-		return customerService.getCustomer(email);
+  @GetMapping("/get-customer-by-email/{email}/")
+  public ResponseEntity<Customer> findOne(@PathVariable String email) throws SQLException, ClassNotFoundException {
+		this.customerService.isCustomerExists(email);
+		return ResponseEntity.ok(this.customerService.getCustomer(email));
   }
 
   @ResponseStatus(HttpStatus.OK)
-  @GetMapping("/get/{id}/")
-  public Customer findOne(@PathVariable Integer id) throws SQLException, ClassNotFoundException {
-		return customerService.getCustomer(id);
-  }
-
-  @ResponseStatus(HttpStatus.CREATED)
-  @PostMapping("/create/")
-  public void create(@Valid @RequestBody Customer customer) throws SQLException, ClassNotFoundException {
-		customerService.createCustomer(customer.name(), customer.password(), customer.email());
+  @GetMapping("/get-customer-by-id/{id}/")
+  public ResponseEntity<Customer> findOne(@PathVariable Integer id) throws SQLException, ClassNotFoundException {
+		this.customerService.isCustomerExists(id);
+		return ResponseEntity.ok(this.customerService.getCustomer(id));
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -78,20 +75,30 @@ public class CustomerController {
 // ##########################################################################################################
 
 
+//	@ResponseStatus(HttpStatus.CREATED)
+//	@PostMapping("/create/")
+//	public void create(@Valid @RequestBody Customer customer) throws SQLException, ClassNotFoundException {
+//		customerService.createCustomer(customer.name(), customer.password(), customer.email());
+//	}
+
+
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/get-customer-list/{skip}/{limit}/")
-	public List<Customer> findAll(@PathVariable Integer skip, @PathVariable Integer limit) throws SQLException, ClassNotFoundException {
+	public ResponseEntity<List<Customer>> findAll(
+			@PathVariable Integer skip, @PathVariable Integer limit
+//			@PathVariable Integer adminId
+			) throws SQLException, ClassNotFoundException {
 		List<Customer> customers = customerService.getAll(skip, limit);
 		if (customers.isEmpty()) {
 			throw new NotFoundException("Empty set.");
-		} else return customers;
+		} else return ResponseEntity.ok(customers);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/delete/{idToDelete}/{customerId}")
-	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer customerId) {
+	@DeleteMapping("/delete/{idToDelete}/{adminId}")
+	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer adminId) {
 		try {
-			customerService.deleteCustomer(idToDelete, customerId);
+			customerService.deleteCustomer(idToDelete, adminId);
 		} catch (Exception e) {
 			throw new ServerErrorException("catch an error at delete user " + e.getCause());
 		}

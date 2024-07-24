@@ -18,29 +18,21 @@ public class FlightService implements FlightInteraction {
     this.flightRepository = flightRepository;
   }
 
+	@Override
   public List<ShortFlightItem> getHotFlightList(Short offset) throws SQLException, ClassNotFoundException {
     return flightRepository.getHotFlights(offset);
   }
 
+	@Override
   public List<ShortFlightItem> findFlightByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
-
-    // LocalDateTime flightDate,
-    // String departureAirport,
-    // String arrivalAirport,
-    // LocalDateTime departureDate, // null or Date
-    // LocalDateTime returnDate, // null or Date
-    // Short passengerCount, // -> passenger * price
-    // String cabinClass, // as string "Economy", "Business", "First"
-    // FilterOptions filterOptions // as enum SLOWEST, CHEAPEST, FASTEST, DIRECT
-
     return flightRepository.findFlightsByFilter(filter);
   }
 
+	@Override
 	public FlightsItem getFlightDetails(String flightNumber) throws SQLException, ClassNotFoundException {
 
 		return null;
 	}
-
 
 	@Override
 	public void createFlight(FlightsItem flight) throws RuntimeException, SQLException, ClassNotFoundException {

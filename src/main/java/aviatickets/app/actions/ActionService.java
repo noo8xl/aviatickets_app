@@ -1,5 +1,6 @@
 package aviatickets.app.actions;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Service;
 import aviatickets.app.actions.entity.ActionLog;
 
 @Service
-public class ActionService {
+public class ActionService implements ActionInteraction {
   
   private final ActionRepository actionRepository;
 
@@ -15,11 +16,15 @@ public class ActionService {
     this.actionRepository = actionRepository;
   }
 
-  public void saveCustomerAction(ActionLog a) {
+	@Override
+  public void saveCustomerAction(ActionLog a) throws SQLException, ClassNotFoundException {
     this.actionRepository.saveLog(a);
   }
 
-  public List<ActionLog> getCustomerLog(Integer customerId, Integer skip, Integer lim) {
-    return actionRepository.getLog(customerId, skip, lim);
+	@Override
+  public List<ActionLog> getCustomerLog(
+			Integer skip, Integer limit, Integer customerId, Integer adminId
+	) throws SQLException, ClassNotFoundException {
+    return actionRepository.getLog(skip, limit, customerId, adminId);
   }
 }

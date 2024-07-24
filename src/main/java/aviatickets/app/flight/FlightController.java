@@ -75,16 +75,9 @@ public class FlightController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create-new-flight/")
-  void createNewFlight(@Valid  @RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
+  void createNewFlight(@Valid @RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
 		System.out.println(flight);
 		flightService.createFlight(flight);
-		//		ActionLog a = new ActionLog(
-		//				null,
-		//				email,
-		//				LocalDateTime.now(),
-		//				action,
-		//				customerId);
-		// actionService.saveAction();
 	}
 
 

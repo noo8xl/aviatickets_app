@@ -16,31 +16,36 @@ public class EmailService implements EmailInteraction {
   private static String apiKey = "test";
   // private String EMAIL_FROM = "";
 
-  public void sendForgotPwdEmail(String email) {
+	public EmailService() {}
+
+	@Override
+  public void sendForgotPwdEmail(String email, String pwd) {
+		System.out.println("data is -> "+ email + " " + pwd);
     // TODO
   }
 
+	@Override
   public void sendChangePwdEmail(ChangePwdDto dto) {
     // String ctx = getLetterContent("signUp");
     // Email dto = new Email(dto.userEmail(), dto.(), ctx, "");
     // this.sendEmail(dto);
   }
 
+	@Override
   public void sendTwoStepCode(String email) {
 
   }
 
+	@Override
   public void sendRegistrationEmail(String email) {
     // Date d = DateFormat.getDateTimeInstance(1, "LONG");
-    String limk = ""; // -> link for the sign up confirmation
+    String link = ""; // -> link for the sign-up confirmation
     String ctx = getLetterContent("signUp");
-    Email dto = new Email(email, limk, ctx, "");
+    Email dto = new Email(email, link, ctx, "");
     sendEmail(dto);
   }
 
-  // ###
   // -----------------------------------------------------------------------------------
-  // ###
 
   // getLetterContent -> get html file and convert it to string by name
   private String getLetterContent(String pageName) {

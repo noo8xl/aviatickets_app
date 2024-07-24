@@ -1,0 +1,37 @@
+
+
+
+test :
+
+ ---  add <this.> keyword everywhere ***
+ --- @Override ONLY for the <services>
+
+______________________________________
+-> auth:
+	- forgot pwd,
+	- check 2fa, +++
+	- sign in
+
+_______________________________________
+-> customer:
+	- update,
+	- change pwd,
+	- change 2fa status,
+	AS ADMIN::
+		-> get all,
+		-> delete
+
+________________________________________
+-> action:
+	AS ADMIN::
+		-> get customer log list
+
+________________________________________
+-> flight:
+	-
+
+
+________________________________________
+-> orders:
+	- create order (+ create QR-code),
+	- ...

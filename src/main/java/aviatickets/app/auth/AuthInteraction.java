@@ -10,9 +10,12 @@ interface AuthInteraction {
   // login
   SignInResponse signIn(SignInDto dto) throws SQLException, ClassNotFoundException;
 
+	// checkTwoStepStatus -> check if customer enabled 2fa has
+	Boolean checkTwoStepStatus(String email) throws SQLException, ClassNotFoundException;
+
   // registration
   void signUp(SignUpDto dto) throws SQLException, ClassNotFoundException;
 
-  // send new password to user
+  // send new password to customer
   void forgotPassword(String email) throws SQLException, ClassNotFoundException;
 }

@@ -2,13 +2,13 @@ package aviatickets.app.email;
 
 import aviatickets.app.customer.dto.ChangePwdDto;
 
-public interface EmailInteraction {
+interface EmailInteraction {
   // -> send forgot password email 
-  public void sendForgotPwdEmail(String email);
+  void sendForgotPwdEmail(String email, String pwd);
   // -> send new password to user email
-  public void sendChangePwdEmail(ChangePwdDto dto);
+  void sendChangePwdEmail(ChangePwdDto dto);
   // -> send 2fa email to confirm customer action 
-  public void sendTwoStepCode(String email);
+  void sendTwoStepCode(String email);
   // -> send mail at sign up
-  public void sendRegistrationEmail(String email);
+  void sendRegistrationEmail(String email);
 } 

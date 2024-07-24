@@ -1,6 +1,6 @@
 # Auth endpoints only
 
-### Singup new customer
+### Singup new customer with correct data
 POST http://localhost:9832/auth/signUp/
 Content-Type: application/json
 
@@ -34,6 +34,11 @@ Content-Type: application/json
   "code": "12345"
 }
 
+### Forgot password
+PATCH http://localhost:9832/auth/forgot-password/email@example.com/
+Content-Type: application/json
+
+
 ### Sign in with enabled 2fa and WRONG code
 POST http://localhost:9832/auth/signIn/
 Content-Type: application/json
@@ -46,14 +51,34 @@ Content-Type: application/json
   "code": "54321"
 }
 
-### Sign up with WRONG data
+### Sign up with WRONG name data
 POST http://localhost:9832/auth/signUp/
 Content-Type: application/json
 
 {
-  "name": "wrongName",
-  "email": "test@wrong.com",
-  "password": "123qwe"
+  "name": "wrg",
+  "email": "email@example.net",
+  "password": "123qwerty"
+}
+
+### Sign up with WRONG email data
+POST http://localhost:9832/auth/signUp/
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "email": 1,
+  "password": "qwerty123456"
+}
+
+### Sign up with WRONG password data
+POST http://localhost:9832/auth/signUp/
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "email": "email@example.com",
+  "password": "js666"
 }
 
 ### Sign in with WRONG data
@@ -67,3 +92,4 @@ Content-Type: application/json
   "twoStep": false,
   "code": ""
 }
+

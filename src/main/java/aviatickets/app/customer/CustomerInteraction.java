@@ -12,6 +12,9 @@ interface CustomerInteraction {
   // check if user exists
   void isCustomerExists(String email) throws SQLException, ClassNotFoundException;
 
+	// check if user exists
+	void isCustomerExists(Integer id) throws SQLException, ClassNotFoundException;
+
   // create user
   void createCustomer(String name, String password, String email) throws SQLException, ClassNotFoundException;
 
@@ -29,6 +32,10 @@ interface CustomerInteraction {
 
 	// enable OR disable user 2fa status
 	void change2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException;
+
+	// get 2fa status data
+	Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException;
+
 
 	// ##########################################################################################################
 	// ##################################### ADMIN permission only ##############################################

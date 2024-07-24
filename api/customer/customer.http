@@ -1,0 +1,17 @@
+# Customer area endpoints only
+
+### Get customer by email with correct data
+GET http://localhost:9832/customer/get-customer-by-email/email@example.com/
+Content-Type: application/json
+
+### Get customer by id with correct data
+GET http://localhost:9832/customer/get-customer-by-id/1/
+Content-Type: application/json
+
+### Get customer by email with WRONG data
+GET http://localhost:9832/customer/get-customer-by-email/email@wrong.data/
+Content-Type: application/json
+
+### Get customer by id with WRONG data
+GET http://localhost:9832/customer/get-customer-by-id/9283/
+Content-Type: application/json

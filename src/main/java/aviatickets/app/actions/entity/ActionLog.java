@@ -1,5 +1,6 @@
 package aviatickets.app.actions.entity;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -11,7 +12,7 @@ public record ActionLog(
   @NotEmpty
   String email,
 
-  LocalDateTime date,
+  Date date,
   @NotEmpty
   String action,
   @Positive
