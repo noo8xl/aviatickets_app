@@ -42,11 +42,11 @@ public class HelperService {
 	// getActionEntityFromResultSet -> get ActionLog entity
 	public ActionLog getActionEntityFromResultSet(ResultSet rs) throws SQLException {
 		return new ActionLog(
-				rs.getInt("id"),
-				rs.getString("email"),
-				rs.getDate("date"),
-				rs.getString("action"),
-				rs.getInt("customer_id")
+			rs.getInt("id"),
+			rs.getString("email"),
+			rs.getDate("date"),
+			rs.getString("action"),
+			rs.getInt("customer_id")
 		);
 	}
 }

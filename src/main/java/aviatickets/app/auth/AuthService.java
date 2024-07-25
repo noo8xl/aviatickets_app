@@ -2,7 +2,6 @@ package aviatickets.app.auth;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
@@ -14,57 +13,58 @@ import aviatickets.app.auth.dto.response.SignInResponse;
 import aviatickets.app.customer.CustomerService;
 import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.email.EmailService;
-import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.util.HelperService;
 
 @Service
-public class AuthService implements AuthInteraction {
+class AuthService implements AuthInteraction {
 
-  private final HelperService helperService = new HelperService();
+	private final CustomerService customerService;
+	private final EmailService emailService;
+	private final ActionService actionService;
+	private final HelperService helperService;
 
-  private final CustomerService customerService;
-  private final EmailService emailService;
-  private final ActionService actionService;
-
-  AuthService(EmailService emailService, CustomerService customerService, ActionService actionService) {
+  AuthService(
+			EmailService emailService, CustomerService customerService,
+			ActionService actionService, HelperService helperService
+	) {
     this.emailService = emailService;
     this.customerService = customerService;
     this.actionService = actionService;
+		this.helperService = helperService;
   }
 
-	@Override
-  public SignInResponse signIn(SignInDto dto) throws SQLException, ClassNotFoundException {
 
-		Boolean status = this.checkTwoStepStatus(dto.email());
-		if (Boolean.TRUE.equals(status)) {
-			throw new BadRequestException("Two step status is enabled.");
-		}
+@Override
+  public SignInResponse signIn(SignInDto dto) throws SQLException, ClassNotFoundException {
+		this.customerService.isCustomerExists(dto.email());
+		Customer customer = this.customerService.getCustomer(dto.email());
+
 
 		// Token t = jwtService.createToken(customer.get());
 		// jwtService.save(t.get().refreshToken());
 
-    return new SignInResponse(); // token pair, customer obj <-
+    return new SignInResponse(customer); // token pair, customer obj <-
   }
 
 	@Override
 	public Boolean checkTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
-		return customerService.getTwoStepStatus(email);
+		return this.customerService.getTwoStepStatus(email);
 	}
 
 	@Override
   public void signUp(SignUpDto dto) throws SQLException, ClassNotFoundException {
-    customerService.createCustomer(dto.name(), dto.password(), dto.email());
-    Customer c = customerService.getCustomer(dto.email());
-    emailService.sendRegistrationEmail(dto.email());
-    setActionLog(c.id(), dto.email(), "User successfully signed up.");
+    this.customerService.createCustomer(dto.name(), dto.password(), dto.email());
+    Customer c = this.customerService.getCustomer(dto.email());
+    this.emailService.sendRegistrationEmail(dto.email());
+    this.setActionLog(c.id(), dto.email(), "User successfully signed up.");
   }
 
 	@Override
   public void forgotPassword(String email) throws SQLException, ClassNotFoundException {
-    String pwd = helperService.generateUniqueString(16);
-    Integer customerId = customerService.changePassword(email, pwd);
-    emailService.sendForgotPwdEmail(email, pwd);
-    setActionLog(customerId, email, "User password was changed.");
+    String pwd = this.helperService.generateUniqueString(16);
+    Integer customerId = this.customerService.changePassword(email, pwd);
+    this.emailService.sendForgotPwdEmail(email, pwd);
+    this.setActionLog(customerId, email, "User password was changed.");
   }
 
   // -----------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ public class AuthService implements AuthInteraction {
         customerId
 		);
 
-    actionService.saveCustomerAction(a);
+    this.actionService.saveCustomerAction(a);
   }
 
 }

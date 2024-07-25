@@ -8,23 +8,25 @@ test :
 
 ______________________________________
 -> auth:
-	- forgot pwd,
+	- forgot pwd, +++
 	- check 2fa, +++
-	- sign in
+	- sign in +++
+	- JWT
 
 _______________________________________
--> customer:
-	- update,
-	- change pwd,
-	- change 2fa status,
+-> customer:  ======>>> remove default ADMIN rights in the SQL table
+	- update, +++
+	- change pwd, +++
+	- change 2fa status, +++
 	AS ADMIN::
-		-> get all,
+		-> change ban status, +++
+		-> get all, +++
 		-> delete
 
 ________________________________________
 -> action:
 	AS ADMIN::
-		-> get customer log list
+		-> get customer log list +++
 
 ________________________________________
 -> flight:
@@ -35,3 +37,11 @@ ________________________________________
 -> orders:
 	- create order (+ create QR-code),
 	- ...
+
+________________________________________
+-> email service:
+	- sign up email,
+	- change pwd,
+	- forgot pwd,
+	- 2fa code,
+	- notification

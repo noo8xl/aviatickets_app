@@ -1,12 +1,12 @@
 # Action endpoints only
 
 ### Get action list ( *required admin permisson* )
-GET http://localhost:9832/action/get-action-list/0/20/2/1/
+GET http://localhost:9832/action/get-action-list/0/20/1/1/
 Content-Type: application/json
 
 
 ### Get action list ( *required admin permisson* ) with WRONG admin id data
-GET http://localhost:9832/action/get-action-list/0/20/2/99/
+GET http://localhost:9832/action/get-action-list/0/20/1/992/
 Content-Type: application/json
 
 

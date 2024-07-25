@@ -12,7 +12,7 @@ DDD project architecture and TDD techniques were used
 
 #--------------------------------------------#
 
-localhost:1111/api === APINAME
+http://localhost:9832 === APINAME
 
 --> main page: (>APINAME/avia/get-hot/)
   - search bar

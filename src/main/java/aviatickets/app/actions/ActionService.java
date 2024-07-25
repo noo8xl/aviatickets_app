@@ -12,7 +12,7 @@ public class ActionService implements ActionInteraction {
   
   private final ActionRepository actionRepository;
 
-  ActionService(ActionRepository actionRepository){
+  public ActionService(ActionRepository actionRepository){
     this.actionRepository = actionRepository;
   }
 
@@ -25,6 +25,6 @@ public class ActionService implements ActionInteraction {
   public List<ActionLog> getCustomerLog(
 			Integer skip, Integer limit, Integer customerId, Integer adminId
 	) throws SQLException, ClassNotFoundException {
-    return actionRepository.getLog(skip, limit, customerId, adminId);
+    return this.actionRepository.getLog(skip, limit, customerId, adminId);
   }
 }

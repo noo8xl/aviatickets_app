@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
+import aviatickets.app.customer.dto.UpdateCustomerDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,8 +52,8 @@ public class CustomerController {
 
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @PutMapping("/update/")
-  public void update(@Valid @RequestBody Customer customer) throws SQLException, ClassNotFoundException {
-		customerService.updateProfile(customer);
+  public void update(@Valid @RequestBody UpdateCustomerDto dto) throws SQLException, ClassNotFoundException {
+		this.customerService.updateProfile(dto);
   }
 
   @ResponseStatus(HttpStatus.ACCEPTED)
@@ -64,7 +65,7 @@ public class CustomerController {
 
 	// changeTwoStepStatus -> change user 2fa status (on/off)
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PostMapping("/change_2fa_status/")
+	@PatchMapping("/change-2fa-status/")
 	public void changeTwoStepStatus(@RequestBody ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
 		customerService.change2faStatus(dto);
 	}
@@ -83,12 +84,12 @@ public class CustomerController {
 
 
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/get-customer-list/{skip}/{limit}/")
+	@GetMapping("/get-customer-list/{skip}/{limit}/{adminId}/")
 	public ResponseEntity<List<Customer>> findAll(
-			@PathVariable Integer skip, @PathVariable Integer limit
-//			@PathVariable Integer adminId
+			@PathVariable Integer skip, @PathVariable Integer limit,
+			@PathVariable Integer adminId
 			) throws SQLException, ClassNotFoundException {
-		List<Customer> customers = customerService.getAll(skip, limit);
+		List<Customer> customers = this.customerService.getAll(skip, limit, adminId);
 		if (customers.isEmpty()) {
 			throw new NotFoundException("Empty set.");
 		} else return ResponseEntity.ok(customers);
@@ -96,14 +97,17 @@ public class CustomerController {
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/delete/{idToDelete}/{adminId}")
-	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer adminId) {
-		try {
-			customerService.deleteCustomer(idToDelete, adminId);
-		} catch (Exception e) {
-			throw new ServerErrorException("catch an error at delete user " + e.getCause());
-		}
+	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer adminId) throws SQLException, ClassNotFoundException {
+		this.customerService.deleteCustomer(idToDelete, adminId);
 	}
 
 
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PatchMapping("/update/update-ban-status/{customerId}/{status}/{adminId}/")
+	public void updateBanStatus(
+			@PathVariable Integer customerId, @PathVariable Boolean status,
+			@PathVariable Integer adminId) throws SQLException, ClassNotFoundException {
+		this.customerService.changeBanStatus(customerId, status, adminId);
+	}
 
 }

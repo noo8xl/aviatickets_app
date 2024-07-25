@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
+import aviatickets.app.customer.dto.UpdateCustomerDto;
 import aviatickets.app.customer.entity.Customer;
 
 // CustomerInteraction -> describe the main User interaction logic
@@ -25,7 +26,7 @@ interface CustomerInteraction {
   Customer getCustomer(String email) throws SQLException, ClassNotFoundException;
 
   // update user data by <id> key with dto as second argument
-  void updateProfile(Customer c) throws SQLException, ClassNotFoundException;
+  void updateProfile(UpdateCustomerDto dto) throws SQLException, ClassNotFoundException;
 
   // handle forgot password route and send new password to current user email
   Integer changePassword(String email, String password) throws SQLException, ClassNotFoundException;
@@ -41,8 +42,11 @@ interface CustomerInteraction {
 	// ##################################### ADMIN permission only ##############################################
 	// ##########################################################################################################
 
+	// set user isBanned status as ADMIN
+	void changeBanStatus(Integer customerId, Boolean status, Integer adminId) throws SQLException, ClassNotFoundException;
+
 	// get user list
-	List<Customer> getAll(Integer skip, Integer limit) throws SQLException, ClassNotFoundException;
+	List<Customer> getAll(Integer skip, Integer limit, Integer adminId) throws SQLException, ClassNotFoundException;
 
 	// delete user by id (available ONLY for ADMIN role customer)
   void deleteCustomer(Integer idToDelete, Integer customerId) throws SQLException, ClassNotFoundException;

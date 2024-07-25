@@ -15,3 +15,50 @@ Content-Type: application/json
 ### Get customer by id with WRONG data
 GET http://localhost:9832/customer/get-customer-by-id/9283/
 Content-Type: application/json
+
+### Change customer password with correct data
+PATCH http://localhost:9832/customer/change-password/
+Content-Type: application/json
+
+{
+  "email": "email@example.com",
+  "pwd": "some123newPWD"
+}
+
+### Change customer password with WRONG data
+PATCH http://localhost:9832/customer/change-password/
+Content-Type: application/json
+
+{
+  "email": "email@example.com",
+  "pwd": "13"
+}
+
+### Change customer 2fa status
+PATCH http://localhost:9832/customer/change-2fa-status/
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "email": "email@example.com",
+  "status": false
+}
+
+### Get list of customers as ADMIN
+GET http://localhost:9832/customer/get-customer-list/0/10/1/
+Content-Type: application/json
+
+### Get list of customers with WRONG permission
+GET http://localhost:9832/customer/get-customer-list/0/10/2/
+Content-Type: application/json
+
+### Update customer details with correct data
+PUT http://localhost:9832/customer/update/
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "updatedName",
+  "email": "email@example.com",
+  "password": "myNew123pwd"
+}

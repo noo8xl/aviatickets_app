@@ -19,8 +19,8 @@ DROP TABLE IF EXISTS aircraft;
 DROP TABLE IF EXISTS leg_details;
 DROP TABLE IF EXISTS airport;
 
-# REVOKE ALL ON avia_tickets.* TO 'testUser'@'localhost';
-# DROP USER IF EXISTS testUser@localhost;
+# REVOKE ALL ON avia_tickets.* FROM testUser@localhost;
+DROP USER IF EXISTS testUser@localhost;
 
 DROP VIEW IF EXISTS FULL_FLIGHT_INFO;
 DROP VIEW IF EXISTS SHORT_FLIGHT_DATA;
@@ -34,10 +34,10 @@ DROP PROCEDURE IF EXISTS delete_customer;
 DROP PROCEDURE IF EXISTS count_available_sits;
 DROP FUNCTION IF EXISTS update_available_sits;
 
-#
-# CREATE USER 'testUser'@'localhost' IDENTIFIED BY '*test_Pa$$w0rd%';
-# GRANT SELECT, INSERT, UPDATE ON avia_tickets.* TO 'testUser'@'localhost';
-# FLUSH PRIVILEGES;
+
+CREATE USER 'testUser'@'localhost' IDENTIFIED BY '*test_Pa$$w0rd%';
+GRANT SELECT, INSERT, UPDATE ON avia_tickets.* TO 'testUser'@'localhost';
+FLUSH PRIVILEGES;
 
 
 # CREATE FUNCTION calculate_test()
@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS customer_details (
 CREATE TABLE IF NOT EXISTS customer_two_step_auth (
     id INT NOT NULL AUTO_INCREMENT,
     email varchar(250) NOT NULL,
-    is_enabled Boolean NOT NULL DEFAULT 0,
+    status Boolean NOT NULL DEFAULT 0,
     expired_at timestamp,
     code varchar(30),
     PRIMARY KEY (id)
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS customer_two_step_auth (
 CREATE TABLE IF NOT EXISTS actions (
   id INT NOT NULL AUTO_INCREMENT,
   email varchar(250) NOT NULL,
-  action_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   action varchar(250) NOT NULL,
   customer_id INT NOT NULL,
   FOREIGN KEY (customer_id) REFERENCES customer (id),

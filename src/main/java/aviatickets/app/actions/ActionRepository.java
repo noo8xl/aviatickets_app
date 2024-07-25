@@ -55,33 +55,35 @@ class ActionRepository {
 			Integer skip, Integer limit, Integer customerId, Integer adminId
 	) throws SQLException, ClassNotFoundException {
 
+		ActionLog a = null;
 		String isAdmin = "";
     List<ActionLog> logList = new ArrayList<>();
-		String sql = "SELECT * FROM actions LIMIT=? OFFSET=? WHERE customer_id=?";
+
+		String sql = "SELECT * FROM actions WHERE customer_id=? ORDER BY id LIMIT ? OFFSET ?";
 		String isAdminSql = "SELECT role FROM customer_details WHERE customer_id=?";
 
 		try {
 			this.initConnection((byte) 0);
 
-			PreparedStatement adminCheck = connection.prepareStatement(isAdminSql);
-			adminCheck.setInt(1, customerId);
+			PreparedStatement adminCheck = this.connection.prepareStatement(isAdminSql);
+			adminCheck.setInt(1, adminId);
 
 			this.resultSet = adminCheck.executeQuery();
-			while (resultSet.next()) {
+			while (this.resultSet.next()) {
 				isAdmin = this.resultSet.getString("role");
 			}
 			if (Boolean.FALSE.equals(isAdmin.equals("ADMIN"))) {
 				throw new PermissionDeniedException();
 			} else {
 
-				PreparedStatement preparedStatement = connection.prepareStatement(sql);
-				preparedStatement.setInt(1, limit);
-				preparedStatement.setInt(2, skip);
-				preparedStatement.setInt(3, customerId);
+				PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
+				preparedStatement.setInt(1, customerId);
+				preparedStatement.setInt(2, limit);
+				preparedStatement.setInt(3, skip);
 
 				this.resultSet = preparedStatement.executeQuery();
 				while (this.resultSet.next()) {
-					ActionLog a = this.helperService.getActionEntityFromResultSet(this.resultSet);
+					a = this.helperService.getActionEntityFromResultSet(this.resultSet);
 					logList.add(a);
 				}
 			}

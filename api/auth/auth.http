@@ -10,6 +10,10 @@ Content-Type: application/json
   "password": "qwerty123456"
 }
 
+### Check customer 2fa status
+GET http://localhost:9832/auth/check-2fa/email@example.com/
+Content-Type: application/json
+
 ### Sign in without 2fa
 POST http://localhost:9832/auth/signIn/
 Content-Type: application/json
@@ -38,6 +42,18 @@ Content-Type: application/json
 PATCH http://localhost:9832/auth/forgot-password/email@example.com/
 Content-Type: application/json
 
+
+### Sign in with new password (get it in the console)
+POST http://localhost:9832/auth/signIn/
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "email": "email@example.com",
+  "password": "<insert new pwd here>",
+  "twoStep": false,
+  "code": null
+}
 
 ### Sign in with enabled 2fa and WRONG code
 POST http://localhost:9832/auth/signIn/
@@ -79,17 +95,5 @@ Content-Type: application/json
   "name": "testName",
   "email": "email@example.com",
   "password": "js666"
-}
-
-### Sign in with WRONG data
-POST http://localhost:9832/auth/signIn/
-Content-Type: application/json
-
-{
-  "name": "wrongName",
-  "email": "test@wrong.com",
-  "password": "123qwe",
-  "twoStep": false,
-  "code": ""
 }
 

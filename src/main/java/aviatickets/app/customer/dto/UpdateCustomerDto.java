@@ -1,14 +1,11 @@
-package aviatickets.app.customer.entity;
+package aviatickets.app.customer.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import org.hibernate.validator.constraints.Length;
-import jdk.jfr.Timestamp;
 
-import java.sql.Date;
-
-public record Customer(
+public record UpdateCustomerDto(
 		@Positive
 		Integer id,
 		@NotEmpty
@@ -19,13 +16,6 @@ public record Customer(
 		String email,
 		@NotEmpty
 		@Length(min = 8, max = 30)
-		String password,
-		@Timestamp
-		Date createdAt,
-		@NotEmpty
-		String role,
-		Boolean isBanned,
-		Boolean twoStepStatus
+		String password
 ) {
-
 }
