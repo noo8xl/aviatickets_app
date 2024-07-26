@@ -37,13 +37,19 @@ class AuthService implements AuthInteraction {
 @Override
   public SignInResponse signIn(SignInDto dto) throws SQLException, ClassNotFoundException {
 		this.customerService.isCustomerExists(dto.email());
-		Customer customer = this.customerService.getCustomer(dto.email());
-
+		Customer c = this.customerService.getCustomer(dto.email());
 
 		// Token t = jwtService.createToken(customer.get());
 		// jwtService.save(t.get().refreshToken());
 
-    return new SignInResponse(customer); // token pair, customer obj <-
+    return new SignInResponse(
+				c.id(),
+				c.name(),
+				c.email(),
+				c.role(),
+				c.isBanned(),
+				c.twoStepStatus()
+		); // token pair, customer obj <-
   }
 
 	@Override

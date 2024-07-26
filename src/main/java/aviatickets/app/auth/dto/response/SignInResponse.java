@@ -1,8 +1,22 @@
 package aviatickets.app.auth.dto.response;
 
-import aviatickets.app.customer.entity.Customer;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
+import org.hibernate.validator.constraints.Length;
 
 public record SignInResponse(
   // Token t,
-   Customer c
+	@Positive
+	Integer customerId,
+	@NotEmpty
+	@Length(min = 4, max = 28)
+	String name,
+	@NotEmpty
+	@Email
+	String email,
+	@NotEmpty
+	String role,
+	Boolean isBanned,
+	Boolean twoStepStatus
 ) {}

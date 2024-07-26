@@ -1,18 +1,17 @@
-package aviatickets.app.purchase.entity;
+package aviatickets.app.purchase.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
-import java.sql.Date;
-
-public record Purchase(
-	@Positive
+public record CreatePurchaseDto(
 	Integer id,
 	@Positive
 	@NotEmpty
-	Integer flightId,
+	Short quantity,
 	@Positive
 	@NotEmpty
 	Integer customerId,
-	Date date
-	) {}
+	@Positive
+	@NotEmpty
+	Integer flightNumber
+) {}

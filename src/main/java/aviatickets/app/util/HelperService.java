@@ -2,11 +2,18 @@ package aviatickets.app.util;
 
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.stereotype.Component;
 
+import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 @Component
 public class HelperService {
@@ -48,5 +55,15 @@ public class HelperService {
 			rs.getString("action"),
 			rs.getInt("customer_id")
 		);
+	}
+
+	public BufferedImage generateQRCode(String barcode)
+			throws Exception {
+
+		QRCodeWriter barcodeWriter = new QRCodeWriter();
+		BitMatrix bitMatrix =
+				barcodeWriter.encode(barcode, BarcodeFormat.QR_CODE, 200, 200);
+
+		return MatrixToImageWriter.toBufferedImage(bitMatrix);
 	}
 }

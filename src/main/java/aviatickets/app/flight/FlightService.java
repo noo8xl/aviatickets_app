@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
-import aviatickets.app.flight.dto.response.ShortFlightItem;
+import aviatickets.app.flight.dto.response.ShortFlightItemDto;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.flight.entity.FlightsItem;
@@ -19,12 +19,12 @@ public class FlightService implements FlightInteraction {
   }
 
 	@Override
-  public List<ShortFlightItem> getHotFlightList(Short offset) throws SQLException, ClassNotFoundException {
+  public List<ShortFlightItemDto> getHotFlightList(Short offset) throws SQLException, ClassNotFoundException {
     return flightRepository.getHotFlights(offset);
   }
 
 	@Override
-  public List<ShortFlightItem> findFlightByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
+  public List<ShortFlightItemDto> findFlightByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
     return flightRepository.findFlightsByFilter(filter);
   }
 
