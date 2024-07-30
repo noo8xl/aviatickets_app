@@ -13,6 +13,7 @@ import aviatickets.app.exception.ServerErrorException;
 
 @Service
 public class EmailService implements EmailInteraction {
+
   private static String apiKey = "test";
   // private String EMAIL_FROM = "";
 

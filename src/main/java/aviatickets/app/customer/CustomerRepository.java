@@ -112,7 +112,7 @@ class CustomerRepository {
   }
 
   public Customer findOne(Integer id) throws SQLException, ClassNotFoundException {
-
+		System.out.println("customer from repo --> ");
 		Customer c = null;
 		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, customer_details.created_at, "
 				+ "customer_details.role, customer_details.is_banned, customer_two_step_auth.status as two_step_auth_status "
@@ -141,7 +141,7 @@ class CustomerRepository {
   }
 
   public Customer findOne(String email) throws SQLException, ClassNotFoundException {
-
+		System.out.println("customer from repo --> ");
 		Customer c = null;
 		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, customer_details.created_at, "
 				+ "customer_details.role, customer_details.is_banned, customer_two_step_auth.status as two_step_auth_status "
@@ -221,7 +221,7 @@ class CustomerRepository {
 			preparedCustomer.setString(2, email);
 
 			updated += preparedCustomer.executeUpdate();
-			customerId = this.findOne(email).id();
+			customerId = this.findOne(email).getCustomerId();
 
 			preparedDetails.setDate(1, new Date(System.currentTimeMillis()));
 			preparedDetails.setInt(2, customerId);

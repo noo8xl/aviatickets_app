@@ -2,6 +2,7 @@ package aviatickets.app.util;
 
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
+import aviatickets.app.customer.entity.Role;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.stereotype.Component;
 
@@ -34,13 +35,14 @@ public class HelperService {
 
 	// getCustomerEntityFromResultSet -> get Customer entity
 	public Customer getCustomerEntityFromResultSet(ResultSet rs) throws SQLException {
+
 		return new Customer(
 				rs.getInt("id"),
 				rs.getString("name"),
 				rs.getString("email"),
 				rs.getString("password"),
 				rs.getDate("created_at"),
-				rs.getString("role"),
+				Role.valueOf(rs.getString("role")),
 				rs.getBoolean("is_banned"),
 				rs.getBoolean("two_step_auth_status")
 		);

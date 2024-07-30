@@ -3,6 +3,7 @@ package aviatickets.app.auth;
 import java.sql.Date;
 import java.sql.SQLException;
 
+import aviatickets.app.jwt.JwtService;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.actions.ActionService;
@@ -22,34 +23,30 @@ class AuthService implements AuthInteraction {
 	private final EmailService emailService;
 	private final ActionService actionService;
 	private final HelperService helperService;
+	private final JwtService jwtService;
 
   AuthService(
 			EmailService emailService, CustomerService customerService,
-			ActionService actionService, HelperService helperService
+			ActionService actionService, HelperService helperService,
+			JwtService jwtService
 	) {
     this.emailService = emailService;
     this.customerService = customerService;
     this.actionService = actionService;
 		this.helperService = helperService;
-  }
+		this.jwtService = jwtService;
+	}
 
 
 @Override
   public SignInResponse signIn(SignInDto dto) throws SQLException, ClassNotFoundException {
 		this.customerService.isCustomerExists(dto.email());
 		Customer c = this.customerService.getCustomer(dto.email());
+	  String t = this.jwtService.generateToken(c);
+		SignInResponse response = new SignInResponse(c, t).getResponse();
 
-		// Token t = jwtService.createToken(customer.get());
-		// jwtService.save(t.get().refreshToken());
-
-    return new SignInResponse(
-				c.id(),
-				c.name(),
-				c.email(),
-				c.role(),
-				c.isBanned(),
-				c.twoStepStatus()
-		); // token pair, customer obj <-
+		System.out.println("resp is -> "+ response.toString());
+    return response;
   }
 
 	@Override
@@ -62,7 +59,7 @@ class AuthService implements AuthInteraction {
     this.customerService.createCustomer(dto.name(), dto.password(), dto.email());
     Customer c = this.customerService.getCustomer(dto.email());
     this.emailService.sendRegistrationEmail(dto.email());
-    this.setActionLog(c.id(), dto.email(), "User successfully signed up.");
+    this.setActionLog(c.getCustomerId(), dto.email(), "User successfully signed up.");
   }
 
 	@Override

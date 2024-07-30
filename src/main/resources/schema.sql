@@ -6,9 +6,7 @@ DROP TABLE IF EXISTS customer_two_step_auth;
 DROP TABLE IF EXISTS customer_details;
 DROP TABLE IF EXISTS actions;
 
-
 DROP TABLE IF EXISTS purchase;
-
 DROP TABLE IF EXISTS customer;
 
 

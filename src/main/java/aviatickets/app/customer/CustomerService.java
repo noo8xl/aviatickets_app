@@ -9,6 +9,7 @@ import aviatickets.app.actions.ActionService;
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
+import aviatickets.app.customer.entity.Role;
 import aviatickets.app.email.EmailService;
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.exception.NotFoundException;
@@ -60,13 +61,14 @@ public class CustomerService implements CustomerInteraction {
     this.customerRepository.save(name, email, password);
   }
 
-//  @Cacheable(key = "#id", value = "customer")
 	@Override
-  public Customer getCustomer(Integer id) throws SQLException, ClassNotFoundException {
-    return this.customerRepository.findOne(id);
-  }
+	@Cacheable("customer")
+	public Customer getCustomer(Integer id) throws SQLException, ClassNotFoundException {
+		return this.customerRepository.findOne(id);
+	}
 
 	@Override
+	@Cacheable("customer")
   public Customer getCustomer(String email) throws SQLException, ClassNotFoundException {
     return this.customerRepository.findOne(email);
   }
@@ -126,12 +128,9 @@ public class CustomerService implements CustomerInteraction {
 	private void checkCustomerPermission(Integer id) throws SQLException, ClassNotFoundException {
 		Customer c = this.customerRepository.findOne(id);
 
-		System.out.println("customer role is -> " + c.role());
+		System.out.println("customer role is -> " + c.getAuthorities());
 
-		if (Boolean.FALSE.equals((c != null))) {
-			throw new NotFoundException("Customer with id '" + id + "' not found.");
-		}
-		if(Boolean.FALSE.equals((Objects.equals(c.role(), "ADMIN")))) {
+		if(c.getAuthorities().equals(Role.ADMIN)) {
 			throw new PermissionDeniedException();
 		}
 	}
