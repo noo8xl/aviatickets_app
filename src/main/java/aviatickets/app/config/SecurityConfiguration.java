@@ -11,8 +11,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+
+import aviatickets.app.customer.entity.Role;
 
 @Configuration
 @EnableWebSecurity
@@ -22,11 +25,8 @@ public class SecurityConfiguration {
 	private final JwtAuthFilter jwtAuthFilter;
 	private final AuthenticationProvider authenticationProvider;
 
-	private final String[] AUTH_WHITELIST = {
+	private final String[] adminWhitelist = {
 
-			// -> signed user only
-			"/purchase/create/**",
-			"/purchase/get-details/**",
 
 			// <- admin permission only **
 			"/customer/update/update-ban-status/**",
@@ -39,6 +39,15 @@ public class SecurityConfiguration {
 			"/action/get-action-list/**",
 
 			"/purchase/update-purchase-data/**"
+	};
+
+	private final String[] signedUserWhitelist = {
+
+			// -> signed user only
+			"/purchase/create/**",
+			"/purchase/get-details/**",
+
+
 	};
 
 
@@ -65,15 +74,22 @@ public class SecurityConfiguration {
 
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
-					.requestMatchers(this.AUTH_WHITELIST)
+					.requestMatchers(this.signedUserWhitelist)
 					.permitAll()
+				)
+				.authorizeHttpRequests(request -> request
+					.requestMatchers(this.adminWhitelist)
+					.hasRole(Role.ADMIN.toString())
 					.anyRequest()
 					.authenticated()
 				)
+				// .permitAll()
+				// .anyRequest()
+				// .authenticated()
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.httpBasic(withDefaults())
 				.authenticationProvider(this.authenticationProvider)

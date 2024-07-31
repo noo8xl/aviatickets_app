@@ -20,6 +20,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	private final JwtService jwtService;
 	private final UserDetailsService userDetailsService;
 
+	private final String[] AUTH_WHITELIST = {
+
+		// -> signed user only
+		"/purchase/create/**",
+		"/purchase/get-details/**",
+		
+
+		// <- admin permission only **
+		"/customer/update/update-ban-status/**",
+		"/customer/get-customer-list/**",
+		"/customer/delete/**",
+		"/customer/create/**",
+
+		"/flights/create-new-flight/",
+
+		"/action/get-action-list/**",
+
+		"/purchase/update-purchase-data/**"
+};
+
 	public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
 		this.jwtService = jwtService;
 		this.userDetailsService = userDetailsService;
@@ -33,10 +53,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		) throws ServletException, IOException {
 
 			final String authHeader = request.getHeader("Authorization");
+			final String path = request.getRequestURI();
 			final String jwt;
 			final String customerEmail;
 
-			if (authHeader == null && !authHeader.startsWith("Bearer ")) {
+
+			if (authHeader == null ) {
+				filterChain.doFilter(request, response);
+				return;
+			}
+			if(Boolean.FALSE.equals(authHeader.startsWith("Bearer "))) {
 				filterChain.doFilter(request, response);
 				return;
 			}
@@ -47,7 +73,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			if(customerEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = this.userDetailsService.loadUserByUsername(customerEmail);
 
-				if(this.jwtService.isTokenValid(jwt, userDetails)) {
+				if(Boolean.TRUE.equals(this.jwtService.isTokenValid(jwt, userDetails))) {
 					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
 						userDetails,
 						null,
