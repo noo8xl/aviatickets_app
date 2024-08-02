@@ -27,6 +27,8 @@ public class DatabaseInit {
 	@Value("${spring.datasource.admin_pwd}")
 	private String userDbPassword;
 
+	public DatabaseInit() {}
+
 	// initConnection -> init database connection before use any repo method
 	public DatabaseDto initConnection(Byte type) throws ClassNotFoundException, SQLException {
 		// type 0 => ADMIN || type 1 => USER

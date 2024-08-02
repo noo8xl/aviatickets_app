@@ -8,13 +8,15 @@ import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
 import aviatickets.app.databaseInit.DatabaseInit;
 import aviatickets.app.databaseInit.dto.DatabaseDto;
+import aviatickets.app.exception.BadRequestException;
+import aviatickets.app.exception.NotFoundException;
 import aviatickets.app.util.HelperService;
 import org.springframework.stereotype.Repository;
 
 import aviatickets.app.customer.entity.Customer;
 
 @Repository
-class CustomerRepository {
+class CustomerRepository implements CustomerInteraction {
 
 	private Connection connection = null;
 	private Statement statement = null;
@@ -28,20 +30,25 @@ class CustomerRepository {
 		this.helperService = helperService;
 	}
 
-	public void validateAccess(Integer customerId) {
 
-
-	}
-
+	@Override
   public void save(String name, String email, String password) throws SQLException, ClassNotFoundException {
 
 		int savedCustomerId = 0;
 		int updated = 0;
+		Customer c;
+
     String customerSql = "INSERT INTO customer (name, email, password) VALUES (?,?,?)";
     String detailsSql = "INSERT INTO customer_details (customer_id) VALUES (?)";
 		String twoStepParamsSql = "INSERT INTO customer_two_step_auth (email) VALUES(?)";
 
 		try {
+
+			c = this.findOne(email);
+			if (Boolean.TRUE.equals((c != null))) {
+				throw new BadRequestException("Bad request. Email has been already taken.");
+			}
+
 			this.initConnection((byte) 0);
 
 			String[] returnedId = {"id"};
@@ -76,6 +83,7 @@ class CustomerRepository {
 		}
   }
 
+	@Override
   public List<Customer> findAll(Integer skip, Integer limit) throws SQLException, ClassNotFoundException {
 
 		List<Customer> customersList = new ArrayList<>();
@@ -114,8 +122,8 @@ class CustomerRepository {
   public Customer findOne(Integer id) throws SQLException, ClassNotFoundException {
 		System.out.println("customer from repo --> ");
 		Customer c = null;
-		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, customer_details.created_at, "
-				+ "customer_details.role, customer_details.is_banned, customer_two_step_auth.status as two_step_auth_status "
+		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, "
+				+ "customer_details.is_banned, customer_two_step_auth.status as two_step_auth_status "
 				+ "FROM customer "
 				+ "JOIN customer_details ON customer.id = customer_details.customer_id "
 				+ "JOIN customer_two_step_auth ON customer.email = customer_two_step_auth.email "
@@ -143,8 +151,8 @@ class CustomerRepository {
   public Customer findOne(String email) throws SQLException, ClassNotFoundException {
 		System.out.println("customer from repo --> ");
 		Customer c = null;
-		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, customer_details.created_at, "
-				+ "customer_details.role, customer_details.is_banned, customer_two_step_auth.status as two_step_auth_status "
+		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, "
+				+ "customer_details.is_banned, customer_two_step_auth.status as two_step_auth_status "
 				+ "FROM customer "
 				+ "JOIN customer_details ON customer.id=customer_details.customer_id "
 				+ "JOIN customer_two_step_auth ON customer.email=customer_two_step_auth.email "
@@ -171,14 +179,17 @@ class CustomerRepository {
   }
 
 
-  public void update(UpdateCustomerDto dto) throws SQLException, ClassNotFoundException {
+	@Override
+  public void updateProfile(UpdateCustomerDto dto) throws SQLException, ClassNotFoundException {
 
 		int updated = 0;
     String sqlBase = "UPDATE customer SET name=?, password=? WHERE id=?";
     String sqlParams = "UPDATE customer_details SET updated_at=? WHERE customer_id=?";
 
 		try {
+			this.isCustomerExists(dto.email());
 			this.initConnection((byte) 1);
+
 
 			PreparedStatement preparedBase = this.connection.prepareStatement(sqlBase);
 			PreparedStatement preparedParams = this.connection.prepareStatement(sqlParams);
@@ -204,15 +215,18 @@ class CustomerRepository {
 		}
   }
 
+	@Override
 	public Integer updatePassword(String email, String pwd) throws SQLException, ClassNotFoundException {
 
-		int customerId = 0;
+		int customerId;
 		int updated = 0;
 		String customerSql = "UPDATE customer SET password=? WHERE email=?";
 		String detailsSql = "UPDATE customer_details SET updated_at=? WHERE customer_id=?";
 
 		try {
+			this.isCustomerExists(email);
 			this.initConnection((byte) 1);
+
 
 			PreparedStatement preparedCustomer = this.connection.prepareStatement(customerSql);
 			PreparedStatement preparedDetails = this.connection.prepareStatement(detailsSql);
@@ -240,7 +254,8 @@ class CustomerRepository {
 		return customerId;
 	}
 
-  public void delete(Integer idToDelete, Integer adminId) throws SQLException, ClassNotFoundException {
+	@Override
+  public void deleteCustomer(Integer idToDelete, Integer adminId) throws SQLException, ClassNotFoundException {
     // delete each record in each table by userId *
 
 		String sql = String.format("CALL delete_customer(%d, %d)", adminId, idToDelete);
@@ -260,7 +275,10 @@ class CustomerRepository {
 		}
   }
 
-	public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
+
+
+
+public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
 
 		boolean status = false;
 		String sql = "SELECT status FROM customer_two_step_auth WHERE email=?";
@@ -283,6 +301,7 @@ class CustomerRepository {
 		return status;
 	}
 
+	@Override
 	public void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
 
 		int updated = 0;
@@ -306,28 +325,31 @@ class CustomerRepository {
 		}
 	}
 
-public void updateIsBannedStatus(Integer id, Boolean status) throws SQLException, ClassNotFoundException {
+	@Override
+	public void updateBanStatus(Integer id, Boolean status) throws SQLException, ClassNotFoundException {
 
-	int updated = 0;
-	String sql = "UPDATE customer_details SET is_banned=? WHERE customer_id=?";
+		int updated = 0;
+		String sql = "UPDATE customer_details SET is_banned=? WHERE customer_id=?";
 
-	try {
-		this.initConnection((byte) 0);
+		try {
+			this.initConnection((byte) 0);
 
-		PreparedStatement preparedStatus = this.connection.prepareStatement(sql);
-		preparedStatus.setInt(1, id);
-		preparedStatus.setBoolean(2, status);
+			PreparedStatement preparedStatus = this.connection.prepareStatement(sql);
+			preparedStatus.setInt(1, id);
+			preparedStatus.setBoolean(2, status);
 
-		updated += preparedStatus.executeUpdate();
-		if (updated < 1) {
-			throw new SQLException("Failed to update customer " + id);
+			updated += preparedStatus.executeUpdate();
+			if (updated < 1) {
+				throw new SQLException("Failed to update customer " + id);
+			}
+		}	catch (Exception e) {
+			throw e;
+		} finally {
+			this.closeAndStopDBInteraction();
 		}
-	}	catch (Exception e) {
-		throw e;
-	} finally {
-		this.closeAndStopDBInteraction();
 	}
-}
+
+	// #############################################################################################################
 
 
 	// initConnection -> init database connection before use any repo method
@@ -343,5 +365,14 @@ public void updateIsBannedStatus(Integer id, Boolean status) throws SQLException
 		DatabaseDto dto = new DatabaseDto(this.connection, this.statement, this.resultSet);
 		this.databaseInit.closeAndStopDBInteraction(dto);
 	}
+
+	// used only a few times in update methods to check is customer exists before update something data
+	private void isCustomerExists(String email) throws SQLException, ClassNotFoundException {
+		Customer c = this.findOne(email);
+		if (Boolean.FALSE.equals((c != null))) {
+			throw new NotFoundException("Customer with email '" + email + "' not found.");
+		}
+	}
+
 
 }

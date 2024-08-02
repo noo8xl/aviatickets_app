@@ -3,7 +3,6 @@ package aviatickets.app.util;
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.customer.entity.Role;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
@@ -33,16 +32,24 @@ public class HelperService {
 		return str.toString();
   }
 
+
+	// setActionLog -> create new ActionLog entity and save it to db
+	public ActionLog setActionLog(String email, String action, Integer customerId) {
+		ActionLog a = new  ActionLog();
+		a.setAction(null, email, null, action, customerId);
+		return a;
+	}
+
 	// getCustomerEntityFromResultSet -> get Customer entity
 	public Customer getCustomerEntityFromResultSet(ResultSet rs) throws SQLException {
-
-		return new Customer(
+		Customer c = new Customer();
+		return c.setCustomer(
 				rs.getInt("id"),
 				rs.getString("name"),
 				rs.getString("email"),
 				rs.getString("password"),
-				rs.getDate("created_at"),
-				Role.valueOf(rs.getString("role")),
+				null,
+				null,
 				rs.getBoolean("is_banned"),
 				rs.getBoolean("two_step_auth_status")
 		);
@@ -50,7 +57,8 @@ public class HelperService {
 
 	// getActionEntityFromResultSet -> get ActionLog entity
 	public ActionLog getActionEntityFromResultSet(ResultSet rs) throws SQLException {
-		return new ActionLog(
+		ActionLog a = new ActionLog();
+		return a.setAction(
 			rs.getInt("id"),
 			rs.getString("email"),
 			rs.getDate("date"),

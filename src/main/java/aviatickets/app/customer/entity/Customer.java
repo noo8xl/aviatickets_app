@@ -1,5 +1,9 @@
 package aviatickets.app.customer.entity;
 
+import java.sql.Date;
+import java.util.Collection;
+import java.util.List;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -9,9 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Date;
-import java.util.Collection;
-import java.util.List;
 
 public class Customer implements UserDetails {
 	@Positive
@@ -25,31 +26,43 @@ public class Customer implements UserDetails {
 	@NotEmpty
 	@Length(min = 8, max = 30)
 	private String password;
+
 	@Timestamp
 	private Date createdAt = new Date(System.currentTimeMillis());
 	@NotEmpty
-	private Role role = Role.USER;
+	private Role role = Role.ADMIN;
 	private Boolean isBanned = false;
 	private Boolean twoStepStatus = false;
 
-	public Customer(
+	public Customer(){}
+
+
+	public Customer setCustomer(
 			Integer id, String name, String email, String password,
-			Date createdAt, Role role, Boolean isBanned, Boolean twoStepStatus) {
+			Date createdAt, Role role, Boolean isBanned, Boolean twoStepStatus
+	) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
-		this.createdAt = createdAt;
 
-		if(role != null) {
-			this.role = role;
+		if (Boolean.TRUE.equals(createdAt != null)) {
+			this.createdAt = createdAt;
 		}
-		if(isBanned != null) {
-			this.isBanned = isBanned;
-		}
-		if(twoStepStatus != null) {
+
+		if (Boolean.TRUE.equals(twoStepStatus != null)) {
 			this.twoStepStatus = twoStepStatus;
 		}
+
+		if (Boolean.TRUE.equals(role != null)) {
+			this.role = role;
+		}
+
+		if (Boolean.TRUE.equals(isBanned != null)) {
+			this.isBanned = isBanned;
+		}
+
+		return this;
 	}
 
 	@Override
@@ -86,6 +99,29 @@ public class Customer implements UserDetails {
 		return this.isBanned;
 	}
 
+//	@Override
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//		if(this.role.equals(Role.USER)) {
+//			List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+//			grantedAuthorities.add(new SimpleGrantedAuthority(this.role.name()));
+//		} else if(this.role.equals(Role.ADMIN)) {
+//
+//		} else {
+//			throw new UsernameNotFoundException(username);
+//		}
+//	}
+//
+//	private Customer buildCustomerObj() {
+//		Customer c = new Customer();
+//		c.id = this.id;
+//		c.name = this.name;
+//		c.email = this.email;
+//		c.isBanned = this.isBanned;
+//		c.twoStepStatus = this.twoStepStatus;
+//
+//		System.out.println("Customer set this -> " + c.toString());
+//		return c;
+//	}
 
 
 

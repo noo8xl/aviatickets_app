@@ -25,7 +25,7 @@ private final CustomerService customerService;
 	public UserDetailsService userDetailsService() {
 		return username -> {
 			try {
-				return this.customerService.getCustomer(username);
+				return this.customerService.findOne(username);
 			} catch (ClassNotFoundException | SQLException e) {
 				throw new RuntimeException(e);
 			}

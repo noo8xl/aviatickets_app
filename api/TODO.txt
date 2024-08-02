@@ -3,15 +3,12 @@
 
 test :
 
- ---  add <this.> keyword everywhere ***
- --- @Override ONLY for the <services>
-
 ______________________________________
 -> auth:
 	- forgot pwd, +++
 	- check 2fa, +++
 	- sign in +++
-	- JWT
+	- JWT +++
 
 _______________________________________
 -> customer:  ======>>> remove default ADMIN rights in the SQL table

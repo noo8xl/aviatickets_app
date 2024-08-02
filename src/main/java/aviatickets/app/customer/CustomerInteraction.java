@@ -2,39 +2,33 @@ package aviatickets.app.customer;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
 import aviatickets.app.customer.entity.Customer;
 
-// CustomerInteraction -> describe the main User interaction logic
+// CustomerInteraction -> describe the main Customer interaction logic
 interface CustomerInteraction {
-  // check if user exists
-  void isCustomerExists(String email) throws SQLException, ClassNotFoundException;
 
-	// check if user exists
-	void isCustomerExists(Integer id) throws SQLException, ClassNotFoundException;
+  // create customer
+	void save(String name, String password, String email) throws SQLException, ClassNotFoundException;
 
-  // create user
-  void createCustomer(String name, String password, String email) throws SQLException, ClassNotFoundException;
+  // get customer data by id
+  Customer findOne(Integer id) throws SQLException, ClassNotFoundException;
 
-  // get user data by id
-  Customer getCustomer(Integer id) throws SQLException, ClassNotFoundException;
+  // get customer data by email
+  Customer findOne(String email) throws SQLException, ClassNotFoundException;
 
-  // get user data by email
-  Customer getCustomer(String email) throws SQLException, ClassNotFoundException;
-
-  // update user data by <id> key with dto as second argument
+  // update customer profile data
   void updateProfile(UpdateCustomerDto dto) throws SQLException, ClassNotFoundException;
 
-  // handle forgot password route and send new password to current user email
-  Integer changePassword(String email, String password) throws SQLException, ClassNotFoundException;
+  // handle forgot password route and send new password to current customer email
+  Integer updatePassword(String email, String password) throws SQLException, ClassNotFoundException;
 
-	// enable OR disable user 2fa status
-	void change2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException;
+	// enable OR disable customer 2fa status
+	void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException;
 
-	// get 2fa status data
+	// get customer 2fa status data
 	Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException;
 
 
@@ -42,12 +36,14 @@ interface CustomerInteraction {
 	// ##################################### ADMIN permission only ##############################################
 	// ##########################################################################################################
 
-	// set user isBanned status as ADMIN
-	void changeBanStatus(Integer customerId, Boolean status, Integer adminId) throws SQLException, ClassNotFoundException;
+  // -> permissions will check by application security service
 
-	// get user list
-	List<Customer> getAll(Integer skip, Integer limit, Integer adminId) throws SQLException, ClassNotFoundException;
+	// set customer isBanned status as ADMIN
+	void updateBanStatus(Integer customerId, Boolean status) throws SQLException, ClassNotFoundException;
 
-	// delete user by id (available ONLY for ADMIN role customer)
+	// get a list of customers as ADMIN
+	List<Customer> findAll(Integer skip, Integer limit) throws SQLException, ClassNotFoundException;
+
+	// delete customer by id as ADMIN
   void deleteCustomer(Integer idToDelete, Integer customerId) throws SQLException, ClassNotFoundException;
 }

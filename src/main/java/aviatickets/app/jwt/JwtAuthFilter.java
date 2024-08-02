@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,25 +21,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	private final JwtService jwtService;
 	private final UserDetailsService userDetailsService;
 
-	private final String[] AUTH_WHITELIST = {
-
-		// -> signed user only
-		"/purchase/create/**",
-		"/purchase/get-details/**",
-		
-
-		// <- admin permission only **
-		"/customer/update/update-ban-status/**",
-		"/customer/get-customer-list/**",
-		"/customer/delete/**",
-		"/customer/create/**",
-
-		"/flights/create-new-flight/",
-
-		"/action/get-action-list/**",
-
-		"/purchase/update-purchase-data/**"
-};
 
 	public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
 		this.jwtService = jwtService;
@@ -52,11 +34,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			FilterChain filterChain
 		) throws ServletException, IOException {
 
-			final String authHeader = request.getHeader("Authorization");
-			final String path = request.getRequestURI();
-			final String jwt;
-			final String customerEmail;
-
+			String authHeader = request.getHeader("Authorization");
+			String jwt;
+			String customerEmail;
 
 			if (authHeader == null ) {
 				filterChain.doFilter(request, response);
@@ -67,13 +47,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				return;
 			}
 
+		try {
 			jwt = authHeader.substring(7);
 			customerEmail = this.jwtService.extractCustomerEmail(jwt);
 
-			if(customerEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-				UserDetails userDetails = this.userDetailsService.loadUserByUsername(customerEmail);
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-				if(Boolean.TRUE.equals(this.jwtService.isTokenValid(jwt, userDetails))) {
+			if(customerEmail != null && authentication == null) {
+				UserDetails userDetails = this.userDetailsService.loadUserByUsername(customerEmail);
+				Boolean isTokenValid = this.jwtService.isTokenValid(jwt, userDetails);
+
+				// from ->
+				if(Boolean.TRUE.equals(isTokenValid)) {
 					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
 						userDetails,
 						null,
@@ -83,7 +68,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 					SecurityContextHolder.getContext().setAuthentication(authToken);
 				}
 			}
-
-		filterChain.doFilter(request, response);
+			System.out.println("auth ctx -> "+ SecurityContextHolder.getContext().getAuthentication());
+			filterChain.doFilter(request, response);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 	}
 }

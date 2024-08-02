@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import aviatickets.app.auth.dto.request.SignInDto;
 import aviatickets.app.auth.dto.request.SignUpDto;
 import aviatickets.app.auth.dto.response.SignInResponse;
-import aviatickets.app.customer.CustomerService;
-import aviatickets.app.exception.BadRequestException;
 import jakarta.validation.Valid;
 
 

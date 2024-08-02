@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class JwtService {
 
 	@Value("${spring.datasource.jwt-secrete-key}")
-	private static String SECRET_KEY;
+	private String secreteKey;
 
 	public String extractCustomerEmail(String token) {
 		return this.getClaim(token, Claims::getSubject);
@@ -47,9 +47,9 @@ public class JwtService {
 		return this.extractExpiration(token).before(new Date(System.currentTimeMillis()));
 	}
 
-		private Date extractExpiration(String token) {
-			return (Date) this.getClaim(token, Claims::getExpiration);
-		}
+	private Date extractExpiration(String token) {
+		return this.getClaim(token, Claims::getExpiration);
+	}
 
 	private String generateToken(
 		Map<String, Object> claims,
@@ -61,7 +61,7 @@ public class JwtService {
 				.setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-				.signWith(getSignInKey(), SignatureAlgorithm.ES256)
+				.signWith(this.getSignInKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
 
@@ -75,7 +75,7 @@ public class JwtService {
 	}
 
 	private Key getSignInKey() {
-		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+		byte[] keyBytes = Decoders.BASE64.decode(this.secreteKey);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 

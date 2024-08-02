@@ -28,6 +28,7 @@ class ActionRepository {
 	}
 
   public void saveLog(ActionLog a) throws SQLException, ClassNotFoundException {
+
     int updated = 0;
 		String sql = "INSERT INTO actions (email, action, customer_id) VALUES (?,?,?)";
 
@@ -35,9 +36,9 @@ class ActionRepository {
 			this.initConnection((byte) 1);
 
 			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, a.email());
-			preparedStatement.setString(2, a.action());
-			preparedStatement.setInt(3, a.customerId());
+			preparedStatement.setString(1, a.getCustomerEmail());
+			preparedStatement.setString(2, a.getCustomerAction());
+			preparedStatement.setInt(3, a.getCustomerId());
 
 			updated += preparedStatement.executeUpdate();
 			if (updated != 1) {

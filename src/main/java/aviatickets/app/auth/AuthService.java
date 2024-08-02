@@ -1,13 +1,13 @@
 package aviatickets.app.auth;
 
-import java.sql.Date;
+
 import java.sql.SQLException;
 
+import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.jwt.JwtService;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.actions.ActionService;
-import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.auth.dto.request.SignInDto;
 import aviatickets.app.auth.dto.request.SignUpDto;
 import aviatickets.app.auth.dto.response.SignInResponse;
@@ -38,15 +38,21 @@ class AuthService implements AuthInteraction {
 	}
 
 
-@Override
+	@Override
   public SignInResponse signIn(SignInDto dto) throws SQLException, ClassNotFoundException {
-		this.customerService.isCustomerExists(dto.email());
-		Customer c = this.customerService.getCustomer(dto.email());
-	  String t = this.jwtService.generateToken(c);
-		SignInResponse response = new SignInResponse(c, t).getResponse();
+		Customer c = this.customerService.findOne(dto.email());
+	  String token = this.jwtService.generateToken(c);
 
-		System.out.println("resp is -> "+ response.toString());
-    return response;
+		// <- print token here only for use it in tests *
+		System.out.println("auth token is -> "+ token);
+    return new SignInResponse(
+				c.getCustomerId(),
+				c.getCustomerName(),
+				c.getUsername(),
+				c.getBanStatus(),
+				c.get2faStatus(),
+				token
+		);
   }
 
 	@Override
@@ -56,33 +62,21 @@ class AuthService implements AuthInteraction {
 
 	@Override
   public void signUp(SignUpDto dto) throws SQLException, ClassNotFoundException {
-    this.customerService.createCustomer(dto.name(), dto.password(), dto.email());
-    Customer c = this.customerService.getCustomer(dto.email());
-    this.emailService.sendRegistrationEmail(dto.email());
-    this.setActionLog(c.getCustomerId(), dto.email(), "User successfully signed up.");
-  }
+
+		this.customerService.save(dto.name(), dto.password(), dto.email());
+		Customer c = this.customerService.findOne(dto.email());
+		ActionLog a = this.helperService.setActionLog(c.getUsername(), "User successfully signed up.", c.getCustomerId());
+		this.actionService.saveCustomerAction(a);
+		this.emailService.sendRegistrationEmail(c.getUsername());
+	}
 
 	@Override
   public void forgotPassword(String email) throws SQLException, ClassNotFoundException {
     String pwd = this.helperService.generateUniqueString(16);
-    Integer customerId = this.customerService.changePassword(email, pwd);
-    this.emailService.sendForgotPwdEmail(email, pwd);
-    this.setActionLog(customerId, email, "User password was changed.");
-  }
-
-  // -----------------------------------------------------------------------------------
-
-	// setActionLog -> create new ActionLog entity and save it to db
-  private void setActionLog(Integer customerId, String email, String action) throws SQLException, ClassNotFoundException {
-    ActionLog a = new ActionLog(
-        null,
-        email,
-        new Date(System.currentTimeMillis()),
-        action,
-        customerId
-		);
-
-    this.actionService.saveCustomerAction(a);
-  }
+    Integer customerId = this.customerService.updatePassword(email, pwd);
+		ActionLog a = this.helperService.setActionLog(email, "Password has been changed.", customerId);
+		this.actionService.saveCustomerAction(a);
+		this.emailService.sendForgotPwdEmail(email, pwd);
+	}
 
 }

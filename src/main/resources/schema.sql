@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS customer_details (
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     is_banned Boolean NOT NULL DEFAULT 0,
-    role varchar(10) NOT NULL DEFAULT 'USER',
+    role varchar(10) NOT NULL DEFAULT 'ADMIN',
     customer_id INT NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customer (id),
     PRIMARY KEY (id)
@@ -192,14 +192,7 @@ CREATE TABLE IF NOT EXISTS customer_two_step_auth (
     PRIMARY KEY (id)
 );
 
--- CREATE TABLE IF NOT EXISTS customer_orders (
---   id INT NOT NULL AUTO_INCREMENT,
---   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
---   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
---   customer_id INT NOT NULL,
---   FOREIGN KEY (customer_id) REFERENCES customer (id),
---   PRIMARY KEY (id)
--- );
+
 
 CREATE TABLE IF NOT EXISTS purchase (
     id INT NOT NULL AUTO_INCREMENT,
@@ -209,17 +202,20 @@ CREATE TABLE IF NOT EXISTS purchase (
     FOREIGN KEY (customer_id) REFERENCES customer (id),
     PRIMARY KEY (id)
 );
+
 --
--- CREATE TABLE IF NOT EXISTS ticket_details (
+-- CREATE TABLE IF NOT EXISTS purchase_details (
 --   id INT NOT NULL AUTO_INCREMENT,
 --   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 --   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 --
---   ticket_id INT NOT NULL,
---   FOREIGN KEY (ticket_id) REFERENCES ticket (id),
+
+--   purchase_id INT NOT NULL,
+--   FOREIGN KEY (purchase_id) REFERENCES purchase (id),
 --   PRIMARY KEY (id)
 -- );
 --
+
 CREATE TABLE IF NOT EXISTS actions (
   id INT NOT NULL AUTO_INCREMENT,
   email varchar(250) NOT NULL,
@@ -319,9 +315,9 @@ CREATE TABLE IF NOT EXISTS actions (
 #     JOIN price_details
 #     ON flights.flight_number = price_details.flight_number
 # );
-
-#  this view is for collect full flight info
-#  and send it to the customer as <flight details>
+#
+# #  this view is for collect full flight info
+# #  and send it to the customer as <flight details>
 #
 # CREATE VIEW FULL_FLIGHT_INFO AS (
 #     SELECT

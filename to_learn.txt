@@ -6,7 +6,9 @@
 -> @PostConstruct
 -> @Repository
 -> @PathVariable
--> @Autowired (not sugested to use*)
+-> @Autowired (not suggested to use*)
+	- https://dev.to/sergiomarcial/breaking-up-with-autowired-why-dependency-injection-with-spring-boot-needs-a-makeover-39c5
+	- https://betulsahinn.medium.com/why-is-autowired-annotation-not-recommended-4939c46da1f8
 -> dependencies *
 -> validations constraints **** 
 -> @Valid (validations lib)
@@ -14,7 +16,7 @@
 
 
 -> final ?
--> record, enum, object, etc.
+-> record, enum, object, etc.  // https://www.baeldung.com/java-record-keyword
 -> Optional
 -> set, indexOf, isPresent
 -> -- this -- keyword usage *
