@@ -30,7 +30,7 @@ public class Customer implements UserDetails {
 	@Timestamp
 	private Date createdAt = new Date(System.currentTimeMillis());
 	@NotEmpty
-	private Role role = Role.ADMIN;
+	private Role role = Role.USER;
 	private Boolean isBanned = false;
 	private Boolean twoStepStatus = false;
 

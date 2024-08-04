@@ -20,21 +20,22 @@ public class SecurityConfiguration {
 
 	// <- authless routes
 	private final String[] authlessRoutes = {
-			"/auth/**"
+			"/auth/**",
+			"/flight/get-hot/**",
+			"/find-filtered-flight/**"
 	};
 
 	// <- admin permission only **
 	private final String[] adminWhitelist = {
 
-
-			"/customer/update/update-ban-status/**",
+			"/customer/update-ban-status/**",
 			"/customer/get-customer-list/**",
 			"/customer/delete/**",
 			"/customer/create/**",
 
-			"/flights/create-new-flight/",
-
 			"/action/get-action-list/**",
+
+			"/flights/create-new-flight/",
 
 			"/purchase/update-purchase-data/**"
 	};
@@ -42,10 +43,14 @@ public class SecurityConfiguration {
 	// -> signed user only
 	private final String[] signedUserWhitelist = {
 
+			"/customer/get-customer-by-id/**",
+			"/customer/get-customer-by-email/**",
+			"/customer/update/**",
+
+
 			"/purchase/create/**",
 			"/purchase/get-details/**",
-			"/get-customer-by-id/**",
-			"/get-customer-by-email/**"
+			"/purchase/get-history/**",
 
 	};
 
@@ -56,8 +61,8 @@ public class SecurityConfiguration {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests( auth -> auth
 					.requestMatchers(this.authlessRoutes).permitAll()  // Allow access to all without authentication
-					.requestMatchers(this.adminWhitelist).hasRole("ADMIN")  // Allow only ADMIN role
-					.requestMatchers(this.signedUserWhitelist).hasAnyRole("USER", "ADMIN")  // Allow USER and ADMIN roles
+					.requestMatchers(this.adminWhitelist).hasAuthority("ADMIN")  // Allow only ADMIN role
+					.requestMatchers(this.signedUserWhitelist).hasAnyAuthority("USER", "ADMIN")  // Allow USER and ADMIN roles
 					.anyRequest().authenticated()
 				)
 				.sessionManagement(session -> session
@@ -68,6 +73,5 @@ public class SecurityConfiguration {
 
 		return http.build();
 	}
-
 
 }

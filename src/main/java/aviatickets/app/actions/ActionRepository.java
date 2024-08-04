@@ -6,7 +6,6 @@ import java.util.List;
 
 import aviatickets.app.databaseInit.DatabaseInit;
 import aviatickets.app.databaseInit.dto.DatabaseDto;
-import aviatickets.app.exception.PermissionDeniedException;
 import aviatickets.app.util.HelperService;
 import org.springframework.stereotype.Repository;
 
@@ -52,41 +51,25 @@ class ActionRepository {
 		}
   }
 
-  public List<ActionLog> getLog(
-			Integer skip, Integer limit, Integer customerId, Integer adminId
-	) throws SQLException, ClassNotFoundException {
+  public List<ActionLog> getLog(Integer skip, Integer limit, Integer customerId) throws SQLException, ClassNotFoundException {
 
 		ActionLog a = null;
-		String isAdmin = "";
     List<ActionLog> logList = new ArrayList<>();
 
 		String sql = "SELECT * FROM actions WHERE customer_id=? ORDER BY id LIMIT ? OFFSET ?";
-		String isAdminSql = "SELECT role FROM customer_details WHERE customer_id=?";
 
 		try {
 			this.initConnection((byte) 0);
 
-			PreparedStatement adminCheck = this.connection.prepareStatement(isAdminSql);
-			adminCheck.setInt(1, adminId);
+			PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
+			preparedStatement.setInt(1, customerId);
+			preparedStatement.setInt(2, limit);
+			preparedStatement.setInt(3, skip);
 
-			this.resultSet = adminCheck.executeQuery();
+			this.resultSet = preparedStatement.executeQuery();
 			while (this.resultSet.next()) {
-				isAdmin = this.resultSet.getString("role");
-			}
-			if (Boolean.FALSE.equals(isAdmin.equals("ADMIN"))) {
-				throw new PermissionDeniedException();
-			} else {
-
-				PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
-				preparedStatement.setInt(1, customerId);
-				preparedStatement.setInt(2, limit);
-				preparedStatement.setInt(3, skip);
-
-				this.resultSet = preparedStatement.executeQuery();
-				while (this.resultSet.next()) {
-					a = this.helperService.getActionEntityFromResultSet(this.resultSet);
-					logList.add(a);
-				}
+				a = this.helperService.getActionEntityFromResultSet(this.resultSet);
+				logList.add(a);
 			}
 
 		}	catch (Exception e) {

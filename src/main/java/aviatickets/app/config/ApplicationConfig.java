@@ -1,6 +1,7 @@
 package aviatickets.app.config;
 
 import aviatickets.app.customer.CustomerService;
+import aviatickets.app.customer.entity.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -25,8 +27,11 @@ private final CustomerService customerService;
 	public UserDetailsService userDetailsService() {
 		return username -> {
 			try {
-				return this.customerService.findOne(username);
-			} catch (ClassNotFoundException | SQLException e) {
+				Customer c = this.customerService.findOne(username);
+				if (Boolean.TRUE.equals(c == null)) {
+					throw new UsernameNotFoundException(username);
+				} else return c;
+			} catch (SQLException | ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}
 		};

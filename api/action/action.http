@@ -1,15 +1,15 @@
 # Action endpoints only
 
 ### Get action list ( *required admin permisson* )
-GET http://localhost:9832/action/get-action-list/0/20/1/1/
+GET http://localhost:9832/action/get-action-list/0/20/1/
 Content-Type: application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyMjc5OTcwNywiZXhwIjoxNzIyODAxMTQ3fQ.DkL9OPLrxwwtWa-1_Y-GF3mVk-URl4LxpYmwex7dT4w
 
 ### Get action list ( *required admin permisson* ) with WRONG admin id data
-GET http://localhost:9832/action/get-action-list/0/20/1/992/
+GET http://localhost:9832/action/get-action-list/0/20/1/
 Content-Type: application/json
 
 
 ### Get action list ( *required admin permisson* ) with WRONG customer id data
-GET http://localhost:9832/action/get-action-list/0/20/928/1/
+GET http://localhost:9832/action/get-action-list/0/20/928/
 Content-Type: application/json

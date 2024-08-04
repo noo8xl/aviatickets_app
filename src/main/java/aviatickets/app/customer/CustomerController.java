@@ -40,17 +40,18 @@ public class CustomerController {
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-customer-by-id/{id}/")
   public ResponseEntity<Customer> findOne(@PathVariable Integer id) throws SQLException, ClassNotFoundException {
+		System.out.println("Customer Controller findOne by id");
 		return ResponseEntity.ok(this.customerService.findOne(id));
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  @PutMapping("/update/")
+  @PutMapping("/update/update-customer-details/")
   public void update(@Valid @RequestBody UpdateCustomerDto dto) throws SQLException, ClassNotFoundException {
 		this.customerService.updateProfile(dto);
   }
 
   @ResponseStatus(HttpStatus.ACCEPTED)
-  @PatchMapping("/change-password/")
+  @PatchMapping("/update/change-password/")
   public void changePassword(@RequestBody ChangePwdDto dto) throws SQLException, ClassNotFoundException {
 		customerService.updatePassword(dto.email(), dto.pwd());
   }
@@ -58,7 +59,7 @@ public class CustomerController {
 
 	// changeTwoStepStatus -> change user 2fa status (on/off)
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PatchMapping("/change-2fa-status/")
+	@PatchMapping("/update/change-2fa-status/")
 	public void changeTwoStepStatus(@RequestBody ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
 		customerService.update2faStatus(dto);
 	}
@@ -76,22 +77,23 @@ public class CustomerController {
 //	}
 
 
+
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/get-customer-list/{skip}/{limit}")
+	@GetMapping("/get-customer-list/{skip}/{limit}/")
 	public ResponseEntity<List<Customer>> findAll( @PathVariable Integer skip, @PathVariable Integer limit) throws SQLException, ClassNotFoundException {
-		System.out.println("Customer Controller");
+		System.out.println("Customer Controller findAll");
 		return ResponseEntity.ok(this.customerService.findAll(skip, limit));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/delete/{idToDelete}/{adminId}")
+	@DeleteMapping("/delete/{idToDelete}/{adminId}/")
 	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer adminId) throws SQLException, ClassNotFoundException {
 		this.customerService.deleteCustomer(idToDelete, adminId);
 	}
 
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PatchMapping("/update/update-ban-status/{customerId}/{status}/")
+	@PatchMapping("/update-ban-status/{customerId}/{status}/")
 	public void updateBanStatus(@PathVariable Integer customerId, @PathVariable Boolean status) throws SQLException, ClassNotFoundException {
 		this.customerService.updateBanStatus(customerId, status);
 	}

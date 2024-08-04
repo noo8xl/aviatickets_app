@@ -20,10 +20,10 @@ public class ActionController {
 
 	// available ONLY for admin user *
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/get-action-list/{skip}/{limit}/{customerId}/{adminId}/")
+	@GetMapping("/get-action-list/{skip}/{limit}/{customerId}/")
 	public ResponseEntity<List<ActionLog>>  getActionList(
 			@PathVariable Integer skip, @PathVariable Integer limit,
-			@PathVariable Integer customerId, @PathVariable Integer adminId) throws SQLException, ClassNotFoundException {
-			return ResponseEntity.ok(this.actionService.getCustomerLog(skip, limit, customerId, adminId));
+			@PathVariable Integer customerId) throws SQLException, ClassNotFoundException {
+			return ResponseEntity.ok(this.actionService.getCustomerLog(skip, limit, customerId));
 	}
 }

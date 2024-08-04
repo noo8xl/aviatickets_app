@@ -22,9 +22,7 @@ public class ActionService implements ActionInteraction {
   }
 
 	@Override
-  public List<ActionLog> getCustomerLog(
-			Integer skip, Integer limit, Integer customerId, Integer adminId
-	) throws SQLException, ClassNotFoundException {
-    return this.actionRepository.getLog(skip, limit, customerId, adminId);
+  public List<ActionLog> getCustomerLog(Integer skip, Integer limit, Integer customerId) throws SQLException, ClassNotFoundException {
+    return this.actionRepository.getLog(skip, limit, customerId);
   }
 }
