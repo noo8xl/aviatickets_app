@@ -13,7 +13,12 @@ public record GetPurchaseDetailsDto(
 		Purchase purchase,
 		@NotEmpty
 		SignInResponse customerInfo,
+		@Positive
+		@NotEmpty
+		Float price,
+
 		@NotEmpty
 		DetailedFlightItemDto flightDetails
+
 ) {
 }

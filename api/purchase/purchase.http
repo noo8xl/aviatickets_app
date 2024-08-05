@@ -1,0 +1,39 @@
+# Purchase area endpoints only
+
+### Create new purchase with correct data
+POST http://localhost:9832/purchase/create/
+Content-Type: application/json
+Authorization: Bearer
+
+{
+  "quantity": 2,
+  "customerId": 1,
+  "flightNumber": "LH2001"
+}
+
+
+### Get Purchase by id with correct data
+GET http://localhost:9832/purchase/get-details-by-id/1/
+Content-Type: application/json
+Authorization: Bearer
+
+### Get Purchase history with correct data
+GET http://localhost:9832/purchase/get-history/1/0/20/
+Content-Type: application/json
+Authorization: Bearer
+
+
+
+### Get Purchase list with correct data
+GET http://localhost:9832/purchase/get-all/0/20/
+Content-Type: application/json
+Authorization: Bearer
+
+
+### Delete purchase by id as ADMIN
+DELETE http://localhost:9832/purchase/delete/1/
+Content-Type: application/json
+Authorization: Bearer
+
+
+

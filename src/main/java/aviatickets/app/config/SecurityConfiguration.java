@@ -37,7 +37,11 @@ public class SecurityConfiguration {
 
 			"/flights/create-new-flight/",
 
-			"/purchase/update-purchase-data/**"
+			"/purchase/update/**",
+			"/purchase/get-purchase-list/**",
+			"/purchase/get-all/**",
+			"/purchase/delete/**",
+
 	};
 
 	// -> signed user only
@@ -49,7 +53,8 @@ public class SecurityConfiguration {
 
 
 			"/purchase/create/**",
-			"/purchase/get-details/**",
+			"/purchase/get-details-by-id/**",
+			"/purchase/get-details-by-date/**",
 			"/purchase/get-history/**",
 
 	};

@@ -110,22 +110,8 @@ public class Customer implements UserDetails {
 //			throw new UsernameNotFoundException(username);
 //		}
 //	}
-//
-//	private Customer buildCustomerObj() {
-//		Customer c = new Customer();
-//		c.id = this.id;
-//		c.name = this.name;
-//		c.email = this.email;
-//		c.isBanned = this.isBanned;
-//		c.twoStepStatus = this.twoStepStatus;
-//
-//		System.out.println("Customer set this -> " + c.toString());
-//		return c;
-//	}
 
-
-
-	// ########################### end of getters area ##################################
+// ########################### end of getters area ##################################
 
 
 	@Override

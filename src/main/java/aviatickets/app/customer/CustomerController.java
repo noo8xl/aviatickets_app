@@ -72,8 +72,8 @@ public class CustomerController {
 
 //	@ResponseStatus(HttpStatus.CREATED)
 //	@PostMapping("/create/")
-//	public void create(@Valid @RequestBody Customer customer) throws SQLException, ClassNotFoundException {
-//		customerService.createCustomer(customer.name(), customer.password(), customer.email());
+//	public void create(@Valid @RequestBody Customer c) throws SQLException, ClassNotFoundException {
+//		customerService.createCustomer(c.name(), c.password(), c.email());
 //	}
 
 

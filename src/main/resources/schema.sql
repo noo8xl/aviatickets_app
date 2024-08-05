@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS customer_details (
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     is_banned Boolean NOT NULL DEFAULT 0,
-    role varchar(10) NOT NULL DEFAULT 'ADMIN',
+    role varchar(10) NOT NULL DEFAULT 'USER',
     customer_id INT NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customer (id),
     PRIMARY KEY (id)
@@ -203,18 +203,18 @@ CREATE TABLE IF NOT EXISTS purchase (
     PRIMARY KEY (id)
 );
 
---
--- CREATE TABLE IF NOT EXISTS purchase_details (
---   id INT NOT NULL AUTO_INCREMENT,
---   created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
---   updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
---
 
---   purchase_id INT NOT NULL,
---   FOREIGN KEY (purchase_id) REFERENCES purchase (id),
---   PRIMARY KEY (id)
--- );
---
+ CREATE TABLE IF NOT EXISTS purchase_details (
+    id INT NOT NULL AUTO_INCREMENT,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+
+    price FLOAT NOT NULL,
+    purchase_id INT NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES purchase (id),
+    PRIMARY KEY (id)
+ );
+
 
 CREATE TABLE IF NOT EXISTS actions (
   id INT NOT NULL AUTO_INCREMENT,
@@ -399,6 +399,31 @@ CREATE TABLE IF NOT EXISTS actions (
 #
 #
 #
+
+# DELIMITER $$
+# CREATE FUNCTION IF NOT EXISTS get_purchase_details(
+#     purchaseId INT
+# )
+# RETURNS SMALLINT DETERMINISTIC
+# BEGIN
+#
+#     DECLARE sold_tickets SMALLINT;
+#     DECLARE total_sits SMALLINT;
+#
+#     SELECT COUNT(id)
+#         INTO sold_tickets
+#         FROM purchase
+#         WHERE flight_number=flightNum;
+#
+#     SELECT flights.passenger_count
+#         INTO total_sits
+#         FROM flights
+#         WHERE flight_number=flightNum;
+#
+#     return total_sits - sold_tickets;
+# END $$
+# DELIMITER ;
+
 
 
 --

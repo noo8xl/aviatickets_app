@@ -1,10 +1,15 @@
 package aviatickets.app.purchase;
 
+import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.List;
+
 @Service
-class PurchaseService {
+class PurchaseService implements PurchaseInteraction {
 
 	private final PurchaseRepository purchaseRepository;
 
@@ -12,9 +17,49 @@ class PurchaseService {
 		this.purchaseRepository = purchaseRepository;
 	}
 
-	void save(Purchase purchase) {
-		// should return QR-code here
-		this.purchaseRepository.save(purchase);
+	@Override
+	public void create(CreatePurchaseDto dto) throws SQLException, ClassNotFoundException {
+		this.purchaseRepository.create(dto);
 	}
 
+	@Override
+	public Purchase getDetails(Integer id) throws SQLException, ClassNotFoundException {
+		return this.purchaseRepository.getDetails(id);
+	}
+
+//	@Override
+//	public Purchase getDetails(Date date) throws SQLException, ClassNotFoundException {
+//		return this.purchaseRepository.getDetails(date);
+//	}
+
+	@Override
+	public List<Purchase> getHistory(Integer customerId, Short skip, Short limit) throws SQLException, ClassNotFoundException {
+		return this.purchaseRepository.getHistory(customerId, skip, limit);
+	}
+
+
+// ##########################################################################################################
+// ##################################### ADMIN permission only ##############################################
+// ##########################################################################################################
+
+
+@Override
+	public List<Purchase> getList(Date date, Short skip, Short limit) throws SQLException, ClassNotFoundException {
+		return this.purchaseRepository.getList(date, skip, limit);
+	}
+
+	@Override
+	public List<Purchase> getAll(Short skip, Short limit) throws SQLException, ClassNotFoundException {
+		return this.purchaseRepository.getAll(skip, limit);
+	}
+
+	@Override
+	public void update(Purchase purchase) throws SQLException, ClassNotFoundException {
+		this.purchaseRepository.update(purchase);
+	}
+
+	@Override
+	public void delete(Integer id) throws SQLException, ClassNotFoundException {
+		this.purchaseRepository.delete(id);
+	}
 }
