@@ -1,5 +1,6 @@
 package aviatickets.app.purchase.dto.request;
 
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
@@ -12,5 +13,8 @@ public record CreatePurchaseDto(
 	Integer customerId,
 	@Positive
 	@NotEmpty
-	String flightNumber
+	String flightNumber,
+	@Positive
+	@NotEmpty
+	Float price
 ) {}

@@ -46,6 +46,11 @@ public class EmailService implements EmailInteraction {
     sendEmail(dto);
   }
 
+	@Override
+	public void sendNewPurchaseEmail(String email) {
+
+	}
+
   // -----------------------------------------------------------------------------------
 
   // getLetterContent -> get html file and convert it to string by name
@@ -66,6 +71,8 @@ public class EmailService implements EmailInteraction {
         return ctx;
       case "changePwd":
         return ctx;
+			case "purchase":
+				return ctx;
       default:
         throw new ServerErrorException("Can't get html file.");
 

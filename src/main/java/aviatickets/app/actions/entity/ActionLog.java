@@ -23,7 +23,7 @@ public class ActionLog {
 	@Positive
 	private Integer customerId;
 
-	public ActionLog setAction(Integer id, String email, Date date, String action, Integer customerId) {
+	public void setAction(Integer id, String email, Date date, String action, Integer customerId) {
 		this.id = id;
 		this.email = email;
 		this.action = action;
@@ -32,7 +32,9 @@ public class ActionLog {
 		if(Boolean.TRUE.equals(date != null)) {
 			this.date = date;
 		}
+	}
 
+	public ActionLog getAction() {
 		return this;
 	}
 

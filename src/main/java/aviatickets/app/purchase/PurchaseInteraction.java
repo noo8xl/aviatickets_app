@@ -14,11 +14,12 @@ interface PurchaseInteraction {
 	// and also send it to customer email
 	void create(CreatePurchaseDto dto) throws SQLException, ClassNotFoundException;
 
+	// confirm purchase -> update status, gen QR, send email
+	// -> should return a QR-code as response
+	void confirmPurchase(Integer id) throws SQLException, ClassNotFoundException;
+
 	// get purchase detail by customer id
 	Purchase getDetails(Integer id) throws SQLException, ClassNotFoundException;
-
-//	// get purchase detail by date
-//	Purchase getDetails(Date date) throws SQLException, ClassNotFoundException;
 
 	// get purchase history by customer id
 	List<Purchase> getHistory(Integer customerId, Short skip, Short limit) throws SQLException, ClassNotFoundException;

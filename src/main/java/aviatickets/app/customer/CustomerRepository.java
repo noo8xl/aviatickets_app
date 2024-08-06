@@ -235,7 +235,7 @@ class CustomerRepository implements CustomerInteraction {
 			preparedCustomer.setString(2, email);
 
 			updated += preparedCustomer.executeUpdate();
-			customerId = this.findOne(email).getCustomerId();
+			customerId = this.findOne(email).getId();
 
 			preparedDetails.setDate(1, new Date(System.currentTimeMillis()));
 			preparedDetails.setInt(2, customerId);

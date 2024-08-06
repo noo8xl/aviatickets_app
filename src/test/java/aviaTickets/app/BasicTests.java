@@ -9,6 +9,7 @@ public class BasicTests {
 		System.out.println("testOne printed");
 	}
 
-	// https://www.freecodecamp.org/news/java-unit-testing/
-// https://spring.academy/guides/spring-spring-boot-testing
+
+
+
 }

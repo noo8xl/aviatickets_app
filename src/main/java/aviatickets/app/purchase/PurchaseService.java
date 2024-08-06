@@ -1,5 +1,8 @@
 package aviatickets.app.purchase;
 
+import aviatickets.app.customer.CustomerService;
+import aviatickets.app.customer.entity.Customer;
+import aviatickets.app.email.EmailService;
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
 import org.springframework.stereotype.Service;
@@ -12,14 +15,25 @@ import java.util.List;
 class PurchaseService implements PurchaseInteraction {
 
 	private final PurchaseRepository purchaseRepository;
+	private final EmailService emailService;
+	private final CustomerService customerService;
 
-	PurchaseService(PurchaseRepository purchaseRepository) {
+	PurchaseService(PurchaseRepository purchaseRepository,EmailService emailService, CustomerService customerService) {
 		this.purchaseRepository = purchaseRepository;
+		this.emailService = emailService;
+		this.customerService = customerService;
 	}
 
 	@Override
 	public void create(CreatePurchaseDto dto) throws SQLException, ClassNotFoundException {
 		this.purchaseRepository.create(dto);
+		Customer c = this.customerService.findOne(dto.customerId());
+		this.emailService.sendNewPurchaseEmail(c.getUsername());
+	}
+
+	@Override
+	public void confirmPurchase(Integer id) throws SQLException, ClassNotFoundException {
+		this.purchaseRepository.confirmPurchase(id);
 	}
 
 	@Override
@@ -27,10 +41,6 @@ class PurchaseService implements PurchaseInteraction {
 		return this.purchaseRepository.getDetails(id);
 	}
 
-//	@Override
-//	public Purchase getDetails(Date date) throws SQLException, ClassNotFoundException {
-//		return this.purchaseRepository.getDetails(date);
-//	}
 
 	@Override
 	public List<Purchase> getHistory(Integer customerId, Short skip, Short limit) throws SQLException, ClassNotFoundException {

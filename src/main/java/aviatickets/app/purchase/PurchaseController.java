@@ -37,13 +37,6 @@ public class PurchaseController {
 		return ResponseEntity.ok(this.purchaseService.getDetails(id));
 	}
 
-//	@ResponseStatus(HttpStatus.OK)
-//	@GetMapping("/get-details-by-date/{date}/")
-//	public ResponseEntity<Purchase> getPurchaseDetails(
-//			@PathVariable Date date) throws SQLException, ClassNotFoundException {
-//		return ResponseEntity.ok(this.purchaseService.getDetails(date));
-//	}
-
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/get-history/{customerId}/{skip}/{limit}/")

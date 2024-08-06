@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS customer_two_step_auth;
 DROP TABLE IF EXISTS customer_details;
 DROP TABLE IF EXISTS actions;
 
+DROP TABLE IF EXISTS purchase_details;
 DROP TABLE IF EXISTS purchase;
 DROP TABLE IF EXISTS customer;
 
@@ -16,7 +17,7 @@ DROP TABLE IF EXISTS aircraft_features;
 DROP TABLE IF EXISTS cabin_class;
 DROP TABLE IF EXISTS flights;
 DROP TABLE IF EXISTS price_details;
-DROP TABLE IF EXISTS baggage_allowance;
+# DROP TABLE IF EXISTS baggage_allowance;
 DROP TABLE IF EXISTS aircraft;
 DROP TABLE IF EXISTS leg_details;
 DROP TABLE IF EXISTS airport;
@@ -186,7 +187,7 @@ CREATE TABLE IF NOT EXISTS customer_details (
 CREATE TABLE IF NOT EXISTS customer_two_step_auth (
     id INT NOT NULL AUTO_INCREMENT,
     email varchar(250) NOT NULL,
-    status Boolean NOT NULL DEFAULT 0,
+    status BOOLEAN NOT NULL DEFAULT 0,
     expired_at timestamp,
     code varchar(30),
     PRIMARY KEY (id)
@@ -208,7 +209,7 @@ CREATE TABLE IF NOT EXISTS purchase (
     id INT NOT NULL AUTO_INCREMENT,
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-
+    payment_status BOOLEAN NULL DEFAULT 0,
     price FLOAT NOT NULL,
     purchase_id INT NOT NULL,
     FOREIGN KEY (purchase_id) REFERENCES purchase (id),

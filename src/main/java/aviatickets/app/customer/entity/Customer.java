@@ -7,6 +7,7 @@ import java.util.List;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 import jdk.jfr.Timestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,8 +16,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 public class Customer implements UserDetails {
+	@Getter
 	@Positive
 	private Integer id;
+
+	@Getter
 	@NotEmpty
 	@Length(min = 4, max = 28)
 	private String name;
@@ -31,13 +35,15 @@ public class Customer implements UserDetails {
 	private Date createdAt = new Date(System.currentTimeMillis());
 	@NotEmpty
 	private Role role = Role.USER;
+	@Getter
 	private Boolean isBanned = false;
+	@Getter
 	private Boolean twoStepStatus = false;
 
 	public Customer(){}
 
 
-	public Customer setCustomer(
+	public void setCustomer(
 			Integer id, String name, String email, String password,
 			Date createdAt, Role role, Boolean isBanned, Boolean twoStepStatus
 	) {
@@ -46,22 +52,13 @@ public class Customer implements UserDetails {
 		this.email = email;
 		this.password = password;
 
-		if (Boolean.TRUE.equals(createdAt != null)) {
-			this.createdAt = createdAt;
-		}
+		this.createdAt = createdAt;
+		this.role = role;
+		this.isBanned = isBanned;
+		this.twoStepStatus = twoStepStatus;
+	}
 
-		if (Boolean.TRUE.equals(twoStepStatus != null)) {
-			this.twoStepStatus = twoStepStatus;
-		}
-
-		if (Boolean.TRUE.equals(role != null)) {
-			this.role = role;
-		}
-
-		if (Boolean.TRUE.equals(isBanned != null)) {
-			this.isBanned = isBanned;
-		}
-
+	public Customer getCustomer() {
 		return this;
 	}
 
@@ -80,23 +77,6 @@ public class Customer implements UserDetails {
 	@Override
 	public String getUsername() {
 		return this.email;
-	}
-
-//	@Override
-	public String getCustomerName() {
-		return this.name;
-	}
-
-	public Integer getCustomerId() {
-		return this.id;
-	}
-
-	public Boolean get2faStatus() {
-		return this.twoStepStatus;
-	}
-
-	public Boolean getBanStatus() {
-		return this.isBanned;
 	}
 
 //	@Override
