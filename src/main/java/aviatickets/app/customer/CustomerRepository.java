@@ -108,7 +108,6 @@ class CustomerRepository implements CustomerInteraction {
 				Customer c = this.helperService.getCustomerEntityFromResultSet(this.resultSet);
 				customersList.add(c);
 			}
-			System.out.println("customersList size is -> " + customersList.size());
 
 		} catch (SQLException e) {
 			throw e;

@@ -46,11 +46,11 @@ class AuthService implements AuthInteraction {
 		// <- print token here only for use it in tests *
 		System.out.println("auth token is -> "+ token);
     return new SignInResponse(
-				c.getCustomerId(),
-				c.getCustomerName(),
+				c.getId(),
+				c.getName(),
 				c.getUsername(),
-				c.getBanStatus(),
-				c.get2faStatus(),
+				c.getIsBanned(),
+				c.getTwoStepStatus(),
 				token
 		);
   }
@@ -65,7 +65,7 @@ class AuthService implements AuthInteraction {
 
 		this.customerService.save(dto.name(), dto.password(), dto.email());
 		Customer c = this.customerService.findOne(dto.email());
-		ActionLog a = this.helperService.setActionLog(c.getUsername(), "User successfully signed up.", c.getCustomerId());
+		ActionLog a = this.helperService.setActionLog(c.getUsername(), "User successfully signed up.", c.getId());
 		this.actionService.saveCustomerAction(a);
 		this.emailService.sendRegistrationEmail(c.getUsername());
 	}

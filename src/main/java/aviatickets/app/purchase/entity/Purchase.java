@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import java.sql.Date;
 
@@ -12,12 +13,18 @@ public class Purchase {
 
 	@Getter
 	@Positive
-	@NotEmpty
 	private Integer id = null;
+	@NotEmpty
 	private String flightNumber;
+	@Getter
+	@Positive
+	@NotEmpty
 	private Integer customerId;
 
+	@Positive
+	@Length(min = 1, max = 250)
 	private Short quantity;
+	@Positive
 	private Float price;
 	private Date createdAt = new Date(System.currentTimeMillis());
 	private Date updatedAt = new Date(System.currentTimeMillis());
@@ -26,18 +33,26 @@ public class Purchase {
 
 	public Purchase() {}
 
-
 	public void setPurchase(
 			Integer id, String flightNumber, Integer customerId, Short quantity,
 			Float price, Date createdAt, Date updatedAt, Boolean paymentStatus
 	) {
-		this.id = id;
+		if (Boolean.FALSE.equals(id == null)) {
+			this.id = id;
+		}
+
 		this.flightNumber = flightNumber;
 		this.customerId = customerId;
 		this.quantity = quantity;
 		this.price = price;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
+
+		if (Boolean.FALSE.equals(createdAt == null)) {
+			this.createdAt = createdAt;
+		}
+		if (Boolean.FALSE.equals(updatedAt == null)) {
+			this.updatedAt = updatedAt;
+		}
+
 		this.paymentStatus = paymentStatus;
 	}
 

@@ -11,6 +11,11 @@ Authorization: Bearer
   "flightNumber": "LH2001"
 }
 
+### Confirm purchase after success payment response with correct data
+POST http://localhost:9832/purchase/confirm-purchase/1/
+Content-Type: application/json
+Authorization: Bearer
+
 
 ### Get Purchase by id with correct data
 GET http://localhost:9832/purchase/get-details-by-id/1/

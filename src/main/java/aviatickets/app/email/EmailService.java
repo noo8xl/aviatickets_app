@@ -1,5 +1,6 @@
 package aviatickets.app.email;
 
+import aviatickets.app.email.entity.Notification;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.customer.dto.ChangePwdDto;
@@ -48,6 +49,11 @@ public class EmailService implements EmailInteraction {
 
 	@Override
 	public void sendNewPurchaseEmail(String email) {
+
+	}
+
+	@Override
+	public void sendCustomNotificationEmail(Notification n) {
 
 	}
 

@@ -1,13 +1,13 @@
 package aviatickets.app.purchase;
 
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
+import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -23,11 +23,18 @@ public class PurchaseController {
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(value = {"/create/"}, produces = MediaType.IMAGE_PNG_VALUE)
+	@PostMapping("/create/")
 	public void createPurchase(
 			@RequestBody CreatePurchaseDto dto) throws SQLException, ClassNotFoundException {
-		// should return a QR-code
 		this.purchaseService.create(dto);
+	}
+
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PostMapping(value = {"/confirm-purchase/{id}/"}, produces = MediaType.IMAGE_PNG_VALUE)
+	public void confirmPurchase(
+			@PathVariable Integer id) throws SQLException, ClassNotFoundException {
+		// should return a QR-code
+		this.purchaseService.confirm(id);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
@@ -53,17 +60,8 @@ public class PurchaseController {
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PutMapping("/update/")
-	public void updatePurchaseData(@RequestBody Purchase p) throws SQLException, ClassNotFoundException {
-		this.purchaseService.update(p);
-	}
-
-	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/get-purchase-list/{date}/{skip}/{limit}/")
-	public ResponseEntity<List<Purchase>> getList(
-			@PathVariable Date date, @PathVariable Short skip,
-			@PathVariable Short limit) throws SQLException, ClassNotFoundException {
-		return ResponseEntity.ok(this.purchaseService.getList(date, skip, limit));
-		// should be updated ->  ??
+	public void updatePurchaseData(@RequestBody UpdatePurchaseDto dto) throws SQLException, ClassNotFoundException {
+		this.purchaseService.update(dto);
 	}
 
 	@ResponseStatus(HttpStatus.OK)

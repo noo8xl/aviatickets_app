@@ -3,13 +3,13 @@ package aviatickets.app.util;
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.customer.entity.Role;
-import aviatickets.app.purchase.dto.response.GetPurchaseDetailsDto;
 import aviatickets.app.purchase.entity.Purchase;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Random;
 
 import com.google.zxing.BarcodeFormat;
@@ -45,13 +45,17 @@ public class HelperService {
 	// getCustomerEntityFromResultSet -> get Customer entity
 	public Customer getCustomerEntityFromResultSet(ResultSet rs) throws SQLException {
 		Customer c = new Customer();
+		Role r = Objects.equals(rs.getString("role"), "USER") ? Role.USER : Role.ADMIN;
+		System.out.println("role is -> " + r);
+
 		c.setCustomer(
 				rs.getInt("id"),
 				rs.getString("name"),
 				rs.getString("email"),
 				rs.getString("password"),
-				null,
-				null,
+				rs.getDate("created_at"),
+				rs.getDate("updated_at"),
+				r,
 				rs.getBoolean("is_banned"),
 				rs.getBoolean("two_step_auth_status")
 		);

@@ -1,9 +1,9 @@
 package aviatickets.app.purchase;
 
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
+import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -28,15 +28,11 @@ interface PurchaseInteraction {
 // ##################################### ADMIN permission only ##############################################
 // ##########################################################################################################
 
-	// get a list of purchase if it wasn't expired
-	// if date > current stamp
-	List<Purchase> getList(Date date, Short skip, Short limit) throws SQLException, ClassNotFoundException;
-
 	// get a list of all purchase sort by desc date
 	List<Purchase> getAll(Short skip, Short limit) throws SQLException, ClassNotFoundException;
 
 	// update some data in bought purchase
-	void update(Purchase purchase) throws SQLException, ClassNotFoundException;
+	void update(UpdatePurchaseDto dto) throws SQLException, ClassNotFoundException;
 
 	// delete current purchase by id
 	void delete(Integer id) throws SQLException, ClassNotFoundException;

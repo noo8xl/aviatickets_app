@@ -3,6 +3,8 @@
 ### Add a new flight with transfer (a few legs)
 POST http://localhost:9832/flights/create-new-flight/
 Content-Type: application/json
+Authorization: Bearer
+
 
 {
   "flightNumber": "LH2001",
@@ -128,6 +130,7 @@ Content-Type: application/json
 ### Add a new direct flight without transfer (only one leg)
 POST http://localhost:9832/flights/create-new-flight/
 Content-Type: application/json
+Authorization: Bearer
 
 {
   "flightNumber": "LH2001",
@@ -209,6 +212,7 @@ Content-Type: application/json
 ### Add a new flight with error data
 POST http://localhost:9832/flights/create-new-flight/
 Content-Type: application/json
+Authorization: Bearer
 
 {
   "flightNumber": "LH2001",

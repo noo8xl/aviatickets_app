@@ -3,6 +3,7 @@ package aviatickets.app.purchase;
 import aviatickets.app.databaseInit.DatabaseInit;
 import aviatickets.app.databaseInit.dto.DatabaseDto;
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
+import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
 import aviatickets.app.util.HelperService;
 import org.springframework.stereotype.Repository;
@@ -80,7 +81,6 @@ class PurchaseRepository implements PurchaseInteraction {
 		try {
 			this.initConnection((byte) 1);
 
-
 			PreparedStatement statement = this.connection.prepareStatement(sql);
 			statement.setBoolean(1, true);
 			statement.setDate(2, new Date(System.currentTimeMillis()) );
@@ -88,9 +88,10 @@ class PurchaseRepository implements PurchaseInteraction {
 
 			updated += statement.executeUpdate();
 
-			if (updated == 0) {
-				throw new SQLException("failed to save purchase");
+			if (updated < 1) {
+				throw new SQLException("failed to confirm purchase");
 			}
+
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -135,7 +136,6 @@ class PurchaseRepository implements PurchaseInteraction {
 	public List<Purchase> getHistory(Integer customerId, Short skip, Short limit) throws SQLException, ClassNotFoundException {
 
 		List<Purchase> history = new ArrayList<>();
-
 		// -> should be updated
 		String sql = "SELECT purchase.flight_number, purchase_details.created_at, purchase_details.payment_status, purchase.id "
 				+ "FROM purchase "
@@ -147,11 +147,20 @@ class PurchaseRepository implements PurchaseInteraction {
 				+ "LIMIT ? "
 				+ "OFFSET ?";
 
-		// limit -> then skip
-
 		try {
 			this.initConnection((byte) 1);
 
+			PreparedStatement statement = this.connection.prepareStatement(sql);
+
+			statement.setInt(1, customerId);
+			statement.setInt(2, limit);
+			statement.setInt(3, skip);
+
+			this.resultSet = statement.executeQuery();
+			while (this.resultSet.next()) {
+				Purchase p = this.helperService.getPurchaseEntityFromResultSet(this.resultSet);
+				history.add(p);
+			}
 
 		} catch (Exception e) {
 			throw e;
@@ -169,56 +178,31 @@ class PurchaseRepository implements PurchaseInteraction {
 
 
 	@Override
-	public List<Purchase> getList(Date date, Short skip, Short limit) throws SQLException, ClassNotFoundException {
-
-		List<Purchase> purchaseList = new ArrayList<>();
-
-		// -> should be updated
-		String sql = "SELECT purchase.flight_number, purchase_details.created_at, purchase.id "
-				+ "FROM purchase "
-				+ "INNER JOIN purchase_details "
-				+ "ON purchase.id = purchase_details.purchase_id "
-				+ "WHERE purchase_details.created_at = ? "
-				+ "ORDER BY created_at "
-				+ "DESC "
-				+ "LIMIT ? "
-				+ "OFFSET ?";
-
-		// limit -> then skip
-
-		try {
-			this.initConnection((byte) 0);
-
-
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			this.closeAndStopDBInteraction();
-		}
-
-		return purchaseList;
-	}
-
-	@Override
 	public List<Purchase> getAll(Short skip, Short limit) throws SQLException, ClassNotFoundException {
 
 		List<Purchase> purchaseList = new ArrayList<>();
-
 		// -> should be updated
 		String sql = "SELECT purchase.flight_number, purchase_details.created_at, purchase.id "
 				+ "FROM purchase "
 				+ "INNER JOIN purchase_details "
 				+ "ON purchase.id = purchase_details.purchase_id "
-				+ "ORDER BY created_at "
+				+ "ORDER BY purchase_details.created_at "
 				+ "DESC "
 				+ "LIMIT ? "
 				+ "OFFSET ?";
 
-		// limit -> then skip
-
 		try {
 			this.initConnection((byte) 0);
 
+			PreparedStatement statement = this.connection.prepareStatement(sql);
+			statement.setInt(1, limit);
+			statement.setInt(2, skip);
+
+			this.resultSet = statement.executeQuery();
+			while (this.resultSet.next()) {
+				Purchase p = this.helperService.getPurchaseEntityFromResultSet(this.resultSet);
+				purchaseList.add(p);
+			}
 
 		} catch (Exception e) {
 			throw e;
@@ -230,11 +214,35 @@ class PurchaseRepository implements PurchaseInteraction {
 	}
 
 	@Override
-	public void update(Purchase purchase) throws SQLException, ClassNotFoundException {
+	public void update(UpdatePurchaseDto dto) throws SQLException, ClassNotFoundException {
+
+		int updated = 0;
+
+		String baseSql = "UPDATE purchase SET flight_number = ? WHERE id = ?";
+		String detailSql = "UPDATE purchase_details "
+				+ "SET price = ?, payment_status = ?, quantity = ? updated_at = ? "
+				+ "WHERE purchase_id = ?";
 
 		try {
 			this.initConnection((byte) 0);
 
+			PreparedStatement baseStatement = this.connection.prepareStatement(baseSql);
+			PreparedStatement detailStatement = this.connection.prepareStatement(detailSql);
+
+			baseStatement.setString(1, dto.flightNumber());
+			baseStatement.setInt(2, dto.id());
+
+			detailStatement.setFloat(1, dto.price());
+			detailStatement.setBoolean(2, dto.paymentStatus());
+			detailStatement.setShort(3, dto.quantity());
+			detailStatement.setInt(4, dto.id());
+
+			updated += baseStatement.executeUpdate();
+			updated += detailStatement.executeUpdate();
+
+			if(updated < 2) {
+				throw new SQLException("failed to update purchase");
+			}
 
 		} catch (Exception e) {
 			throw e;
@@ -275,18 +283,3 @@ class PurchaseRepository implements PurchaseInteraction {
 	}
 
 }
-
-
-//	void prepareOrder(Purchase p) {
-//		System.out.println(p);
-//		// prepare order and waiting for the payment confirmation *
-//
-//		// call this procedure after all *
-////		String sql = String.format("CALL update_available_sits(%s)", order.flight().flightNumber());
-//
-//	}
-//
-//	void updateOrderStatus(Purchase p) {
-//		System.out.println(p);
-//		// update status to sold after payment confirmation *
-//	}

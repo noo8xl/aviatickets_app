@@ -11,11 +11,11 @@ ______________________________________
 	- JWT +++
 
 _______________________________________
--> customer:  ======>>> remove default ADMIN rights in the SQL table
+-> customer:  ======>>> remove default ADMIN rights
 	- update, +++
 	- change pwd, +++
 	- change 2fa status, +++
-	AS ADMIN::
+	AS ADMIN:
 		-> change ban status, +++
 		-> get all, +++
 		-> delete
@@ -27,13 +27,24 @@ ________________________________________
 
 ________________________________________
 -> flight:
-	-
+	- get-hot,
+	- get-filtered,
+	AS ADMIN:
+		- create,
+		- update,
+		- delete
 
 
 ________________________________________
 -> purchases:
-	- create purchase (+ create QR-code),
-	- ...
+	- create,
+	- confirm  (+ create QR-code),
+	- getDetails,
+	- getHistory,
+	AS ADMIN:
+		- getAll,
+		- update,
+		- delete
 
 ________________________________________
 -> email service:
@@ -41,7 +52,19 @@ ________________________________________
 	- change pwd,
 	- forgot pwd,
 	- 2fa code,
-	- notification
+	AS ADMIN:
+		- custom notification
+
+________________________________________
+-> payment:
+	-
+	-
+	AS ADMIN:
+		- get-list-by-customer-id,
+		- update,
+
+
+
 
 
 	_______________________

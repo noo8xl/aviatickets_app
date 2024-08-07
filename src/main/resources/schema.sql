@@ -210,6 +210,7 @@ CREATE TABLE IF NOT EXISTS purchase (
     created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     payment_status BOOLEAN NULL DEFAULT 0,
+    quantity SMALLINT NOT NULL,
     price FLOAT NOT NULL,
     purchase_id INT NOT NULL,
     FOREIGN KEY (purchase_id) REFERENCES purchase (id),
