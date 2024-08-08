@@ -1,6 +1,6 @@
 package aviatickets.app.payment;
 
-class PaymentInteraction {
+interface PaymentInteraction {
 
 }
 

@@ -21,8 +21,11 @@ public class SecurityConfiguration {
 	// <- authless routes
 	private final String[] authlessRoutes = {
 			"/auth/**",
-			"/flight/get-hot/**",
-			"/find-filtered-flight/**"
+			"/flights/get-hot/**",
+			"/flights/find-filtered-flight/**",
+
+
+//			"/flights/create-new-flight/", // <- 4 the tests only
 	};
 
 	// <- admin permission only **

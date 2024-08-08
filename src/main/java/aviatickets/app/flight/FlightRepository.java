@@ -19,7 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 @Repository
-class FlightRepository {
+class FlightRepository implements FlightInteraction {
 
 	@Value("${spring.datasource.url}")
 	private String dbUrl;
@@ -44,9 +44,9 @@ class FlightRepository {
 // ################################# customer area  #######################################
 // ########################################################################################
 
-
+	@Override
 	@Cacheable("hotFlights")
-  public List<ShortFlightItemDto> getHotFlights(Short offset) throws SQLException, ClassNotFoundException {
+  public List<ShortFlightItemDto> getHotFlightsList(Short offset) throws SQLException, ClassNotFoundException {
 
 		List<ShortFlightItemDto> flights = new ArrayList<>();
 		String sql = "SELECT * FROM SHORT_FLIGHT_DATA " +
@@ -84,6 +84,7 @@ class FlightRepository {
 		return flights;
   }
 
+	@Override
 	@Cacheable("filteredFlights")
 	public List<ShortFlightItemDto> findFlightsByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
 
@@ -132,12 +133,25 @@ class FlightRepository {
     return flights;
   }
 
+	@Override
+	public FlightsItem getFlightDetails(String flightNumber) throws SQLException, ClassNotFoundException {
+		return null;
+	}
+
+	@Override
+	public FlightsItem getFlightDetails(Integer id) throws SQLException, ClassNotFoundException {
+		return null;
+	}
+
+
 // ########################################################################################
 // ################################## admin area only #####################################
 // ########################################################################################
 
+
 	// createNewFlight -> add new flight and its details to db as admin
-	public void createNewFlight(FlightsItem flight) throws RuntimeException, SQLException, ClassNotFoundException {
+	@Override
+	public void createFlight(FlightsItem flight) throws RuntimeException, SQLException, ClassNotFoundException {
 
 		Integer flightId = this.getFlightId(flight.flightNumber());
 		if(flightId != 0) {
@@ -163,13 +177,24 @@ class FlightRepository {
 
 	}
 
-// saveAircraft -> save new aircraft to db if it doesn't exist by:
-// -> check if aircraft exists by get an aircraft ID
-// -> if id != 0 --> continue, else --> stop
-// -> then create a new aircraft
-// get an id again and validate it
-// -> save aircraft details data such as features and cabin class
-// -> check updated counter before end
+
+	@Override
+	public void deleteFlight(Integer id) throws SQLException, ClassNotFoundException {
+
+	}
+
+	@Override
+	public void updateFlight(FlightsItem flight) throws SQLException, ClassNotFoundException {
+
+	}
+
+	// saveAircraft -> save new aircraft to db if it doesn't exist by:
+	// -> check if aircraft exists by get an aircraft ID
+	// -> if id != 0 --> continue, else --> stop
+	// -> then create a new aircraft
+	// get an id again and validate it
+	// -> save aircraft details data such as features and cabin class
+	// -> check updated counter before end
 	private void saveAircraft(Aircraft aircraft) throws RuntimeException, SQLException, ClassNotFoundException {
 
 		int updated = 0;
@@ -421,26 +446,26 @@ class FlightRepository {
 //		return this.getItemId(sql, flightNumber);
 //	}
 
-	// getItemId -> get item id from db (airport, aircraft, flight)
-	private Integer getItemId(String sql, String filter) throws SQLException, ClassNotFoundException {
-		int itemId = 0;
-		try {
-			this.initConnection((byte) 0);
+// getItemId -> get item id from db (airport, aircraft, flight)
+private Integer getItemId(String sql, String filter) throws SQLException, ClassNotFoundException {
+	int itemId = 0;
+	try {
+		this.initConnection((byte) 0);
 
-			PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
-			preparedStatement.setString(1, filter);
+		PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
+		preparedStatement.setString(1, filter);
 
-			this.resultSet = preparedStatement.executeQuery();
-			while(this.resultSet.next()) {
-				itemId = this.resultSet.getInt("id");
-			}
-		} catch (Exception e ) {
-			throw e;
-		} finally {
-			this.closeAndStopDBInteraction();
+		this.resultSet = preparedStatement.executeQuery();
+		while(this.resultSet.next()) {
+			itemId = this.resultSet.getInt("id");
 		}
-		return itemId;
+	} catch (Exception e ) {
+		throw e;
+	} finally {
+		this.closeAndStopDBInteraction();
 	}
+	return itemId;
+}
 
 // ########################################################################################
 // ########################## end of get item id by filter ################################

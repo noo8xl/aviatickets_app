@@ -1,6 +1,5 @@
 package aviatickets.app.auth;
 
-
 import java.sql.SQLException;
 
 import aviatickets.app.actions.entity.ActionLog;

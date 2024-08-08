@@ -8,6 +8,7 @@ import aviatickets.app.flight.dto.request.GetFilteredFlight;
 import aviatickets.app.flight.dto.response.ShortFlightItemDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import aviatickets.app.exception.NotFoundException;
@@ -24,47 +25,30 @@ public class FlightController {
     this.flightService = flightService;
   }
 
-  // getHotList -> get a list of a cheapest flights of the day by request
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-hot/{offset}/")
-  List<ShortFlightItemDto> getHotList(@PathVariable Short offset) {
-		System.out.println("test routes");
-    try {
-      List<ShortFlightItemDto> flights = flightService.getHotFlightList(offset);
-      if (flights.isEmpty()) {
-        throw new NotFoundException("Empty set.");
-      }
-      return flights;
-    } catch (Exception e) {
-      throw new ServerErrorException();
-    }
+	ResponseEntity<List<ShortFlightItemDto>> getHotList(@PathVariable Short offset) throws SQLException, ClassNotFoundException {
+		return ResponseEntity.ok(this.flightService.getHotFlightsList(offset));
   }
 
-  // findFlight -> find flights by request body filter, and return list of it
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/find-filtered-flight/")
-	List<ShortFlightItemDto> findFlight(@Valid @RequestBody GetFilteredFlight filter) {
-    try {
-      List<ShortFlightItemDto> flights = flightService.findFlightByFilter(filter);
-      if (flights.isEmpty()) {
-        throw new NotFoundException("Can't find any data.");
-      }
-      return flights;
-    } catch (Exception e) {
-      throw new ServerErrorException();
-    }
+	ResponseEntity<List<ShortFlightItemDto>> findFlight(@Valid @RequestBody GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
+		return ResponseEntity.ok(this.flightService.findFlightsByFilter(filter));
   }
 
-	// findFlight -> find flights by request body filter, and return list of it
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/find-filtered-flight/{flightNumber}")
-	FlightsItem findFlight(@PathVariable String flightNumber ) {
-		try {
-			return flightService.getFlightDetails(flightNumber);
-		} catch (Exception e) {
-			throw new ServerErrorException();
-		}
+	@GetMapping("/find-filtered-flight/{flightNumber}/")
+	ResponseEntity<FlightsItem> findFlightByNumber(@PathVariable String flightNumber ) throws SQLException, ClassNotFoundException {
+		return ResponseEntity.ok(this.flightService.getFlightDetails(flightNumber));
 	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/find-filtered-flight/{id}/")
+	ResponseEntity<FlightsItem> findFlightById(@PathVariable Integer id ) throws SQLException, ClassNotFoundException {
+		return ResponseEntity.ok(this.flightService.getFlightDetails(id));
+	}
+
 
 
 	// #############################################################################
@@ -75,7 +59,21 @@ public class FlightController {
   @PostMapping("/create-new-flight/")
   void createNewFlight(@Valid @RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
 		System.out.println(flight);
-		flightService.createFlight(flight);
+		this.flightService.createFlight(flight);
+	}
+
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PatchMapping("/update-flight/{id}/")
+	void updateFlightById(
+			@PathVariable Integer id, @Valid @RequestBody FlightsItem flight
+	) throws SQLException, ClassNotFoundException {
+		this.flightService.updateFlight(flight);
+	}
+
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@PatchMapping("/delete-flight/{id}/")
+	void updateFlightById(@PathVariable Integer id) throws SQLException, ClassNotFoundException {
+		this.flightService.deleteFlight(id);
 	}
 
 

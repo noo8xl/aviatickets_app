@@ -19,13 +19,13 @@ public class FlightService implements FlightInteraction {
   }
 
 	@Override
-  public List<ShortFlightItemDto> getHotFlightList(Short offset) throws SQLException, ClassNotFoundException {
-    return flightRepository.getHotFlights(offset);
+  public List<ShortFlightItemDto> getHotFlightsList(Short offset) throws SQLException, ClassNotFoundException {
+    return this.flightRepository.getHotFlightsList(offset);
   }
 
 	@Override
-  public List<ShortFlightItemDto> findFlightByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
-    return flightRepository.findFlightsByFilter(filter);
+  public List<ShortFlightItemDto> findFlightsByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
+    return this.flightRepository.findFlightsByFilter(filter);
   }
 
 	@Override
@@ -35,12 +35,20 @@ public class FlightService implements FlightInteraction {
 	}
 
 	@Override
+	public FlightsItem getFlightDetails(Integer id) throws SQLException, ClassNotFoundException {
+		return null;
+	}
+
+
+	// ########################################################################################################
+
+	@Override
 	public void createFlight(FlightsItem flight) throws RuntimeException, SQLException, ClassNotFoundException {
-		flightRepository.createNewFlight(flight);
+		this.flightRepository.createFlight(flight);
 	}
 
 	@Override
-	public void deleteFlight(FlightsItem flight) {
+	public void deleteFlight(Integer id) {
 
 	}
 

@@ -1,5 +1,13 @@
 
 
+// call subsequences:
+
+	-> create user
+	---> update mysql rights manually
+	-> add one more user
+	-> sign user to get token *
+	-> create flight
+	->
 
 test :
 
@@ -38,7 +46,7 @@ ________________________________________
 ________________________________________
 -> purchases:
 	- create,
-	- confirm  (+ create QR-code),
+	- confirm  (+ create QR-code), +++
 	- getDetails,
 	- getHistory,
 	AS ADMIN:
@@ -46,7 +54,7 @@ ________________________________________
 		- update,
 		- delete
 
-________________________________________
+________________________________________ ???
 -> email service:
 	- sign up email,
 	- change pwd,

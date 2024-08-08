@@ -7,10 +7,18 @@ import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
 import aviatickets.app.util.HelperService;
+
 import org.springframework.stereotype.Service;
 
+import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.util.List;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 @Service
 class PurchaseService implements PurchaseInteraction {
@@ -34,14 +42,17 @@ class PurchaseService implements PurchaseInteraction {
 		this.purchaseRepository.create(dto);
 	}
 
-	public void confirm(Integer id) throws SQLException, ClassNotFoundException {
+	// confirm a purchase and return str
+	public BufferedImage confirm(Integer id) throws SQLException, ClassNotFoundException, WriterException {
 		this.confirmPurchase(id);
-//		return this.helperService.generateQRCode("123");
+		QRCodeWriter barcodeWriter = new QRCodeWriter();
+
+		BitMatrix bitMatrix = barcodeWriter.encode("test str", BarcodeFormat.QR_CODE, 200, 200);
+		return MatrixToImageWriter.toBufferedImage(bitMatrix);
 	}
 
 	@Override
 	public void confirmPurchase(Integer id) throws SQLException, ClassNotFoundException {
-		// -> should return QR-code here after confirmation
 		this.purchaseRepository.confirmPurchase(id);
 		Purchase p = this.purchaseRepository.getDetails(id);
 		Customer c = this.customerService.findOne(p.getCustomerId());
@@ -52,7 +63,6 @@ class PurchaseService implements PurchaseInteraction {
 	public Purchase getDetails(Integer id) throws SQLException, ClassNotFoundException {
 		return this.purchaseRepository.getDetails(id);
 	}
-
 
 	@Override
 	public List<Purchase> getHistory(Integer customerId, Short skip, Short limit) throws SQLException, ClassNotFoundException {

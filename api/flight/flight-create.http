@@ -3,7 +3,6 @@
 ### Add a new flight with transfer (a few legs)
 POST http://localhost:9832/flights/create-new-flight/
 Content-Type: application/json
-Authorization: Bearer
 
 
 {

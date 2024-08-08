@@ -46,7 +46,8 @@ public class Customer implements UserDetails {
 
 	public void setCustomer(
 			Integer id, String name, String email, String password,
-			Date createdAt, Date updatedAt, Role role, Boolean isBanned, Boolean twoStepStatus
+//			Date createdAt, Date updatedAt, Role role,
+			Boolean isBanned, Boolean twoStepStatus
 	) {
 		if (Boolean.FALSE.equals(id == null)) {
 			this.id = id;
@@ -55,15 +56,15 @@ public class Customer implements UserDetails {
 		this.email = email;
 		this.password = password;
 
-		if (Boolean.FALSE.equals(createdAt == null)) {
-			this.createdAt = createdAt;
-		}
-		if (Boolean.FALSE.equals(updatedAt == null)) {
-			this.updatedAt = updatedAt;
-		}
-		if (Boolean.FALSE.equals(role == null)) {
-			this.role = role;
-		}
+//		if (Boolean.FALSE.equals(createdAt == null)) {
+//			this.createdAt = createdAt;
+//		}
+//		if (Boolean.FALSE.equals(updatedAt == null)) {
+//			this.updatedAt = updatedAt;
+//		}
+//		if (Boolean.FALSE.equals(role == null)) {
+//			this.role = role;
+//		}
 		if (Boolean.FALSE.equals(isBanned == null)) {
 			this.isBanned = isBanned;
 		}

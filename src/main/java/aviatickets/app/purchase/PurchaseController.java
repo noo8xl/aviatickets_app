@@ -3,11 +3,13 @@ package aviatickets.app.purchase;
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
+import com.google.zxing.WriterException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -31,10 +33,9 @@ public class PurchaseController {
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PostMapping(value = {"/confirm-purchase/{id}/"}, produces = MediaType.IMAGE_PNG_VALUE)
-	public void confirmPurchase(
-			@PathVariable Integer id) throws SQLException, ClassNotFoundException {
-		// should return a QR-code
-		this.purchaseService.confirm(id);
+	public ResponseEntity<BufferedImage> confirmPurchase(
+			@PathVariable Integer id) throws SQLException, ClassNotFoundException, WriterException {
+		return new ResponseEntity<>(this.purchaseService.confirm(id), HttpStatus.OK);
 	}
 
 	@ResponseStatus(HttpStatus.OK)

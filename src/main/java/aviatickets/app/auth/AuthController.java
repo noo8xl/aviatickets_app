@@ -11,7 +11,6 @@ import aviatickets.app.auth.dto.request.SignUpDto;
 import aviatickets.app.auth.dto.response.SignInResponse;
 import jakarta.validation.Valid;
 
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {

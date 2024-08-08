@@ -10,19 +10,23 @@ import aviatickets.app.flight.entity.FlightsItem;
 interface FlightInteraction {
 
   // getHotFlightList -> get list of cheapest today flights
-  List<ShortFlightItemDto> getHotFlightList(Short offset) throws SQLException, ClassNotFoundException;
+  List<ShortFlightItemDto> getHotFlightsList(Short offset) throws SQLException, ClassNotFoundException;
 
   // findFlightByFilter -> get list of flights by filter
-  List<ShortFlightItemDto> findFlightByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException;
-
+  List<ShortFlightItemDto> findFlightsByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException;
 
 	// getFlightDetails -> get flight detailed data (FULL_FLIGHT_INFO)
 	FlightsItem getFlightDetails(String flightNumber) throws SQLException, ClassNotFoundException;
+	FlightsItem getFlightDetails(Integer id) throws SQLException, ClassNotFoundException;
 
-	void deleteFlight(FlightsItem flight);
+// ##########################################################################################################
+// ##################################### ADMIN permission only ##############################################
+// ##########################################################################################################
 
-	void updateFlight(FlightsItem flight);
+	void deleteFlight(Integer id) throws SQLException, ClassNotFoundException;
 
-	void createFlight(FlightsItem flight) throws Exception;
+	void updateFlight(FlightsItem flight) throws SQLException, ClassNotFoundException;
+
+	void createFlight(FlightsItem flight) throws SQLException, ClassNotFoundException;
 
 }

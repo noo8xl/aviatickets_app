@@ -3,22 +3,20 @@ package aviatickets.app.util;
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.customer.entity.Role;
+import aviatickets.app.flight.entity.FlightsItem;
 import aviatickets.app.purchase.entity.Purchase;
+
 import org.springframework.stereotype.Component;
 
-import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Random;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-
 @Component
 public class HelperService {
+
+	private final String path = System.getProperty("user.dir") + "/resources/static/tickets/";
 
 	public HelperService() {}
 
@@ -45,17 +43,17 @@ public class HelperService {
 	// getCustomerEntityFromResultSet -> get Customer entity
 	public Customer getCustomerEntityFromResultSet(ResultSet rs) throws SQLException {
 		Customer c = new Customer();
-		Role r = Objects.equals(rs.getString("role"), "USER") ? Role.USER : Role.ADMIN;
-		System.out.println("role is -> " + r);
+//		Role r = Objects.equals(rs.getString("role"), "USER") ? Role.USER : Role.ADMIN;
+//		System.out.println("role is -> " + r);
 
 		c.setCustomer(
 				rs.getInt("id"),
 				rs.getString("name"),
 				rs.getString("email"),
 				rs.getString("password"),
-				rs.getDate("created_at"),
-				rs.getDate("updated_at"),
-				r,
+//				rs.getDate("created_at"),
+//				rs.getDate("updated_at"),
+//				r,
 				rs.getBoolean("is_banned"),
 				rs.getBoolean("two_step_auth_status")
 		);
@@ -91,13 +89,9 @@ public class HelperService {
 		return p.getPurchase();
 	}
 
-	public BufferedImage generateQRCode(String barcode)
-			throws Exception {
-
-		QRCodeWriter barcodeWriter = new QRCodeWriter();
-		BitMatrix bitMatrix =
-				barcodeWriter.encode(barcode, BarcodeFormat.QR_CODE, 200, 200);
-
-		return MatrixToImageWriter.toBufferedImage(bitMatrix);
+	//
+	public FlightsItem getFlightItemFromResultSet(ResultSet rs) throws SQLException {
+		return null;
 	}
+
 }

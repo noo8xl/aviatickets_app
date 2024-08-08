@@ -1,0 +1,24 @@
+{
+  "signUps": [
+    {
+      "name": "user1",
+      "email": "email@example.com",
+      "password": "qwerty123456"
+    },
+    {
+      "name": "user2",
+      "email": "mail@ex.com",
+      "password": "pwd123qwerty"
+    },
+    {
+      "name": "user3",
+      "email": "email@test.com",
+      "password": "some123pwdHere"
+    },
+    {
+      "name": "user4",
+      "email": "test@email.com",
+      "password": "qwe123rtyaa"
+    }
+  ]
+}

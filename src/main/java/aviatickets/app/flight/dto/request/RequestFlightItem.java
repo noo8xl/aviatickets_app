@@ -16,7 +16,7 @@ public record RequestFlightItem(
 		List<Leg> itinerary,
 		Aircraft aircraft,
 
-		Integer totalDistance, // => leg distance += leg distance
+		Short totalDistance, // => leg distance += leg distance
 		String totalDuration,
 		Price price,
 		Short passengerCount,

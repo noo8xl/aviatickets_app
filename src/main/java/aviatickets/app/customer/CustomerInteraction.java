@@ -15,8 +15,6 @@ interface CustomerInteraction {
 
   // get customer data by id
   Customer findOne(Integer id) throws SQLException, ClassNotFoundException;
-
-  // get customer data by email
   Customer findOne(String email) throws SQLException, ClassNotFoundException;
 
   // update customer profile data

@@ -49,7 +49,7 @@ public class DatabaseInit {
 			if (dto.connection() != null) {
 				dto.connection().close();
 			}
-			System.out.println("connection is  closed");
+//			System.out.println("connection is  closed");
 		} catch (Exception e) {
 			throw e;
 		}
@@ -73,7 +73,7 @@ public class DatabaseInit {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Statement statement = connection.createStatement();
 
-			System.out.println("database is connected.");
+//			System.out.println("database is connected.");
 			return new DatabaseDto(connection, statement, statement.getResultSet());
 		} catch (ClassNotFoundException | SQLException e) {
 			throw e;

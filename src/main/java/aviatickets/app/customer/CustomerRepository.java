@@ -119,10 +119,10 @@ class CustomerRepository implements CustomerInteraction {
   }
 
   public Customer findOne(Integer id) throws SQLException, ClassNotFoundException {
-		System.out.println("customer from repo --> ");
+//		System.out.println("customer from repo --> ");
 		Customer c = null;
 		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, "
-				+ "customer_details.is_banned, customer_two_step_auth.status as two_step_auth_status "
+				+ "customer_details.is_banned, customer_details.role, customer_two_step_auth.status as two_step_auth_status "
 				+ "FROM customer "
 				+ "JOIN customer_details ON customer.id = customer_details.customer_id "
 				+ "JOIN customer_two_step_auth ON customer.email = customer_two_step_auth.email "
@@ -148,10 +148,10 @@ class CustomerRepository implements CustomerInteraction {
   }
 
   public Customer findOne(String email) throws SQLException, ClassNotFoundException {
-		System.out.println("customer from repo --> ");
+//		System.out.println("customer from repo --> ");
 		Customer c = null;
 		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, "
-				+ "customer_details.is_banned, customer_two_step_auth.status as two_step_auth_status "
+				+ "customer_details.is_banned, customer_details.role, customer_two_step_auth.status as two_step_auth_status "
 				+ "FROM customer "
 				+ "JOIN customer_details ON customer.id=customer_details.customer_id "
 				+ "JOIN customer_two_step_auth ON customer.email=customer_two_step_auth.email "
