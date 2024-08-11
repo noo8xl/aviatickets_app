@@ -3,33 +3,28 @@ package aviatickets.app.customer;
 import java.sql.SQLException;
 import java.util.List;
 
-import aviatickets.app.actions.ActionService;
+import aviatickets.app.actions.ActionInterface;
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
-import aviatickets.app.email.EmailService;
-import aviatickets.app.util.HelperService;
+import aviatickets.app.email.EmailInterface;
+import aviatickets.app.util.HelperInterface;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.exception.ServerErrorException;
 
+@RequiredArgsConstructor
 @Service
-public class CustomerService implements CustomerInteraction {
+public class CustomerService implements CustomerInterface {
 
 //  private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
-  private final CustomerRepository customerRepository;
-	private final EmailService emailService;
-	private final HelperService helperService;
-	private final ActionService actionService;
-
-	public CustomerService(CustomerRepository customerRepository, EmailService emailService, HelperService helperService, ActionService actionService) {
-		this.customerRepository = customerRepository;
-		this.emailService = emailService;
-		this.helperService = helperService;
-		this.actionService = actionService;
-	}
+  private final CustomerRepository customerRepository; // ->
+	private final EmailInterface emailService;
+	private final HelperInterface helperService;
+	private final ActionInterface actionService;
 
 	@Override
   public void save(String name, String password, String email) throws SQLException, ClassNotFoundException {
@@ -67,7 +62,7 @@ public class CustomerService implements CustomerInteraction {
 	public void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
 		this.customerRepository.update2faStatus(dto);
 		ActionLog a = this.helperService.setActionLog(dto.email(),"Customer 2fa status was changed! Current status is: " + dto.status() + ".", dto.customerId());
-		this.actionService.saveCustomerAction(a);
+		this.actionService.saveLog(a);
 		this.emailService.sendTwoStepCode(dto.email());
 	}
 

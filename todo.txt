@@ -4,9 +4,21 @@
 -> mysql migrations via java +++
 -> test User area  ++
 
+-> setup jwt configs **
+
+-> bye ticket form **
+-> generate ticket QR-code to customer **
+-> send email with QR-code to customer **
+-> bought history as guest or as signed customer ??
+
 -> create mock data +++ <
 -> create tables  +++ <
 -> test requests via $curl +++ <
+
+-> actions -> save, get +++
+-> logs -> save ++
+
+
 
 -> setup mysql container ++ <
 -> create sql views to store flight data in the most convenient way +++
@@ -14,23 +26,29 @@
 _________________________________________________________________________________
 ---- TODO:
 
+-> S - Single-Responsibility principle ++ (	A class should have one and only one reason to change, meaning that
+																						a class should have only one job.)
+-> O - Open-Closed principle ++ (	Objects or entities should be open for extension but closed for modification	)
+-> L - Liskov Substitution principle
+-> I - Interface Segregation principle ++ (client should be forced to impl an interface that it doesn't use)
+-> D - Dependency inversion principle ++ (depends on abstract, not from concretes)
+
+----------------------------------------------------------------------------------
+---- TODO:
+
 -> create complicated joined select queries to get filtered flight data **
 -> research how to get the closest flight by location near me **
 
 
--> bye ticket form **
--> generate ticket QR-code to customer **
--> send email with QR-code to customer **
--> bought history as guest or as signed customer ??
+
 
 -> auth area ---  (almost done)
 
 -> setup redis configs **
 -> enable caching to flight area ***
--> setup jwt configs **
 
--> actions -> save, get +++
--> logs -> save ??
+
+
 -> notifications -> via email ?*
 
 ####################################### -- >

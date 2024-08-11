@@ -2,25 +2,22 @@ package aviatickets.app.util;
 
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
-import aviatickets.app.customer.entity.Role;
 import aviatickets.app.flight.entity.FlightsItem;
 import aviatickets.app.purchase.entity.Purchase;
 
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Random;
 
 @Component
-public class HelperService {
+@NoArgsConstructor
+public class HelperService implements HelperInterface {
 
-	private final String path = System.getProperty("user.dir") + "/resources/static/tickets/";
+//	private final String path = System.getProperty("user.dir") + "/resources/static/tickets/";
 
-	public HelperService() {}
-
-  // generateUniqueString -> generate new pwd OR 2fa code
   public String generateUniqueString(Integer len) {
 		String charList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		StringBuilder str = new StringBuilder();
@@ -33,14 +30,17 @@ public class HelperService {
   }
 
 
-	// setActionLog -> create new ActionLog entity and save it to db
 	public ActionLog setActionLog(String email, String action, Integer customerId) {
 		ActionLog a = new ActionLog();
 		a.setAction(null, email, null, action, customerId);
-		return a.getAction();
+		return a.getActionEntity();
 	}
 
-	// getCustomerEntityFromResultSet -> get Customer entity
+// ####################################################################################################
+// ################################ get entity from sql.resultSet area ################################
+// ####################################################################################################
+
+
 	public Customer getCustomerEntityFromResultSet(ResultSet rs) throws SQLException {
 		Customer c = new Customer();
 //		Role r = Objects.equals(rs.getString("role"), "USER") ? Role.USER : Role.ADMIN;
@@ -60,7 +60,6 @@ public class HelperService {
 		return c.getCustomer();
 	}
 
-	// getActionEntityFromResultSet -> get ActionLog entity
 	public ActionLog getActionEntityFromResultSet(ResultSet rs) throws SQLException {
 		ActionLog a = new ActionLog();
 		a.setAction(
@@ -70,10 +69,9 @@ public class HelperService {
 			rs.getString("action"),
 			rs.getInt("customer_id")
 		);
-		return a.getAction();
+		return a.getActionEntity();
 	}
 
-	// getPurchaseEntityFromResultSet -> get PurchaseDetail entity
 	public Purchase getPurchaseEntityFromResultSet(ResultSet rs) throws SQLException {
 		Purchase p = new Purchase();
 		p.setPurchase(
@@ -89,9 +87,17 @@ public class HelperService {
 		return p.getPurchase();
 	}
 
-	//
-	public FlightsItem getFlightItemFromResultSet(ResultSet rs) throws SQLException {
-		return null;
+
+	public FlightsItem getFlightItemEntityFromResultSet(ResultSet rs) throws SQLException {
+		FlightsItem flight = new FlightsItem();
+//		flight.setItinerary();
+		return flight;
 	}
+
+
+// ####################################################################################################
+// #################################### end of sql.resultSet area #####################################
+// ####################################################################################################
+
 
 }

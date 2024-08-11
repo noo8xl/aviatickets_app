@@ -25,7 +25,7 @@ public class SecurityConfiguration {
 			"/flights/find-filtered-flight/**",
 
 
-//			"/flights/create-new-flight/", // <- 4 the tests only
+//			"/flights/create-new-flight/", // -> test only
 	};
 
 	// <- admin permission only **

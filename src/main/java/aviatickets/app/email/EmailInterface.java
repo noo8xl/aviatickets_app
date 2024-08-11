@@ -3,7 +3,7 @@ package aviatickets.app.email;
 import aviatickets.app.customer.dto.ChangePwdDto;
 import aviatickets.app.email.entity.Notification;
 
-interface EmailInteraction {
+public interface EmailInterface {
 
   // -> send forgot password email 
   void sendForgotPwdEmail(String email, String pwd);

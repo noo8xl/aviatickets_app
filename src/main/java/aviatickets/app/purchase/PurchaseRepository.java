@@ -1,7 +1,7 @@
 package aviatickets.app.purchase;
 
-import aviatickets.app.databaseInit.DatabaseInit;
-import aviatickets.app.databaseInit.dto.DatabaseDto;
+import aviatickets.app.database.Database;
+import aviatickets.app.database.dto.DBConnectionDto;
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
@@ -19,11 +19,11 @@ class PurchaseRepository implements PurchaseInteraction {
 		private Statement statement = null;
 		private ResultSet resultSet = null;
 
-		private final DatabaseInit databaseInit;
+		private final Database databaseInit;
 		private final HelperService helperService;
 
-	PurchaseRepository(DatabaseInit databaseInit, HelperService helperService) {
-		this.databaseInit = databaseInit;
+	PurchaseRepository(Database database, HelperService helperService) {
+		this.databaseInit = database;
 		this.helperService = helperService;
 	}
 
@@ -270,7 +270,7 @@ class PurchaseRepository implements PurchaseInteraction {
 
 	// initConnection -> init database connection before use any repo method
 	private void initConnection(Byte type) throws ClassNotFoundException, SQLException {
-		DatabaseDto dto = this.databaseInit.initConnection(type);
+		DBConnectionDto dto = this.databaseInit.initConnection(type);
 		this.connection = dto.connection();
 		this.statement = dto.statement();
 		this.resultSet = dto.resultSet();
@@ -278,7 +278,7 @@ class PurchaseRepository implements PurchaseInteraction {
 
 	// closeAndStopDBInteraction -> close any active connection before end interaction with each repository method
 	private void closeAndStopDBInteraction() throws SQLException {
-		DatabaseDto dto = new DatabaseDto(this.connection, this.statement, this.resultSet);
+		DBConnectionDto dto = new DBConnectionDto(this.connection, this.statement, this.resultSet);
 		this.databaseInit.closeAndStopDBInteraction(dto);
 	}
 

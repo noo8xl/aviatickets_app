@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS airport (
   airport_name varchar(255) NOT NULL,
   city varchar(50) NOT NULL,
   country varchar(100) NOT NULL,
-  terminal CHAR NOT NULL,
+  terminal varchar(5) NOT NULL,
   timezone varchar(50) NOT NULL,
   PRIMARY KEY (id)
 );
@@ -71,33 +71,33 @@ CREATE TABLE IF NOT EXISTS airport_location (
 );
 
 CREATE TABLE IF NOT EXISTS airport_contacts (
-	id INT NOT NULL AUTO_INCREMENT,
-	phone varchar(50) NOT NULL,
-	email varchar(150) NOT NULL,
-	website varchar(255) NOT NULL,
+    id INT NOT NULL AUTO_INCREMENT,
+    phone varchar(50) NOT NULL,
+    email varchar(150) NOT NULL,
+    website varchar(255) NOT NULL,
     airport_id INT NOT NULL,
-	FOREIGN KEY (airport_id) REFERENCES airport (id),
-	PRIMARY KEY (id)
+    FOREIGN KEY (airport_id) REFERENCES airport (id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS aircraft (
-  id INT NOT NULL AUTO_INCREMENT,
-  model varchar(50) NOT NULL,
-  registration varchar(50) NOT NULL,
-  seating_capacity SMALLINT NOT NULL,
-  year_of_manufacture SMALLINT NOT NULL,
-  PRIMARY KEY (id)
+    id INT NOT NULL AUTO_INCREMENT,
+    model varchar(50) NOT NULL,
+    registration varchar(50) NOT NULL,
+    seating_capacity SMALLINT NOT NULL,
+    year_of_manufacture SMALLINT NOT NULL,
+    PRIMARY KEY (id)
 );
 
 
 CREATE TABLE IF NOT EXISTS aircraft_features (
-  id INT NOT NULL AUTO_INCREMENT,
-  wifi Boolean NOT NULL,
-  entertainment Boolean NOT NULL,
-  power_outlets Boolean NOT NULL,
-  aircraft_id INT NOT NULL,
-  FOREIGN KEY (aircraft_id) REFERENCES aircraft (id),
-  PRIMARY KEY (id)
+    id INT NOT NULL AUTO_INCREMENT,
+    wifi Boolean NOT NULL,
+    entertainment Boolean NOT NULL,
+    power_outlets Boolean NOT NULL,
+    aircraft_id INT NOT NULL,
+    FOREIGN KEY (aircraft_id) REFERENCES aircraft (id),
+    PRIMARY KEY (id)
 );
 
 

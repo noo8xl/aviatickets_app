@@ -6,11 +6,15 @@ import jdk.jfr.Timestamp;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
+@NoArgsConstructor
 public class ActionLog {
 	@Positive
 	private Integer id;
+	@Getter
 	@NotEmpty
 	@Email
 	private String email;
@@ -18,12 +22,14 @@ public class ActionLog {
 	@Timestamp
 	private Date date = new Date(System.currentTimeMillis());
 
+	@Getter
 	@NotEmpty
 	private String action;
+	@Getter
 	@Positive
 	private Integer customerId;
 
-	public void setAction(Integer id, String email, Date date, String action, Integer customerId) {
+public void setAction(Integer id, String email, Date date, String action, Integer customerId) {
 		this.id = id;
 		this.email = email;
 		this.action = action;
@@ -34,20 +40,8 @@ public class ActionLog {
 		}
 	}
 
-	public ActionLog getAction() {
+	public ActionLog getActionEntity() {
 		return this;
-	}
-
-	public String getCustomerEmail(){
-		return this.email;
-	}
-
-	public String getCustomerAction(){
-		return this.action;
-	}
-
-	public Integer getCustomerId(){
-		return this.customerId;
 	}
 
 }

@@ -1,6 +1,6 @@
 package aviatickets.app.config;
 
-import aviatickets.app.customer.CustomerService;
+import aviatickets.app.customer.CustomerInterface;
 import aviatickets.app.customer.entity.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +20,7 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-
-private final CustomerService customerService;
+	private final CustomerInterface customerService;
 
 	@Bean
 	public UserDetailsService userDetailsService() {
@@ -30,7 +29,7 @@ private final CustomerService customerService;
 				Customer c = this.customerService.findOne(username);
 				if (Boolean.TRUE.equals(c == null)) {
 					throw new UsernameNotFoundException(username);
-				} else return c;
+				} else return c.getCustomer();
 			} catch (SQLException | ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}

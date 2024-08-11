@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import jdk.jfr.Timestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +16,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+@Getter
+@NoArgsConstructor
 public class Customer implements UserDetails {
 	@Getter
 	@Positive
@@ -27,6 +30,7 @@ public class Customer implements UserDetails {
 	@NotEmpty
 	@Email
 	private String email;
+	@Getter
 	@NotEmpty
 	@Length(min = 8, max = 30)
 	private String password;
@@ -42,7 +46,6 @@ public class Customer implements UserDetails {
 	@Getter
 	private Boolean twoStepStatus = false;
 
-	public Customer(){}
 
 	public void setCustomer(
 			Integer id, String name, String email, String password,
@@ -87,11 +90,6 @@ public class Customer implements UserDetails {
 	}
 
 	@Override
-	public String getPassword() {
-		return this.password;
-	}
-
-	@Override
 	public String getUsername() {
 		return this.email;
 	}
@@ -109,25 +107,25 @@ public class Customer implements UserDetails {
 //	}
 
 // ########################### end of getters area ##################################
-
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
+//
+//
+//	@Override
+//	public boolean isAccountNonExpired() {
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean isAccountNonLocked() {
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean isCredentialsNonExpired() {
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean isEnabled() {
+//		return true;
+//	}
 }

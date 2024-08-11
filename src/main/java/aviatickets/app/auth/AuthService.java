@@ -2,8 +2,14 @@ package aviatickets.app.auth;
 
 import java.sql.SQLException;
 
+import aviatickets.app.actions.ActionInterface;
 import aviatickets.app.actions.entity.ActionLog;
+import aviatickets.app.customer.CustomerInterface;
+import aviatickets.app.email.EmailInterface;
+import aviatickets.app.jwt.JwtInterface;
 import aviatickets.app.jwt.JwtService;
+import aviatickets.app.util.HelperInterface;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.actions.ActionService;
@@ -13,29 +19,17 @@ import aviatickets.app.auth.dto.response.SignInResponse;
 import aviatickets.app.customer.CustomerService;
 import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.email.EmailService;
-import aviatickets.app.util.HelperService;
 
+@RequiredArgsConstructor
 @Service
-class AuthService implements AuthInteraction {
+class AuthService implements AuthInterface {
 
-	private final CustomerService customerService;
-	private final EmailService emailService;
-	private final ActionService actionService;
-	private final HelperService helperService;
-	private final JwtService jwtService;
+	private final CustomerInterface customerService;
+	private final ActionInterface actionService;
+	private final EmailInterface emailService;
+	private final HelperInterface helperService;
 
-  AuthService(
-			EmailService emailService, CustomerService customerService,
-			ActionService actionService, HelperService helperService,
-			JwtService jwtService
-	) {
-    this.emailService = emailService;
-    this.customerService = customerService;
-    this.actionService = actionService;
-		this.helperService = helperService;
-		this.jwtService = jwtService;
-	}
-
+	private final JwtInterface jwtService;
 
 	@Override
   public SignInResponse signIn(SignInDto dto) throws SQLException, ClassNotFoundException {
@@ -65,7 +59,7 @@ class AuthService implements AuthInteraction {
 		this.customerService.save(dto.name(), dto.password(), dto.email());
 		Customer c = this.customerService.findOne(dto.email());
 		ActionLog a = this.helperService.setActionLog(c.getUsername(), "User successfully signed up.", c.getId());
-		this.actionService.saveCustomerAction(a);
+		this.actionService.saveLog(a);
 		this.emailService.sendRegistrationEmail(c.getUsername());
 	}
 
@@ -74,7 +68,7 @@ class AuthService implements AuthInteraction {
     String pwd = this.helperService.generateUniqueString(16);
     Integer customerId = this.customerService.updatePassword(email, pwd);
 		ActionLog a = this.helperService.setActionLog(email, "Password has been changed.", customerId);
-		this.actionService.saveCustomerAction(a);
+		this.actionService.saveLog(a);
 		this.emailService.sendForgotPwdEmail(email, pwd);
 	}
 

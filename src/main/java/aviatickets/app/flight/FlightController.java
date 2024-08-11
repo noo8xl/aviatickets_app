@@ -7,6 +7,7 @@ import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
 import aviatickets.app.flight.dto.response.ShortFlightItemDto;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +16,12 @@ import aviatickets.app.exception.NotFoundException;
 import aviatickets.app.exception.ServerErrorException;
 import aviatickets.app.flight.entity.FlightsItem;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/flights")
 public class FlightController {
 
-  public final FlightService flightService;
-
-  public FlightController(FlightService flightService) {
-    this.flightService = flightService;
-  }
+  public final FlightInterface flightService;
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-hot/{offset}/")
@@ -58,7 +56,7 @@ public class FlightController {
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create-new-flight/")
   void createNewFlight(@Valid @RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
-		System.out.println(flight);
+		System.out.println("flight ->" + flight);
 		this.flightService.createFlight(flight);
 	}
 

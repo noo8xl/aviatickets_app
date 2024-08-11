@@ -6,30 +6,26 @@ import java.util.List;
 
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
-import aviatickets.app.databaseInit.DatabaseInit;
-import aviatickets.app.databaseInit.dto.DatabaseDto;
+import aviatickets.app.database.DatabaseInterface;
+import aviatickets.app.database.dto.DBConnectionDto;
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.exception.NotFoundException;
-import aviatickets.app.util.HelperService;
+import aviatickets.app.util.HelperInterface;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import aviatickets.app.customer.entity.Customer;
 
+@RequiredArgsConstructor
 @Repository
-class CustomerRepository implements CustomerInteraction {
+class CustomerRepository implements CustomerInterface {
 
 	private Connection connection = null;
 	private Statement statement = null;
 	private ResultSet resultSet = null;
 
-	private final DatabaseInit databaseInit;
-	private final HelperService helperService;
-
-	CustomerRepository(DatabaseInit databaseInit, HelperService helperService) {
-		this.databaseInit = databaseInit;
-		this.helperService = helperService;
-	}
-
+	private final DatabaseInterface database;
+	private final HelperInterface helperService;
 
 	@Override
   public void save(String name, String email, String password) throws SQLException, ClassNotFoundException {
@@ -43,7 +39,7 @@ class CustomerRepository implements CustomerInteraction {
 		String twoStepParamsSql = "INSERT INTO customer_two_step_auth (email) VALUES(?)";
 
 		try {
-
+			String[] returnedId = {"id"};
 			c = this.findOne(email);
 			if (Boolean.TRUE.equals((c != null))) {
 				throw new BadRequestException("Bad request. Email has been already taken.");
@@ -51,7 +47,6 @@ class CustomerRepository implements CustomerInteraction {
 
 			this.initConnection((byte) 0);
 
-			String[] returnedId = {"id"};
 			PreparedStatement preparedCustomer = this.connection.prepareStatement(customerSql, returnedId);
 			PreparedStatement prepareDetails = this.connection.prepareStatement(detailsSql);
 			PreparedStatement prepareTwoStepAuth = this.connection.prepareStatement(twoStepParamsSql);
@@ -350,19 +345,16 @@ public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFound
 
 	// #############################################################################################################
 
-
-	// initConnection -> init database connection before use any repo method
 	private void initConnection(Byte type) throws ClassNotFoundException, SQLException {
-		DatabaseDto dto = this.databaseInit.initConnection(type);
+		DBConnectionDto dto = this.database.initConnection(type);
 		this.connection = dto.connection();
 		this.statement = dto.statement();
 		this.resultSet = dto.resultSet();
 	}
 
-	// closeAndStopDBInteraction -> close any active connection before end interaction with each repository method
-	private void closeAndStopDBInteraction() throws SQLException {
-		DatabaseDto dto = new DatabaseDto(this.connection, this.statement, this.resultSet);
-		this.databaseInit.closeAndStopDBInteraction(dto);
+	private void closeAndStopDBInteraction() throws SQLException, ClassNotFoundException {
+		DBConnectionDto dto = new DBConnectionDto(this.connection, this.statement, this.resultSet);
+		this.database.closeAndStopDBInteraction(dto);
 	}
 
 	// used only a few times in update methods to check is customer exists before update something data

@@ -5,6 +5,7 @@ import java.util.List;
 
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,15 +22,12 @@ import aviatickets.app.customer.dto.ChangePwdDto;
 import aviatickets.app.customer.entity.Customer;
 import jakarta.validation.Valid;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
 
-  private final CustomerService customerService;
-
-  public CustomerController(CustomerService customerService) {
-    this.customerService = customerService;
-  }
+  private final CustomerInterface customerService;
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-customer-by-email/{email}/")
@@ -40,7 +38,6 @@ public class CustomerController {
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-customer-by-id/{id}/")
   public ResponseEntity<Customer> findOne(@PathVariable Integer id) throws SQLException, ClassNotFoundException {
-		System.out.println("Customer Controller findOne by id");
 		return ResponseEntity.ok(this.customerService.findOne(id));
   }
 
@@ -53,7 +50,7 @@ public class CustomerController {
   @ResponseStatus(HttpStatus.ACCEPTED)
   @PatchMapping("/update/change-password/")
   public void changePassword(@RequestBody ChangePwdDto dto) throws SQLException, ClassNotFoundException {
-		customerService.updatePassword(dto.email(), dto.pwd());
+		this.customerService.updatePassword(dto.email(), dto.pwd());
   }
 
 
@@ -61,7 +58,7 @@ public class CustomerController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PatchMapping("/update/change-2fa-status/")
 	public void changeTwoStepStatus(@RequestBody ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
-		customerService.update2faStatus(dto);
+		this.customerService.update2faStatus(dto);
 	}
 
 

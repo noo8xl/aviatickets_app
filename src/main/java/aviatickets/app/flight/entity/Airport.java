@@ -9,7 +9,7 @@ public record Airport(
 		String airportName,
 		String city,
 		String country,
-		Character terminal,
+		String terminal,
 		String timezone,
 		Location location,
 		AirportContacts contacts

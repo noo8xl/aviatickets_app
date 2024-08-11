@@ -3,12 +3,13 @@ package aviatickets.app.purchase.entity;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import java.sql.Date;
 
-@Setter
+@Getter
+@NoArgsConstructor
 public class Purchase {
 
 	@Getter
@@ -30,8 +31,6 @@ public class Purchase {
 	private Date updatedAt = new Date(System.currentTimeMillis());
 	@Getter
 	private Boolean paymentStatus;
-
-	public Purchase() {}
 
 	public void setPurchase(
 			Integer id, String flightNumber, Integer customerId, Short quantity,

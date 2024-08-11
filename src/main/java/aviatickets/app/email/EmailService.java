@@ -1,6 +1,7 @@
 package aviatickets.app.email;
 
 import aviatickets.app.email.entity.Notification;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.customer.dto.ChangePwdDto;
@@ -12,13 +13,13 @@ import aviatickets.app.exception.ServerErrorException;
 // import java.time.LocalDateTime;
 // import java.util.Date;
 
+@NoArgsConstructor
 @Service
-public class EmailService implements EmailInteraction {
+public class EmailService implements EmailInterface {
 
   private static String apiKey = "test";
   // private String EMAIL_FROM = "";
 
-	public EmailService() {}
 
 	@Override
   public void sendForgotPwdEmail(String email, String pwd) {

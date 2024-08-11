@@ -8,7 +8,7 @@ import aviatickets.app.customer.dto.UpdateCustomerDto;
 import aviatickets.app.customer.entity.Customer;
 
 // CustomerInteraction -> describe the main Customer interaction logic
-interface CustomerInteraction {
+public interface CustomerInterface {
 
   // create customer
 	void save(String name, String password, String email) throws SQLException, ClassNotFoundException;
