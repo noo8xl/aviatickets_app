@@ -26,19 +26,15 @@ DROP TABLE IF EXISTS airport;
 # REVOKE ALL ON avia_tickets.* FROM testUser@localhost;
 DROP USER IF EXISTS testUser@localhost;
 
-DROP VIEW IF EXISTS FULL_FLIGHT_INFO;
-DROP VIEW IF EXISTS SHORT_FLIGHT_DATA;
+# DROP PROCEDURE IF EXISTS get_short_flight_data;
+# DROP FUNCTION IF EXISTS calculate_total_distance;
 
-DROP FUNCTION IF EXISTS calculate_test;
-DROP FUNCTION IF EXISTS calculate_total_distance;
-
-DROP FUNCTION IF EXISTS get_departure_time_filter;
+# DROP FUNCTION IF EXISTS get_departure_time_filter;
 DROP FUNCTION IF EXISTS calculate_current_price;
 
-DROP PROCEDURE IF EXISTS delete_customer;
-DROP PROCEDURE IF EXISTS count_available_sits;
-DROP FUNCTION IF EXISTS update_available_sits;
+# DROP PROCEDURE IF EXISTS delete_customer;
 
+DROP FUNCTION IF EXISTS count_available_sits;
 
 CREATE USER 'testUser'@'localhost' IDENTIFIED BY '*test_Pa$$w0rd%';
 GRANT SELECT, INSERT, UPDATE ON avia_tickets.* TO 'testUser'@'localhost';
@@ -241,82 +237,101 @@ CREATE TABLE IF NOT EXISTS actions (
 #    RETURN CURRENT_TIMESTAMP() + 3600000;
 
 
-# calculate_total_distance -> get total distance value
-# DELIMITER $$
-#
-# CREATE FUNCTION IF NOT EXISTS calculate_total_distance(
-#     flightNum VARCHAR(50)
-# )
-# RETURNS SMALLINT
-# DETERMINISTIC
-# BEGIN
-#     DECLARE total_distance SMALLINT;
-#     DECLARE leg_distance SMALLINT;
-#     DECLARE done INT DEFAULT 0;
-#     DECLARE cur
-#         CURSOR FOR SELECT leg_details.distance
-#         FROM leg_details
-#         WHERE flight_number=flightNum;
-#
-#     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-#
-#     OPEN cur;
-#     read_leg: LOOP
-#         FETCH cur INTO leg_distance;
-#         IF done THEN
-#             LEAVE read_leg;
-#         END IF;
-#         SET total_distance = total_distance + leg_distance;
-#     END LOOP;
-#
-#     CLOSE cur;
-#     RETURN total_distance;
-# END$$
-#
-# DELIMITER ;
+DELIMITER $$
+
+CREATE FUNCTION IF NOT EXISTS calculate_total_distance(
+    flightNum VARCHAR(50)
+)
+RETURNS SMALLINT
+DETERMINISTIC
+BEGIN
+    DECLARE total_distance SMALLINT DEFAULT 0;
+    DECLARE leg_distance SMALLINT DEFAULT 0;
+    DECLARE done INT DEFAULT 0;
+    DECLARE cur
+        CURSOR FOR SELECT leg_details.distance
+        FROM leg_details
+        WHERE flight_number=flightNum;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN cur;
+    read_leg: LOOP
+        FETCH cur INTO leg_distance;
+        IF done THEN
+            LEAVE read_leg;
+        END IF;
+        SET total_distance = total_distance + leg_distance;
+    END LOOP;
+
+    CLOSE cur;
+    RETURN total_distance;
+
+END $$
+
+DELIMITER ;
 
 
-#
--- calculate_current_price -> calculate value by (price - discount)
-# DELIMITER $$
-# CREATE FUNCTION IF NOT EXISTS calculate_current_price(
-# 	flightNum VARCHAR(50)
-# )
-# RETURNS FLOAT
-# DETERMINISTIC
-# BEGIN
-#     DECLARE amount FLOAT;
-#     DECLARE discount SMALLINT;
-#
-#     SELECT price_details.amount
-#         INTO amount
-#         FROM price_details
-#         WHERE flight_number=flightNum;
-#
-#     SELECT price_details.discount
-#         INTO discount
-#         FROM price_details
-#         WHERE flight_number=flightNum;
-#
-#     return amount - (amount * discount / 100);
-# END $$
-#
-# DELIMITER ;
+
+# calculate_current_price -> calculate value by (price - discount)
+
+DELIMITER $$
+
+CREATE FUNCTION IF NOT EXISTS calculate_current_price(
+	flightNum VARCHAR(50)
+)
+RETURNS FLOAT DETERMINISTIC
+BEGIN
+    DECLARE amount FLOAT DEFAULT 0;
+    DECLARE discount SMALLINT DEFAULT 0;
+
+    SELECT price_details.amount
+        INTO amount
+        FROM price_details
+        WHERE flight_number=flightNum;
+
+    SELECT price_details.discount
+        INTO discount
+        FROM price_details
+        WHERE flight_number=flightNum;
+
+    return amount - (amount * discount / 100);
+END $$
+
+DELIMITER ;
 
 
 -- this view collect main flight data to one row
 -- by filter like |destination, from-to, airports|
--- and send it as list (skip=20,limit=20) to customer
+-- and send it as a list (skip=20,limit=20) to customer
 
-# CREATE VIEW SHORT_FLIGHT_DATA AS (
-#     SELECT
-#         flights.id, flights.flight_number, flights.distance=(SELECT calculate_total_distance(flights.flight_number)),
-#         price_details.amount=(SELECT calculate_current_price(flights.flight_number)) AS price,
-#
-#     FROM flights
-#     JOIN price_details
-#     ON flights.flight_number = price_details.flight_number
-# );
+DROP PROCEDURE IF EXISTS get_short_flight_data;
+
+DELIMITER $$
+
+CREATE PROCEDURE IF NOT EXISTS get_short_flight_data(
+    IN flightNum VARCHAR(50),
+    OUT flights_id INT,
+    OUT distance SMALLINT,
+    OUT available_sits SMALLINT,
+    OUT price FLOAT
+)
+BEGIN
+    SET distance = calculate_total_distance(flightNum);
+    SET available_sits = count_available_sits(flightNum);
+    SET price = calculate_current_price(flightNum);
+
+    SELECT flights.id
+        INTO flights_id
+        FROM flights
+        WHERE flight_number=flightNum;
+
+END $$
+
+DELIMITER ;
+
+# WHERE flights.flight_number = ?; ^
+
 #
 # #  this view is for collect full flight info
 # #  and send it to the customer as <flight details>
@@ -331,76 +346,45 @@ CREATE TABLE IF NOT EXISTS actions (
 # );
 
 
-#
-#
-# CREATE PROCEDURE IF NOT EXISTS delete_customer(
-#     IN userId INT,
-#     IN customerToDeleteId INT
-# )
-# BEGIN
-#     DECLARE userRole VARCHAR(10);
-#
-#     SELECT customer_details.role
-#         INTO userRole
-#         FROM customer_details
-#         WHERE customer_details.customer_id=userId;
-#
-#     IF userRole = 'ADMIN' THEN
-#         DELETE FROM customer_details WHERE customer_id=customerToDeleteId;
-#         DELETE FROM customer_two_step_auth WHERE email=(SELECT email FROM customer WHERE id=customerToDeleteId);
-#
-#         # delete orders, details, tickets, etc ...
-#         # delete <customer> table last
-#         DELETE FROM customer WHERE id=customerToDeleteId;
-#
-#     END IF;
-#
-#     COMMIT;
-# END;
+
+
 
 # -- count_available_sits -> count sits by (total sits - sold tickets)
+#
+DELIMITER $$
 
-# CREATE FUNCTION IF NOT EXISTS count_available_sits(
-#     flightNum VARCHAR(50)
-# )
-# RETURNS SMALLINT DETERMINISTIC
-# BEGIN
-#     DECLARE sold_tickets SMALLINT;
-#     DECLARE total_sits SMALLINT;
-#
-#     SELECT COUNT(id)
-#         INTO sold_tickets
-#         FROM purchase
-#         WHERE flight_number=flightNum;
-#
-#     SELECT flights.passenger_count
-#         INTO total_sits
-#         FROM flights
-#         WHERE flight_number=flightNum;
-#
-#     return total_sits - sold_tickets;
-# END;
+CREATE FUNCTION IF NOT EXISTS count_available_sits(
+    flightNum VARCHAR(50)
+)
+RETURNS SMALLINT DETERMINISTIC
+BEGIN
+    DECLARE sold_tickets SMALLINT DEFAULT 0;
+    DECLARE total_sits SMALLINT DEFAULT 0;
+    DECLARE available_sits SMALLINT DEFAULT 0;
 
-#
-#
-# -- update_available_sits -> update flight available sits after sold tickets check
+    SELECT COUNT(id)
+        INTO sold_tickets
+        FROM purchase
+        WHERE flight_number=flightNum;
 
-# CREATE PROCEDURE IF NOT EXISTS update_available_sits (
-#     IN flightNum VARCHAR(50)
-# )
-# BEGIN
-#     DECLARE sitsNum INT;
-#     SELECT sitsNum=(count_available_sits(flightNum));
-#
-#     UPDATE flights
-#         SET available_sits = sitsNum
-#         WHERE flight_number = flightNum;
-#
-#     COMMIT;
-# END;
-#
-#
-#
+    SELECT flights.passenger_count
+        INTO total_sits
+        FROM flights
+        WHERE flight_number=flightNum;
+
+    SET available_sits = total_sits - sold_tickets;
+
+    UPDATE flights
+        SET flights.available_sits = available_sits
+        WHERE flights.flight_number = flightNum;
+
+    COMMIT;
+
+    return available_sits;
+END $$
+
+DELIMITER ;
+
 
 # DELIMITER $$
 # CREATE FUNCTION IF NOT EXISTS get_purchase_details(
@@ -426,6 +410,32 @@ CREATE TABLE IF NOT EXISTS actions (
 # END $$
 # DELIMITER ;
 
+
+
+# CREATE PROCEDURE IF NOT EXISTS delete_customer(
+#     IN userId INT,
+#     IN customerToDeleteId INT
+# )
+# BEGIN
+#     DECLARE userRole VARCHAR(10);
+#
+#     SELECT customer_details.role
+#         INTO userRole
+#         FROM customer_details
+#         WHERE customer_details.customer_id=userId;
+#
+#     IF userRole = 'ADMIN' THEN
+#         DELETE FROM customer_details WHERE customer_id=customerToDeleteId;
+#         DELETE FROM customer_two_step_auth WHERE email=(SELECT email FROM customer WHERE id=customerToDeleteId);
+#
+#         # delete orders, details, tickets, etc ...
+#         # delete <customer> table last
+#         DELETE FROM customer WHERE id=customerToDeleteId;
+#
+#     END IF;
+#
+#     COMMIT;
+# END;
 
 
 --

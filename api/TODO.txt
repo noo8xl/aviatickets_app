@@ -38,7 +38,7 @@ ________________________________________
 	- get-hot,
 	- get-filtered,
 	AS ADMIN:
-		- create,
+		- create, +++
 		- update,
 		- delete
 

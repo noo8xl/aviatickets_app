@@ -5,15 +5,13 @@ import java.util.List;
 
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
-import aviatickets.app.flight.dto.response.ShortFlightItemDto;
+import aviatickets.app.flight.dto.response.ShortFlightDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import aviatickets.app.exception.NotFoundException;
-import aviatickets.app.exception.ServerErrorException;
 import aviatickets.app.flight.entity.FlightsItem;
 
 @RequiredArgsConstructor
@@ -25,13 +23,13 @@ public class FlightController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-hot/{offset}/")
-	ResponseEntity<List<ShortFlightItemDto>> getHotList(@PathVariable Short offset) throws SQLException, ClassNotFoundException {
+	ResponseEntity<List<ShortFlightDto>> getHotList(@PathVariable Short offset) throws SQLException, ClassNotFoundException {
 		return ResponseEntity.ok(this.flightService.getHotFlightsList(offset));
   }
 
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/find-filtered-flight/")
-	ResponseEntity<List<ShortFlightItemDto>> findFlight(@Valid @RequestBody GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
+	ResponseEntity<List<ShortFlightDto>> findFlight(@Valid @RequestBody GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
 		return ResponseEntity.ok(this.flightService.findFlightsByFilter(filter));
   }
 

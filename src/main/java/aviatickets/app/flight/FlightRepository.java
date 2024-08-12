@@ -4,13 +4,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import aviatickets.app.database.Database;
 import aviatickets.app.database.DatabaseInterface;
 import aviatickets.app.database.dto.DBConnectionDto;
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.exception.ServerErrorException;
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
-import aviatickets.app.flight.dto.response.ShortFlightItemDto;
+import aviatickets.app.flight.dto.response.ShortFlightDto;
 import aviatickets.app.flight.entity.Aircraft;
 import aviatickets.app.flight.entity.Airport;
 import aviatickets.app.flight.entity.FlightsItem;
@@ -41,9 +40,9 @@ class FlightRepository implements FlightInterface {
 
 	@Override
 	@Cacheable("hotFlights")
-  public List<ShortFlightItemDto> getHotFlightsList(Short offset) throws SQLException, ClassNotFoundException {
+  public List<ShortFlightDto> getHotFlightsList(Short offset) throws SQLException, ClassNotFoundException {
 
-		List<ShortFlightItemDto> flights = new ArrayList<>();
+		List<ShortFlightDto> flights = new ArrayList<>();
 		String sql = "SELECT * FROM SHORT_FLIGHT_DATA " +
 				"WHERE leg_details.departure_time " +
 				"BETWEEN CURRENT_TIMESTAMP() " +
@@ -61,7 +60,7 @@ class FlightRepository implements FlightInterface {
 //			log.info("result set is \n->" + resultSet);
 
 			while(this.resultSet.next()) {
-				ShortFlightItemDto item = new ShortFlightItemDto(
+				ShortFlightDto item = new ShortFlightDto(
 					this.resultSet.getInt("id"),
 					this.resultSet.getString("flight_number"),
 					this.resultSet.getString("total_duration"),
@@ -81,9 +80,9 @@ class FlightRepository implements FlightInterface {
 
 	@Override
 	@Cacheable("filteredFlights")
-	public List<ShortFlightItemDto> findFlightsByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
+	public List<ShortFlightDto> findFlightsByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
 
-		List<ShortFlightItemDto> flights = new ArrayList<>();
+		List<ShortFlightDto> flights = new ArrayList<>();
 		String sql = "";
 		System.out.println(filter);
 
@@ -109,7 +108,7 @@ class FlightRepository implements FlightInterface {
 			this.resultSet = preparedFlight.executeQuery();
 
 			while (this.resultSet.next()) {
-				ShortFlightItemDto item = new ShortFlightItemDto(
+				ShortFlightDto item = new ShortFlightDto(
 					this.resultSet.getInt("id"),
 					this.resultSet.getString("flight_number"),
 					this.resultSet.getString("total_duration"),

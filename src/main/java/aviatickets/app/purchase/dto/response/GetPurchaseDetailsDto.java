@@ -1,7 +1,7 @@
 package aviatickets.app.purchase.dto.response;
 
 import aviatickets.app.auth.dto.response.SignInResponse;
-import aviatickets.app.flight.dto.response.DetailedFlightItemDto;
+import aviatickets.app.flight.dto.response.FullFlightDto;
 import aviatickets.app.purchase.entity.Purchase;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -18,7 +18,7 @@ public record GetPurchaseDetailsDto(
 		Float price,
 
 		@NotEmpty
-		DetailedFlightItemDto flightDetails
+		FullFlightDto flightDetails
 
 ) {
 }

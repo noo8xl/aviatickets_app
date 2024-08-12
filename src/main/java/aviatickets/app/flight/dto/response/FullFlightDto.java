@@ -4,7 +4,7 @@ import aviatickets.app.flight.entity.Aircraft;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-public record DetailedFlightItemDto(
+public record FullFlightDto(
 		@Positive
 		Integer id,
 		@NotBlank
