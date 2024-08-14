@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Positive;
 
 public record ShortFlightDto(
 		@Positive
-		Integer id,
+		Integer flight_id,
 		String flightNumber,
 		String duration,
 		Float price

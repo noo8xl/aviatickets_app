@@ -42,33 +42,95 @@ class FlightRepository implements FlightInterface {
 	@Cacheable("hotFlights")
   public List<ShortFlightDto> getHotFlightsList(Short offset) throws SQLException, ClassNotFoundException {
 
+//		struct temp {
+//			String flightNum
+//			int departureAirport
+//			int arrivalAirport
+//		}
+
+
+//		List<temp> baseData = push here cur result set;
+//		-> this.resultSet = new sql query execution;
+
+
 		List<ShortFlightDto> flights = new ArrayList<>();
-		String sql = "SELECT * FROM SHORT_FLIGHT_DATA " +
-				"WHERE leg_details.departure_time " +
-				"BETWEEN CURRENT_TIMESTAMP() " +
-				"AND get_departure_time_filter() " +
-				"LIMIT 10 " +
-				"OFFSET ?";
+		String baseSql = "SELECT flights.flight_number, "
+				+ "leg_details.departure_airport AS departure_airport, "
+				+ "leg_details.arrival_airport AS arrival_airport, "
+				+ "FROM flights "
+				+ "JOIN leg_details "
+				+ "ON flights.flight_number = leg_details.flight_number "
+				+ "WHERE leg_details.departure_time = get_departure_time_filter() "
+				+ "DESC "
+				+ "LIMIT 10 "
+				+ "OFFSET ?";
+
+			String funcSql = "CALL get_short_flight_data("
+				+ "?,?,?,?, @flight_id, @legs, @departure_airport, @arrival_airport "
+				+ "@distance, @available_sits, @price)";
 
 		try {
+
 			this.initConnection((byte) 1);
 
-			PreparedStatement preparedFlight = this.connection.prepareStatement(sql);
-			preparedFlight.setShort(1, offset);
+			PreparedStatement baseStatement = this.connection.prepareStatement(baseSql);
+			baseStatement.setInt(1, offset);
 
-			this.resultSet = preparedFlight.executeQuery();
-//			log.info("result set is \n->" + resultSet);
+			this.resultSet = baseStatement.executeQuery();
+			log.info("result set is \n->{}", this.resultSet.toString());
+
+			PreparedStatement funcStatement = this.connection.prepareStatement(funcSql);
 
 			while(this.resultSet.next()) {
+//				String flightNum = this.resultSet.getString("flight_number");
+//				int departureAirport = this.resultSet.getInt("departure_airport");
+//				int arrivalAirport = this.resultSet.getInt("arrival_airport");
+
+
+
+//				temp item = new temp(
+//						this.resultSet.getInt("id"),
+//						this.resultSet.getString("distance"),
+//						this.resultSet.getString("flight_number"),
+//						this.resultSet.getFloat("price")
+//				);
+//				baseData.add(temp);
+			}
+
+			for (int i = 0; i < baseData.size(); i++) {
+				funcStatement.setString(1, baseData.get(i).flightNum); ....
+				funcStatement.setBoolean(2, true);
+				funcStatement.setInt(3, departureAirport);
+				funcStatement.setInt(4, arrivalAirport);
+
+
+
+
 				ShortFlightDto item = new ShortFlightDto(
-					this.resultSet.getInt("id"),
-					this.resultSet.getString("flight_number"),
-					this.resultSet.getString("total_duration"),
-					this.resultSet.getFloat("price")
+						this.resultSet.getInt("id"),
+						this.resultSet.getString("distance"),
+						this.resultSet.getString("flight_number"),
+						this.resultSet.getFloat("price")
 				);
 				flights.add(item);
+
 			}
-//			log.info(flights.size());
+
+
+//
+//			this.resultSet = statement.executeQuery();
+//			log.info("result set is \n->{}", this.resultSet.toString());
+//
+//			while(this.resultSet.next()) {
+//				ShortFlightDto item = new ShortFlightDto(
+//					this.resultSet.getInt("id"),
+//					this.resultSet.getString("distance"),
+//					this.resultSet.getString("flight_number"),
+//					this.resultSet.getFloat("price")
+//				);
+//				flights.add(item);
+//			}
+			log.info("flight size is -> {}", flights.size());
 
 		} catch (Exception e) {
 			throw e;
@@ -128,6 +190,12 @@ class FlightRepository implements FlightInterface {
 
 	@Override
 	public FlightsItem getFlightDetails(String flightNumber) throws SQLException, ClassNotFoundException {
+
+
+
+
+
+
 		return null;
 	}
 
@@ -369,8 +437,8 @@ class FlightRepository implements FlightInterface {
 
 		String priceSql = "INSERT INTO price_details (flight_number, currency, amount, discount, baggage) VALUES (?,?,?,?,?)";
 		String flightSql = "INSERT INTO flights " +
-				"(flight_number, airline, aircraft_id, distance, total_duration, price, passenger_count, available_sits) " +
-				"VALUES(?,?,?,?,?,?,?,?)";
+				"(flight_number, airline, aircraft_id, departure_time, distance, total_duration, price, passenger_count, available_sits) " +
+				"VALUES(?,?,?,?,?,?,?,?,?)";
 
 		try {
 			aircraftId = this.getAircraftId(flight.getAircraft().registration());
@@ -410,11 +478,12 @@ class FlightRepository implements FlightInterface {
 			preparedFlight.setString(1, flight.getFlightNumber());
 			preparedFlight.setString(2, flight.getAirline());
 			preparedFlight.setInt(3, aircraftId);
-			preparedFlight.setShort(4, flight.getTotalDistance());
-			preparedFlight.setString(5, flight.getTotalDuration());
-			preparedFlight.setInt(6, priceId);
-			preparedFlight.setShort(7,flight.getPassengerCount());
-			preparedFlight.setShort(8, flight.getAvailableSits());
+			preparedFlight.setDate(4, flight.getItinerary().getFirst().departureTime());
+			preparedFlight.setShort(5, flight.getTotalDistance());
+			preparedFlight.setString(6, flight.getTotalDuration());
+			preparedFlight.setInt(7, priceId);
+			preparedFlight.setShort(8,flight.getPassengerCount());
+			preparedFlight.setShort(9, flight.getAvailableSits());
 
 			updated += preparedFlight.executeUpdate();
 			if(updated < 2) {
