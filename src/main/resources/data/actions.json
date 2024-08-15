@@ -1,0 +1,29 @@
+{
+  "actions": [
+    {
+      "email": "email@example.com",
+      "action": "Customer successfully created <test>.",
+      "customerId": 1
+    },
+    {
+      "email": "email@example.com",
+      "action": "Customer successfully updated <test>.",
+      "customerId": 1
+    },
+    {
+      "email": "email@example.com",
+      "action": "Customer has enabled 2fa auth <test>.",
+      "customerId": 1
+    },
+    {
+      "email": "email@example.com",
+      "action": "Customer has updated his password <test> .",
+      "customerId": 1
+    },
+    {
+      "email": "email@example.com",
+      "action": "Test log here <test>.",
+      "customerId": 1
+    }
+  ]
+}

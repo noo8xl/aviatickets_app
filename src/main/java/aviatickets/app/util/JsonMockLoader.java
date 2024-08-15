@@ -1,11 +1,16 @@
 package aviatickets.app.util;
 
+import aviatickets.app.actions.ActionInterface;
+import aviatickets.app.actions.ActionService;
 import aviatickets.app.customer.CustomerInterface;
 import aviatickets.app.customer.CustomerService;
 import aviatickets.app.flight.FlightInterface;
 import aviatickets.app.flight.FlightService;
 
+import aviatickets.app.purchase.PurchaseInterface;
+import aviatickets.app.util.entity.Actions;
 import aviatickets.app.util.entity.Flights;
+import aviatickets.app.util.entity.Purchases;
 import aviatickets.app.util.entity.SignUps;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +33,8 @@ public class JsonMockLoader implements CommandLineRunner {
 
 	private final CustomerInterface customerService;
 	private final FlightInterface flightService;
+	private final ActionInterface actionService;
+	private final PurchaseInterface purchaseService;
 
 	@Override
 	public void run(String... args) {
@@ -35,6 +42,8 @@ public class JsonMockLoader implements CommandLineRunner {
 		try {
 			this.addCustomerData();
 			this.addFlightData();
+			this.addPurchaseData();
+			this.addActionData();
 
 			log.info("Loading json files was complete");
 		}  catch (Exception e) {
@@ -84,5 +93,37 @@ public class JsonMockLoader implements CommandLineRunner {
 			log.info(e.getMessage());
 		}
 	}
+
+private void addActionData() {
+
+	try (InputStream actionsStream = TypeReference.class.getResourceAsStream("/data/actions.json")) {
+
+		Actions actionsList = this.objectMapper.readValue(actionsStream, Actions.class);
+		log.info("actions size-> {} ", actionsList.actions().size());
+
+			for (int i = 0; i < actionsList.actions().size(); i++) {
+			log.info("Actions: {}", actionsList.actions().get(i));
+			this.actionService.saveLog(actionsList.actions().get(i));
+		}
+	} catch (Exception e) {
+		log.info(e.getMessage());
+	}
+}
+
+private void addPurchaseData() {
+
+	try (InputStream purchaseStream = TypeReference.class.getResourceAsStream("/data/purchases.json")) {
+
+		Purchases purchaseList = this.objectMapper.readValue(purchaseStream, Purchases.class);
+		log.info("Purchases size-> {} ", purchaseList.purchaseList().size());
+
+		for (int i = 0; i < purchaseList.purchaseList().size(); i++) {
+			log.info("Purchase: {}", purchaseList.purchaseList().get(i));
+			this.purchaseService.create(purchaseList.purchaseList().get(i));
+		}
+	} catch (Exception e) {
+		log.info(e.getMessage());
+	}
+}
 
 }

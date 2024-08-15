@@ -95,25 +95,25 @@ class FlightRepository implements FlightInterface {
 //						this.resultSet.getFloat("price")
 //				);
 //				baseData.add(temp);
-			}
-
-			for (int i = 0; i < baseData.size(); i++) {
-				funcStatement.setString(1, baseData.get(i).flightNum); ....
-				funcStatement.setBoolean(2, true);
-				funcStatement.setInt(3, departureAirport);
-				funcStatement.setInt(4, arrivalAirport);
-
-
-
-
-				ShortFlightDto item = new ShortFlightDto(
-						this.resultSet.getInt("id"),
-						this.resultSet.getString("distance"),
-						this.resultSet.getString("flight_number"),
-						this.resultSet.getFloat("price")
-				);
-				flights.add(item);
-
+//			}
+//
+//			for (int i = 0; i < baseData.size(); i++) {
+//				funcStatement.setString(1, baseData.get(i).flightNum); ....
+//				funcStatement.setBoolean(2, true);
+//				funcStatement.setInt(3, departureAirport);
+//				funcStatement.setInt(4, arrivalAirport);
+//
+//
+//
+//
+//				ShortFlightDto item = new ShortFlightDto(
+//						this.resultSet.getInt("id"),
+//						this.resultSet.getString("distance"),
+//						this.resultSet.getString("flight_number"),
+//						this.resultSet.getFloat("price")
+//				);
+//				flights.add(item);
+//
 			}
 
 

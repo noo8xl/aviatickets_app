@@ -9,7 +9,7 @@
 -> bye ticket form **
 -> generate ticket QR-code to customer **
 -> send email with QR-code to customer **
--> bought history as guest or as signed customer ??
+-> history as guest or as signed  customer ??
 
 -> create mock data +++ <
 -> create tables  +++ <
@@ -18,10 +18,14 @@
 -> actions -> save, get +++
 -> logs -> save ++
 
+-> auth area ---  (almost done) ++++
 
+-> enable caching to flight area +++
 
 -> setup mysql container ++ <
--> create sql views to store flight data in the most convenient way +++
+-> create sql procedures to store data in the most convenient way +++
+-> create complicated select queries to get filtered flight data +++
+
 
 _________________________________________________________________________________
 ---- TODO:
@@ -36,18 +40,7 @@ ________________________________________________________________________________
 ----------------------------------------------------------------------------------
 ---- TODO:
 
--> create complicated joined select queries to get filtered flight data **
--> research how to get the closest flight by location near me **
-
-
-
-
--> auth area ---  (almost done)
-
 -> setup redis configs **
--> enable caching to flight area ***
-
-
 
 -> notifications -> via email ?*
 

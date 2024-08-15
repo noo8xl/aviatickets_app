@@ -30,11 +30,11 @@ DROP USER IF EXISTS testUser@localhost;
 # DROP FUNCTION IF EXISTS calculate_total_distance;
 
 # DROP FUNCTION IF EXISTS get_departure_time_filter;
-DROP FUNCTION IF EXISTS calculate_current_price;
+# DROP FUNCTION IF EXISTS calculate_current_price;
 
 # DROP PROCEDURE IF EXISTS delete_customer;
 
-DROP FUNCTION IF EXISTS count_available_sits;
+# DROP FUNCTION IF EXISTS count_available_sits;
 
 CREATE USER 'testUser'@'localhost' IDENTIFIED BY '*test_Pa$$w0rd%';
 GRANT SELECT, INSERT, UPDATE ON avia_tickets.* TO 'testUser'@'localhost';
@@ -248,76 +248,245 @@ CREATE TABLE IF NOT EXISTS actions (
 
 -- get_departure_time_filter -> get range for the hot tickets list view
 
-CREATE FUNCTION get_departure_time_filter()
-   RETURNS timestamp DETERMINISTIC
-   RETURN NOW() + INTERVAL 1 DAY;
+#     __________________________________________________________________
+#     __________________________________________________________________
+#     __________________________________________________________________
 
-SELECT get_departure_time_filter();
+# CREATE FUNCTION get_departure_time_filter()
+#    RETURNS timestamp DETERMINISTIC
+#    RETURN NOW() + INTERVAL 1 DAY;
+
+# SELECT get_departure_time_filter();
 
 # calc total distance including each leg item
-
-DELIMITER $$
-
-CREATE FUNCTION IF NOT EXISTS calculate_total_distance(
-    flightNum VARCHAR(50)
-)
-RETURNS SMALLINT
-DETERMINISTIC
-BEGIN
-    DECLARE total_distance SMALLINT DEFAULT 0;
-    DECLARE leg_distance SMALLINT DEFAULT 0;
-    DECLARE done INT DEFAULT 0;
-    DECLARE cur
-        CURSOR FOR SELECT leg_details.distance
-        FROM leg_details
-        WHERE flight_number=flightNum;
-
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
-    OPEN cur;
-    read_leg: LOOP
-        FETCH cur INTO leg_distance;
-        IF done THEN
-            LEAVE read_leg;
-        END IF;
-        SET total_distance = total_distance + leg_distance;
-    END LOOP;
-
-    CLOSE cur;
-    RETURN total_distance;
-
-END $$
-
-DELIMITER ;
+#
+# DELIMITER $$
+#
+# CREATE FUNCTION IF NOT EXISTS calculate_total_distance(
+#     flightNum VARCHAR(50)
+# )
+# RETURNS SMALLINT
+# DETERMINISTIC
+# BEGIN
+#     DECLARE total_distance SMALLINT DEFAULT 0;
+#     DECLARE leg_distance SMALLINT DEFAULT 0;
+#     DECLARE done INT DEFAULT 0;
+#     DECLARE cur
+#         CURSOR FOR SELECT leg_details.distance
+#         FROM leg_details
+#         WHERE flight_number=flightNum;
+#
+#     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+#
+#     OPEN cur;
+#     read_leg: LOOP
+#         FETCH cur INTO leg_distance;
+#         IF done THEN
+#             LEAVE read_leg;
+#         END IF;
+#         SET total_distance = total_distance + leg_distance;
+#     END LOOP;
+#
+#     CLOSE cur;
+#     RETURN total_distance;
+#
+# END $$
+#
+# DELIMITER ;
 
 
 
 # calculate_current_price -> calculate value by (price - discount)
+#
+# DELIMITER $$
+#
+# CREATE FUNCTION IF NOT EXISTS calculate_current_price(
+# 	flightNum VARCHAR(50)
+# )
+# RETURNS FLOAT DETERMINISTIC
+# BEGIN
+#     DECLARE amount FLOAT DEFAULT 0;
+#     DECLARE discount SMALLINT DEFAULT 0;
+#
+#     SELECT price_details.amount
+#         INTO amount
+#         FROM price_details
+#         WHERE flight_number=flightNum;
+#
+#     SELECT price_details.discount
+#         INTO discount
+#         FROM price_details
+#         WHERE flight_number=flightNum;
+#
+#     return amount - (amount * discount / 100);
+# END $$
+#
+# DELIMITER ;
 
-DELIMITER $$
+# SELECT calculate_current_price('LH2001') AS price;
 
-CREATE FUNCTION IF NOT EXISTS calculate_current_price(
-	flightNum VARCHAR(50)
-)
-RETURNS FLOAT DETERMINISTIC
-BEGIN
-    DECLARE amount FLOAT DEFAULT 0;
-    DECLARE discount SMALLINT DEFAULT 0;
+# DROP FUNCTION IF EXISTS get_airport_name;
+#
+# DELIMITER $$
+#
+# CREATE FUNCTION IF NOT EXISTS get_airport_name(
+#     airport_id INT
+# )
+# RETURNS VARCHAR(255) DETERMINISTIC
+# BEGIN
+#     DECLARE airport_name VARCHAR(255) DEFAULT '';
+#
+#     SELECT airport.airport_name
+#         INTO airport_name
+#         FROM airport
+#         WHERE id=airport_id;
+#
+#     return airport_name;
+# END $$
+#
+# DELIMITER ;
 
-    SELECT price_details.amount
-        INTO amount
-        FROM price_details
-        WHERE flight_number=flightNum;
+# SELECT get_airport_name(2);
 
-    SELECT price_details.discount
-        INTO discount
-        FROM price_details
-        WHERE flight_number=flightNum;
 
-    return amount - (amount * discount / 100);
-END $$
+# DROP PROCEDURE IF EXISTS get_short_flight_data;
 
-DELIMITER ;
+# DELIMITER $$
+#
+# CREATE PROCEDURE IF NOT EXISTS get_short_flight_data(
+#     IN flightNum VARCHAR(50),
+#     IN by_date BOOLEAN,
+#     IN dep_airport INT,
+#     IN arv_airport INT,
+#
+#     OUT flights_id INT,
+#     OUT legs SMALLINT,
+#     OUT departure_airport VARCHAR(255),
+#     OUT arrival_airport VARCHAR(255),
+#
+#     OUT distance SMALLINT,
+#     OUT available_sits SMALLINT,
+#     OUT price FLOAT
+# )
+# BEGIN
+#     SET distance = calculate_total_distance(flightNum);
+#     SET available_sits = count_available_sits(flightNum);
+#     SET price = calculate_current_price(flightNum);
+#     SET departure_airport = get_airport_name(dep_airport);
+#     SET arrival_airport = get_airport_name(arv_airport);
+#
+#     IF by_date != 0 THEN
+#         SELECT COUNT(id)
+#             INTO legs
+#             FROM leg_details
+#             WHERE flight_number = flightNum
+#             AND departure_time = get_departure_time_filter();
+#
+#         SELECT flights.id
+#             INTO flights_id
+#             FROM flights
+#             WHERE flight_number = flightNum
+#             AND departure_time = get_departure_time_filter();
+#     ELSE
+#         SELECT COUNT(id)
+#             INTO legs
+#             FROM leg_details
+#             WHERE flight_number = flightNum;
+#
+#         SELECT flights.id
+#             INTO flights_id
+#             FROM flights
+#             WHERE flight_number = flightNum;
+#     END IF;
+#
+# END $$
+# DELIMITER ;
+
+
+
+# -- count_available_sits -> count sits by (total sits - sold tickets)
+
+# DELIMITER $$
+#
+# CREATE FUNCTION IF NOT EXISTS count_available_sits(
+#     flightNum VARCHAR(50)
+# )
+#     RETURNS SMALLINT DETERMINISTIC
+# BEGIN
+#     DECLARE sold_tickets SMALLINT DEFAULT 0;
+#     DECLARE total_sits SMALLINT DEFAULT 0;
+#     DECLARE available_sits SMALLINT DEFAULT 0;
+#
+#     SELECT COUNT(id)
+#     INTO sold_tickets
+#     FROM purchase
+#     WHERE flight_number=flightNum;
+#
+#     SELECT flights.passenger_count
+#     INTO total_sits
+#     FROM flights
+#     WHERE flight_number=flightNum;
+#
+#     SET available_sits = total_sits - sold_tickets;
+#
+#     UPDATE flights
+#     SET flights.available_sits = available_sits
+#     WHERE flights.flight_number = flightNum;
+#
+#     return available_sits;
+# END $$
+#
+# DELIMITER ;
+
+
+# delete purchase
+#
+# DROP PROCEDURE IF EXISTS delete_purchase;
+#
+# DELIMITER $$
+#
+# CREATE PROCEDURE IF NOT EXISTS delete_purchase(
+#     IN purchaseId INT
+# )
+# DETERMINISTIC
+# BEGIN
+#
+#     DELETE FROM purchase_details WHERE purchase_id = purchaseId;
+#     DELETE FROM purchase WHERE id = purchaseId;
+#
+#     COMMIT;
+#
+# END $$
+#
+# DELIMITER;
+#
+# CALL delete_purchase(1);
+
+#     __________________________________________________________________
+#     __________________________________________________________________
+#     __________________________________________________________________
+
+
+
+#
+# #  this view is for collect full flight info
+# #  and send it to the customer as <flight details>
+
+# CREATE VIEW FULL_FLIGHT_INFO AS (
+#     SELECT
+#         flights.id, flights.flight_number,
+#         price_details.amount=(SELECT calculate_current_price(flights.flight_number)) AS price
+#         FROM flights
+#         JOIN price_details
+#         ON flights.flight_number = price_details.flight_number
+# );
+
+
+
+
+
+
+
 
 # DELIMITER $$
 #
@@ -348,137 +517,6 @@ DELIMITER ;
 # END $$
 #
 # DELIMITER ;
-
-DROP FUNCTION IF EXISTS get_airport_name;
-
-DELIMITER $$
-
-CREATE FUNCTION IF NOT EXISTS get_airport_name(
-    airport_id INT
-)
-RETURNS VARCHAR(255) DETERMINISTIC
-BEGIN
-    DECLARE airport_name VARCHAR(255) DEFAULT '';
-
-    SELECT airport.airport_name
-        INTO airport_name
-        FROM airport
-        WHERE id=airport_id;
-
-    return airport_name;
-END $$
-
-DELIMITER ;
-
-# SELECT get_airport_name(2);
-
-
-DROP PROCEDURE IF EXISTS get_short_flight_data;
-
-DELIMITER $$
-
-CREATE PROCEDURE IF NOT EXISTS get_short_flight_data(
-    IN flightNum VARCHAR(50),
-    IN by_date BOOLEAN,
-    IN dep_airport INT,
-    IN arv_airport INT,
-
-    OUT flights_id INT,
-    OUT legs SMALLINT,
-    OUT departure_airport VARCHAR(255),
-    OUT arrival_airport VARCHAR(255),
-
-    OUT distance SMALLINT,
-    OUT available_sits SMALLINT,
-    OUT price FLOAT
-)
-BEGIN
-    SET distance = calculate_total_distance(flightNum);
-    SET available_sits = count_available_sits(flightNum);
-    SET price = calculate_current_price(flightNum);
-    SET departure_airport = get_airport_name(dep_airport);
-    SET arrival_airport = get_airport_name(arv_airport);
-
-    IF by_date != 0 THEN
-        SELECT COUNT(id)
-            INTO legs
-            FROM leg_details
-            WHERE flight_number = flightNum
-            AND departure_time = get_departure_time_filter();
-
-        SELECT flights.id
-            INTO flights_id
-            FROM flights
-            WHERE flight_number = flightNum
-            AND departure_time = get_departure_time_filter();
-    ELSE
-        SELECT COUNT(id)
-            INTO legs
-            FROM leg_details
-            WHERE flight_number = flightNum;
-
-        SELECT flights.id
-            INTO flights_id
-            FROM flights
-            WHERE flight_number = flightNum;
-    END IF;
-
-END $$
-DELIMITER ;
-
-
-#
-# #  this view is for collect full flight info
-# #  and send it to the customer as <flight details>
-
-# CREATE VIEW FULL_FLIGHT_INFO AS (
-#     SELECT
-#         flights.id, flights.flight_number,
-#         price_details.amount=(SELECT calculate_current_price(flights.flight_number)) AS price
-#         FROM flights
-#         JOIN price_details
-#         ON flights.flight_number = price_details.flight_number
-# );
-
-
-
-
-
-# -- count_available_sits -> count sits by (total sits - sold tickets)
-
-DELIMITER $$
-
-CREATE FUNCTION IF NOT EXISTS count_available_sits(
-    flightNum VARCHAR(50)
-)
-RETURNS SMALLINT DETERMINISTIC
-BEGIN
-    DECLARE sold_tickets SMALLINT DEFAULT 0;
-    DECLARE total_sits SMALLINT DEFAULT 0;
-    DECLARE available_sits SMALLINT DEFAULT 0;
-
-    SELECT COUNT(id)
-        INTO sold_tickets
-        FROM purchase
-        WHERE flight_number=flightNum;
-
-    SELECT flights.passenger_count
-        INTO total_sits
-        FROM flights
-        WHERE flight_number=flightNum;
-
-    SET available_sits = total_sits - sold_tickets;
-
-    UPDATE flights
-        SET flights.available_sits = available_sits
-        WHERE flights.flight_number = flightNum;
-
-    COMMIT;
-
-    return available_sits;
-END $$
-
-DELIMITER ;
 
 
 # DELIMITER $$

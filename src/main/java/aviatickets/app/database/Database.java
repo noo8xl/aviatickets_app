@@ -60,12 +60,26 @@ public class Database implements DatabaseInterface {
 	// ##########################################################################################################
 
 	private DBConnectionDto initAdminConnection() throws ClassNotFoundException, SQLException {
-		Connection connection = DriverManager.getConnection(this.dbUrl, this.adminDbUsername, this.adminDbPassword);
+		Connection connection;
+		try {
+			connection = DriverManager.getConnection(this.dbUrl, this.adminDbUsername, this.adminDbPassword);
+		} catch (SQLException e) {
+			log.info(e.getMessage());
+			throw e;
+		}
+
 		return init(connection);
 	}
 
 	private DBConnectionDto initRegularConnection() throws ClassNotFoundException, SQLException {
-		Connection connection = DriverManager.getConnection(this.dbUrl, this.userDbName, this.userDbPassword);
+		Connection connection;
+		try {
+			connection = DriverManager.getConnection(this.dbUrl, this.userDbName, this.userDbPassword);
+		} catch (SQLException e) {
+			log.info(e.getMessage());
+			throw e;
+		}
+
 		return init(connection);
 	}
 

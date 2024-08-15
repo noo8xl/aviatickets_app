@@ -21,7 +21,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 @Service
-class PurchaseService implements PurchaseInteraction {
+class PurchaseService implements PurchaseInterface {
 
 	private final PurchaseRepository purchaseRepository;
 	private final EmailService emailService;

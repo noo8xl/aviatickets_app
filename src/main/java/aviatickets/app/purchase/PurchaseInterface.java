@@ -7,7 +7,7 @@ import aviatickets.app.purchase.entity.Purchase;
 import java.sql.SQLException;
 import java.util.List;
 
-interface PurchaseInteraction {
+public interface PurchaseInterface {
 
 	// create a new purchase as customer
 	// -> should return a QR-code as response

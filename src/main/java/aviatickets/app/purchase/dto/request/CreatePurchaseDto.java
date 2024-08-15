@@ -13,8 +13,5 @@ public record CreatePurchaseDto(
 	Integer customerId,
 	@Positive
 	@NotEmpty
-	String flightNumber,
-	@Positive
-	@NotEmpty
-	Float price
+	String flightNumber
 ) {}

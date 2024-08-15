@@ -1,0 +1,9 @@
+{
+  "purchaseList": [
+    {
+      "quantity": 3,
+      "customerId": 1,
+      "flightNumber": "LH2001"
+    }
+  ]
+}
