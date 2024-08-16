@@ -1,14 +1,19 @@
 
 #------------------- main things ------------------#
 
-hear I implemented singleton, DI, *** IoC design principles ***
-also I used abstractions to describe classes before using it
+So, here is a simple REST API written used spring boot 3.
+It has basic areas such as
+	- auth,
+	- logs,
+	- customer,
+	- notification (call another API),
+	- flight,
+	- purchase.
 
-DDD project architecture and TDD techniques were used
+*** to start it you should follow :
 
-*** to start you should change
--> spring.datasource.username
-->
+
+
 
 #--------------------------------------------#
 
@@ -25,7 +30,7 @@ http://localhost:9832 === APINAME
         - passengerCount
         - cabinClass
         - filterOptions
-  - list of hot tickets (today cheapest flights)
+  - list of hot tickets (today's cheapest flights)
 
 #--------------------------------------------#
 
@@ -53,7 +58,6 @@ http://localhost:9832 === APINAME
       - email
       - join date
       - 2fa status
-      - kyc status
       - miles
 
   - kyc:
@@ -84,6 +88,12 @@ http://localhost:9832 === APINAME
 
 #--------------------------------------------#
 
+hear I implemented singleton, DI, design patterns
+also here is used interfaces to describe the main class methods before using it.
+during the project, I tried to follow the SOLID principles.
+
+DDD project architecture was used.
+
 #--------------------------------------------#
 #--------------------------------------------#
 #--------------------------------------------#
@@ -91,3 +101,4 @@ http://localhost:9832 === APINAME
 #--------------------------------------------#
 #--------------------------------------------#
 #--------------------------------------------#
+

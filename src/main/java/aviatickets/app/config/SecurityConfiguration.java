@@ -23,6 +23,7 @@ public class SecurityConfiguration {
 			"/auth/**",
 			"/flights/get-hot/**",
 			"/flights/find-filtered-flight/**",
+			"/h2-console/**"
 
 
 //			"/flights/create-new-flight/", // -> test only

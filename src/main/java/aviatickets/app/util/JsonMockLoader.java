@@ -1,11 +1,9 @@
 package aviatickets.app.util;
 
+
 import aviatickets.app.actions.ActionInterface;
-import aviatickets.app.actions.ActionService;
 import aviatickets.app.customer.CustomerInterface;
-import aviatickets.app.customer.CustomerService;
 import aviatickets.app.flight.FlightInterface;
-import aviatickets.app.flight.FlightService;
 
 import aviatickets.app.purchase.PurchaseInterface;
 import aviatickets.app.util.entity.Actions;
@@ -20,9 +18,7 @@ import org.springframework.aot.hint.TypeReference;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @Component

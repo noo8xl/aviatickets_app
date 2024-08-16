@@ -11,6 +11,7 @@ import aviatickets.app.email.EmailInterface;
 import aviatickets.app.util.HelperInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.customer.entity.Customer;
@@ -25,6 +26,7 @@ public class CustomerService implements CustomerInterface {
 	private final EmailInterface emailService;
 	private final HelperInterface helperService;
 	private final ActionInterface actionService;
+	private UserDetails userDetails;
 
 	@Override
   public void save(String name, String password, String email) throws SQLException, ClassNotFoundException {
@@ -49,12 +51,14 @@ public class CustomerService implements CustomerInterface {
   }
 
 	@Override
-  public Integer updatePassword(String email, String pwd) throws ServerErrorException, SQLException, ClassNotFoundException {
-		return this.customerRepository.updatePassword(email, pwd);
+  public void updatePassword(String email, String pwd) throws ServerErrorException, SQLException, ClassNotFoundException {
+		this.customerRepository.updatePassword(email, pwd);
   }
 
 	@Override
   public void deleteCustomer(Integer idToDelete, Integer adminId) throws SQLException, ClassNotFoundException {
+		String signedUserEmail = this.userDetails.getUsername();
+		System.out.println(signedUserEmail);
 		this.customerRepository.deleteCustomer(idToDelete, adminId);
   }
 

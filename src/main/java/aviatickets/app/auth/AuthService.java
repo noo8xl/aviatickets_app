@@ -7,18 +7,14 @@ import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.CustomerInterface;
 import aviatickets.app.email.EmailInterface;
 import aviatickets.app.jwt.JwtInterface;
-import aviatickets.app.jwt.JwtService;
 import aviatickets.app.util.HelperInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import aviatickets.app.actions.ActionService;
 import aviatickets.app.auth.dto.request.SignInDto;
 import aviatickets.app.auth.dto.request.SignUpDto;
 import aviatickets.app.auth.dto.response.SignInResponse;
-import aviatickets.app.customer.CustomerService;
 import aviatickets.app.customer.entity.Customer;
-import aviatickets.app.email.EmailService;
 
 @RequiredArgsConstructor
 @Service
@@ -65,9 +61,10 @@ class AuthService implements AuthInterface {
 
 	@Override
   public void forgotPassword(String email) throws SQLException, ClassNotFoundException {
-    String pwd = this.helperService.generateUniqueString(16);
-    Integer customerId = this.customerService.updatePassword(email, pwd);
-		ActionLog a = this.helperService.setActionLog(email, "Password has been changed.", customerId);
+		Customer c = this.customerService.findOne(email);
+		String pwd = this.helperService.generateUniqueString(16);
+		this.customerService.updatePassword(email, pwd);
+		ActionLog a = this.helperService.setActionLog(email, "Password has been changed.", c.getId());
 		this.actionService.saveLog(a);
 		this.emailService.sendForgotPwdEmail(email, pwd);
 	}

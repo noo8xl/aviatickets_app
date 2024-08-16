@@ -1,6 +1,6 @@
 package aviatickets.app.email;
 
-import aviatickets.app.email.entity.Notification;
+import aviatickets.app.notification.entity.Notification;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 

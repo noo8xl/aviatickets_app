@@ -49,7 +49,8 @@ public class Customer implements UserDetails {
 
 	public void setCustomer(
 			Integer id, String name, String email, String password,
-//			Date createdAt, Date updatedAt, Role role,
+//			Date createdAt, Date updatedAt,
+//			Role role,
 			Boolean isBanned, Boolean twoStepStatus
 	) {
 		if (Boolean.FALSE.equals(id == null)) {

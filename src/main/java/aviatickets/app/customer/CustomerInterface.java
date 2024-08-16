@@ -21,7 +21,7 @@ public interface CustomerInterface {
   void updateProfile(UpdateCustomerDto dto) throws SQLException, ClassNotFoundException;
 
   // handle forgot password route and send new password to current customer email
-  Integer updatePassword(String email, String password) throws SQLException, ClassNotFoundException;
+  void updatePassword(String email, String password) throws SQLException, ClassNotFoundException;
 
 	// enable OR disable customer 2fa status
 	void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException;

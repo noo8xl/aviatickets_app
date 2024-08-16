@@ -10,14 +10,12 @@ DROP TABLE IF EXISTS purchase_details;
 DROP TABLE IF EXISTS purchase;
 DROP TABLE IF EXISTS customer;
 
-
 DROP TABLE IF EXISTS airport_location;
 DROP TABLE IF EXISTS airport_contacts;
 DROP TABLE IF EXISTS aircraft_features;
 DROP TABLE IF EXISTS cabin_class;
 DROP TABLE IF EXISTS flights;
 DROP TABLE IF EXISTS price_details;
-# DROP TABLE IF EXISTS baggage_allowance;
 DROP TABLE IF EXISTS aircraft;
 DROP TABLE IF EXISTS leg_details;
 DROP TABLE IF EXISTS airport;

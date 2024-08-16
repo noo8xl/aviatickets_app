@@ -1,7 +1,7 @@
 package aviatickets.app.email;
 
 import aviatickets.app.customer.dto.ChangePwdDto;
-import aviatickets.app.email.entity.Notification;
+import aviatickets.app.notification.entity.Notification;
 
 public interface EmailInterface {
 

@@ -209,8 +209,10 @@ class CustomerRepository implements CustomerInterface {
 		}
   }
 
+	// should be updated -<<<
+
 	@Override
-	public Integer updatePassword(String email, String pwd) throws SQLException, ClassNotFoundException {
+	public void updatePassword(String email, String pwd) throws SQLException, ClassNotFoundException {
 
 		int customerId;
 		int updated = 0;
@@ -245,7 +247,6 @@ class CustomerRepository implements CustomerInterface {
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
-		return customerId;
 	}
 
 	@Override
