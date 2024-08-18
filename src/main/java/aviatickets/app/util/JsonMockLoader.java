@@ -36,7 +36,7 @@ public class JsonMockLoader implements CommandLineRunner {
 	public void run(String... args) {
 
 		try {
-			this.addCustomerData();
+//			this.addCustomerData();
 			this.addFlightData();
 			this.addPurchaseData();
 			this.addActionData();
@@ -50,7 +50,7 @@ public class JsonMockLoader implements CommandLineRunner {
 
 	}
 
-	// ################################################################################################33
+	// ################################################################################################
 
 	private void addCustomerData() {
 
@@ -90,36 +90,36 @@ public class JsonMockLoader implements CommandLineRunner {
 		}
 	}
 
-private void addActionData() {
+	private void addActionData() {
 
-	try (InputStream actionsStream = TypeReference.class.getResourceAsStream("/data/actions.json")) {
+		try (InputStream actionsStream = TypeReference.class.getResourceAsStream("/data/actions.json")) {
 
-		Actions actionsList = this.objectMapper.readValue(actionsStream, Actions.class);
-		log.info("actions size-> {} ", actionsList.actions().size());
+			Actions actionsList = this.objectMapper.readValue(actionsStream, Actions.class);
+			log.info("actions size-> {} ", actionsList.actions().size());
 
-			for (int i = 0; i < actionsList.actions().size(); i++) {
-			log.info("Actions: {}", actionsList.actions().get(i));
-			this.actionService.saveLog(actionsList.actions().get(i));
+				for (int i = 0; i < actionsList.actions().size(); i++) {
+				log.info("Actions: {}", actionsList.actions().get(i));
+				this.actionService.saveLog(actionsList.actions().get(i));
+			}
+		} catch (Exception e) {
+			log.info(e.getMessage());
 		}
-	} catch (Exception e) {
-		log.info(e.getMessage());
 	}
-}
 
-private void addPurchaseData() {
+	private void addPurchaseData() {
 
-	try (InputStream purchaseStream = TypeReference.class.getResourceAsStream("/data/purchases.json")) {
+		try (InputStream purchaseStream = TypeReference.class.getResourceAsStream("/data/purchases.json")) {
 
-		Purchases purchaseList = this.objectMapper.readValue(purchaseStream, Purchases.class);
-		log.info("Purchases size-> {} ", purchaseList.purchaseList().size());
+			Purchases purchaseList = this.objectMapper.readValue(purchaseStream, Purchases.class);
+			log.info("Purchases size-> {} ", purchaseList.purchaseList().size());
 
-		for (int i = 0; i < purchaseList.purchaseList().size(); i++) {
-			log.info("Purchase: {}", purchaseList.purchaseList().get(i));
-			this.purchaseService.create(purchaseList.purchaseList().get(i));
+			for (int i = 0; i < purchaseList.purchaseList().size(); i++) {
+				log.info("Purchase: {}", purchaseList.purchaseList().get(i));
+				this.purchaseService.create(purchaseList.purchaseList().get(i));
+			}
+		} catch (Exception e) {
+			log.info(e.getMessage());
 		}
-	} catch (Exception e) {
-		log.info(e.getMessage());
 	}
-}
 
 }

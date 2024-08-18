@@ -13,16 +13,17 @@ public class Notification {
 	@NotEmpty
 	private String domainName; // name of client API
 	@NotEmpty
-	private String content; // content to send as a message
-	@NotEmpty
 	private String recipient;  // user email or telegram chatId
+	@NotEmpty
+	private String content; // content to send as a message
 
 
-	public void setNotification(String serviceType, String domainName, String content, String recipient) {
-			this.serviceType = serviceType;
-			this.domainName = domainName;
-			this.content = content;
-			this.recipient = recipient;
+
+	public void setNotification(String serviceType, String domainName, String recipient, String content) {
+		this.serviceType = serviceType;
+		this.domainName = domainName;
+		this.recipient = recipient;
+		this.content = content;
 	}
 
 }

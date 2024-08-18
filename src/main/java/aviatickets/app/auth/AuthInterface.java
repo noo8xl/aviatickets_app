@@ -6,6 +6,7 @@ import aviatickets.app.auth.dto.response.SignInResponse;
 import com.google.zxing.WriterException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 interface AuthInterface {
@@ -16,5 +17,5 @@ interface AuthInterface {
 
   void signUp(SignUpDto dto) throws SQLException, ClassNotFoundException, IOException, WriterException;
 
-  void forgotPassword(String email) throws SQLException, ClassNotFoundException;
+  void forgotPassword(String email) throws SQLException, ClassNotFoundException, URISyntaxException;
 }

@@ -2,16 +2,17 @@ package aviatickets.app.customer;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 import aviatickets.app.actions.ActionInterface;
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
-import aviatickets.app.email.EmailInterface;
+import aviatickets.app.notification.NotificationInterface;
+import aviatickets.app.notification.dto.NewNotifDto;
 import aviatickets.app.util.HelperInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import aviatickets.app.customer.entity.Customer;
@@ -23,66 +24,131 @@ public class CustomerService implements CustomerInterface {
 
 //  private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
   private final CustomerRepository customerRepository; // ->
-	private final EmailInterface emailService;
+	private final NotificationInterface notificationService;
 	private final HelperInterface helperService;
 	private final ActionInterface actionService;
-	private UserDetails userDetails;
 
 	@Override
-  public void save(String name, String password, String email) throws SQLException, ClassNotFoundException {
-    this.customerRepository.save(name, email, password);
+  public void save(String name, String password, String email) {
+		try {
+			this.customerRepository.save(name, email, password);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
   }
 
 	@Override
 	@Cacheable("customer")
-	public Customer findOne(Integer id) throws SQLException, ClassNotFoundException {
-		return this.customerRepository.findOne(id);
+	public Customer findOne(Integer id) {
+		try {
+			return this.customerRepository.findOne(id);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
+
 	}
 
 	@Override
 	@Cacheable("customer")
-  public Customer findOne(String email) throws SQLException, ClassNotFoundException {
-    return this.customerRepository.findOne(email);
+  public Customer findOne(String email) {
+		try {
+			return this.customerRepository.findOne(email);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
   }
 
 	@Override
-  public void updateProfile(UpdateCustomerDto dto) throws SQLException, ClassNotFoundException {
-		this.customerRepository.updateProfile(dto);
+  public void updateProfile(UpdateCustomerDto dto) {
+		try {
+			this.customerRepository.updateProfile(dto);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
   }
 
 	@Override
-  public void updatePassword(String email, String pwd) throws ServerErrorException, SQLException, ClassNotFoundException {
-		this.customerRepository.updatePassword(email, pwd);
+  public void updatePassword(String email, String pwd) {
+		try {
+			this.customerRepository.updatePassword(email, pwd);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
   }
 
 	@Override
-  public void deleteCustomer(Integer idToDelete, Integer adminId) throws SQLException, ClassNotFoundException {
-		String signedUserEmail = this.userDetails.getUsername();
-		System.out.println(signedUserEmail);
-		this.customerRepository.deleteCustomer(idToDelete, adminId);
+  public void deleteCustomer(Integer idToDelete, Integer adminId) {
+		try {
+			this.customerRepository.deleteCustomer(idToDelete, adminId);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
   }
 
 	@Override
-	public void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
-		this.customerRepository.update2faStatus(dto);
-		ActionLog a = this.helperService.setActionLog(dto.email(),"Customer 2fa status was changed! Current status is: " + dto.status() + ".", dto.customerId());
-		this.actionService.saveLog(a);
-		this.emailService.sendTwoStepCode(dto.email());
+	public void update2faStatus(ChangeTwoStepStatusDto dto) {
+
+		ActionLog a;
+		NewNotifDto notifDto;
+		String customerAction;
+
+		try {
+			customerAction = String
+				.format("Customer 2fa status was changed! Current status is: %s.", dto.status().toString());
+			this.customerRepository.update2faStatus(dto);
+			a = this.helperService.setActionLog(
+					dto.email(),
+					customerAction,
+					dto.customerId());
+			this.actionService.saveLog(a);
+
+			boolean isEqual = Boolean.TRUE.equals(Objects.equals(dto.type(), "telegram"));
+
+			System.out.println("isEqual ->>> "+ isEqual);
+
+			if (isEqual) {
+				notifDto = new NewNotifDto("telegram", "2fa was enabled", dto.telegramId());
+			} else {
+				notifDto = new NewNotifDto("email", "2fa was enabled", dto.email());
+			}
+			this.notificationService.sendTwoStepCode(notifDto);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public List<Customer> findAll(Integer skip, Integer limit) throws SQLException, ClassNotFoundException {
-		return this.customerRepository.findAll(skip, limit);
+	public List<Customer> findAll(Integer skip, Integer limit) {
+		try {
+			return this.customerRepository.findAll(skip, limit);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void updateBanStatus(Integer customerId, Boolean status) throws SQLException, ClassNotFoundException {
-		this.customerRepository.updateBanStatus(customerId, status);
+	public void updateBanStatus(Integer customerId, Boolean status) {
+		try {
+			this.customerRepository.updateBanStatus(customerId, status);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 
 	@Override
-		public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
+		public Boolean getTwoStepStatus(String email) {
+		try {
 			return this.customerRepository.getTwoStepStatus(email);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
+
 		}
 }
+
+
+
+
+
+

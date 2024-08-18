@@ -17,7 +17,7 @@ public class ActionController {
 	private final ActionService actionService;
 
 
-	// available ONLY for admin user *
+	// available ONLY for administrator *
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/get-action-list/{skip}/{limit}/{customerId}/")
 	public ResponseEntity<List<ActionLog>>  getActionList(

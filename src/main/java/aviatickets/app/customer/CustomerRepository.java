@@ -10,7 +10,7 @@ import aviatickets.app.database.DatabaseInterface;
 import aviatickets.app.database.dto.DBConnectionDto;
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.exception.NotFoundException;
-import aviatickets.app.util.HelperInterface;
+import aviatickets.app.util.SerializationInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +25,7 @@ class CustomerRepository implements CustomerInterface {
 	private ResultSet resultSet = null;
 
 	private final DatabaseInterface database;
-	private final HelperInterface helperService;
+	private final SerializationInterface serializationService;
 
 	@Override
   public void save(String name, String email, String password) throws SQLException, ClassNotFoundException {
@@ -71,8 +71,6 @@ class CustomerRepository implements CustomerInterface {
 			if (updated != 3) {
 				throw new SQLException("failed to save customer " + email);
 			}
-		} catch (Exception e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -100,12 +98,10 @@ class CustomerRepository implements CustomerInterface {
 
 			this.resultSet = preparedStatement.executeQuery();
 			while (this.resultSet.next()) {
-				Customer c = this.helperService.getCustomerEntityFromResultSet(this.resultSet);
+				Customer c = this.serializationService.getCustomerEntityFromResultSet(this.resultSet);
 				customersList.add(c);
 			}
 
-		} catch (SQLException e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -114,7 +110,6 @@ class CustomerRepository implements CustomerInterface {
   }
 
   public Customer findOne(Integer id) throws SQLException, ClassNotFoundException {
-//		System.out.println("customer from repo --> ");
 		Customer c = null;
 		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, "
 				+ "customer_details.is_banned, customer_details.role, customer_two_step_auth.status as two_step_auth_status "
@@ -130,11 +125,9 @@ class CustomerRepository implements CustomerInterface {
 			preparedStatement.setInt(1, id);
 			this.resultSet = preparedStatement.executeQuery();
 			while (this.resultSet.next()) {
-				c = this.helperService.getCustomerEntityFromResultSet(this.resultSet);
+				c = this.serializationService.getCustomerEntityFromResultSet(this.resultSet);
 			}
 
-		} catch (SQLException | ClassNotFoundException e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -143,7 +136,6 @@ class CustomerRepository implements CustomerInterface {
   }
 
   public Customer findOne(String email) throws SQLException, ClassNotFoundException {
-//		System.out.println("customer from repo --> ");
 		Customer c = null;
 		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, "
 				+ "customer_details.is_banned, customer_details.role, customer_two_step_auth.status as two_step_auth_status "
@@ -160,11 +152,9 @@ class CustomerRepository implements CustomerInterface {
 
 			this.resultSet = preparedStatement.executeQuery();
 			while (this.resultSet.next()) {
-				c = this.helperService.getCustomerEntityFromResultSet(this.resultSet);
+				c = this.serializationService.getCustomerEntityFromResultSet(this.resultSet);
 			}
 
-		} catch (SQLException | ClassNotFoundException e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -202,8 +192,6 @@ class CustomerRepository implements CustomerInterface {
 				throw new SQLException("failed to update customer " + dto.name());
 			}
 
-		} catch (SQLException | ClassNotFoundException e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -242,8 +230,6 @@ class CustomerRepository implements CustomerInterface {
 				throw new SQLException("failed to update customer " + email);
 			}
 
-		} catch (SQLException | ClassNotFoundException e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -263,8 +249,6 @@ class CustomerRepository implements CustomerInterface {
 			if (updated < 1) {
 				throw new SQLException("Failed to delete customer " + idToDelete);
 			}
-		} catch (Exception e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -288,8 +272,6 @@ public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFound
 			while (this.resultSet.next()) {
 				status = this.resultSet.getBoolean("status");
 			}
-		} catch (Exception e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -300,21 +282,21 @@ public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFound
 	public void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException {
 
 		int updated = 0;
-		String sql = "UPDATE customer_two_step_auth SET status=? WHERE email=?";
+		String sql = "UPDATE customer_two_step_auth SET status=?, type=?, telegramId=? WHERE email=?";
 
 		try {
 			this.initConnection((byte) 1);
 
 			PreparedStatement preparedStatus = this.connection.prepareStatement(sql);
 			preparedStatus.setBoolean(1, dto.status());
-			preparedStatus.setString(2, dto.email());
+			preparedStatus.setString(2, dto.type());
+			preparedStatus.setString(3, dto.telegramId());
+			preparedStatus.setString(4, dto.email());
 
 			updated += preparedStatus.executeUpdate();
 			if (updated < 1) {
 				throw new SQLException("Failed to update customer " + dto.email());
 			}
-		}	catch (Exception e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
@@ -337,8 +319,6 @@ public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFound
 			if (updated < 1) {
 				throw new SQLException("Failed to update customer " + id);
 			}
-		}	catch (Exception e) {
-			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}

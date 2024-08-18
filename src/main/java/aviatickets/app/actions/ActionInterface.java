@@ -10,7 +10,7 @@ public interface ActionInterface {
   // -> save customer actions log
   void saveLog(ActionLog a) throws SQLException, ClassNotFoundException;
 
-  // get a list of logs for admin
+  // get a list of logs for the administrator
 	List<ActionLog> getLog(
 			Integer skip, Integer limit, Integer customerId
 	) throws SQLException, ClassNotFoundException;

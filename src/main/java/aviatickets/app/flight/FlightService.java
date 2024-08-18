@@ -1,8 +1,8 @@
 package aviatickets.app.flight;
 
-import java.sql.SQLException;
 import java.util.List;
 
+import aviatickets.app.exception.ServerErrorException;
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
 import aviatickets.app.flight.dto.response.ShortFlightDto;
 import lombok.RequiredArgsConstructor;
@@ -17,41 +17,69 @@ public class FlightService implements FlightInterface {
   private final FlightInterface flightRepository;
 
 	@Override
-  public List<ShortFlightDto> getHotFlightsList(Short offset) throws SQLException, ClassNotFoundException {
-    return this.flightRepository.getHotFlightsList(offset);
+  public List<ShortFlightDto> getHotFlightsList(Short offset) {
+		try {
+			return this.flightRepository.getHotFlightsList(offset);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
   }
 
 	@Override
-  public List<ShortFlightDto> findFlightsByFilter(GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
-    return this.flightRepository.findFlightsByFilter(filter);
+  public List<ShortFlightDto> findFlightsByFilter(GetFilteredFlight filter) {
+		try {
+			return this.flightRepository.findFlightsByFilter(filter);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
   }
 
 	@Override
-	public FlightsItem getFlightDetails(String flightNumber) throws SQLException, ClassNotFoundException {
-		return this.flightRepository.getFlightDetails(flightNumber);
+	public FlightsItem getFlightDetails(String flightNumber) {
+		try {
+			return this.flightRepository.getFlightDetails(flightNumber);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public FlightsItem getFlightDetails(Integer id) throws SQLException, ClassNotFoundException {
-		return this.flightRepository.getFlightDetails(id);
+	public FlightsItem getFlightDetails(Integer id) {
+		try {
+			return this.flightRepository.getFlightDetails(id);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 
 	// ########################################################################################################
 
 	@Override
-	public void createFlight(FlightsItem flight) throws RuntimeException, SQLException, ClassNotFoundException {
-		this.flightRepository.createFlight(flight);
+	public void createFlight(FlightsItem flight) {
+		try {
+			this.flightRepository.createFlight(flight);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void deleteFlight(Integer id) throws SQLException, ClassNotFoundException {
-		this.flightRepository.deleteFlight(id);
+	public void deleteFlight(Integer id) {
+		try {
+			this.flightRepository.deleteFlight(id);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void updateFlight(FlightsItem flight) throws SQLException, ClassNotFoundException {
-		this.flightRepository.updateFlight(flight);
+	public void updateFlight(FlightsItem flight) {
+		try {
+			this.flightRepository.updateFlight(flight);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 

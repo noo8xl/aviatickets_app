@@ -1,7 +1,7 @@
 package aviatickets.app.customer;
 
 import aviatickets.app.actions.ActionService;
-import aviatickets.app.email.EmailService;
+import aviatickets.app.notification.NotificationInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ class CustomerControllerTests {
 	@MockBean
 	private ActionService actionService;
 	@MockBean
-	private EmailService emailService;
+	private NotificationInterface notificationService;
  	@Autowired
  	CustomerRepository customerRepository;
 

@@ -181,7 +181,9 @@ CREATE TABLE IF NOT EXISTS customer_details (
 
 CREATE TABLE IF NOT EXISTS customer_two_step_auth (
     id INT NOT NULL AUTO_INCREMENT,
-    email varchar(250) NOT NULL,
+    email varchar(250),
+    telegramId VARCHAR(30) DEFAULT '',
+    type VARCHAR(10) DEFAULT '',
     status BOOLEAN NOT NULL DEFAULT 0,
     expired_at timestamp,
     code varchar(30),

@@ -68,6 +68,8 @@ class CustomerServiceTest {
 
 		this.changeTwoStepStatusDto = new ChangeTwoStepStatusDto(
 			1,
+			"telegram",
+			"949347540",
 			"email@example.com",
 			true
 		);

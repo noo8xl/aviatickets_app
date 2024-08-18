@@ -10,8 +10,6 @@ It has basic areas such as
 	- flight,
 	- purchase.
 
-*** to start it you should follow :
-
 
 
 

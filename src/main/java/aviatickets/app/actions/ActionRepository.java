@@ -6,7 +6,7 @@ import java.util.List;
 
 import aviatickets.app.database.DatabaseInterface;
 import aviatickets.app.database.dto.DBConnectionDto;
-import aviatickets.app.util.HelperInterface;
+import aviatickets.app.util.SerializationInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +21,7 @@ class ActionRepository implements ActionInterface {
 	private ResultSet resultSet = null;
 
 	private final DatabaseInterface database;
-	private final HelperInterface helperService;
+	private final SerializationInterface serializationService;
 
 	@Override
   public void saveLog(ActionLog a) throws SQLException, ClassNotFoundException {
@@ -65,7 +65,7 @@ class ActionRepository implements ActionInterface {
 
 			this.resultSet = preparedStatement.executeQuery();
 			while (this.resultSet.next()) {
-				ActionLog a = this.helperService.getActionEntityFromResultSet(this.resultSet);
+				ActionLog a = this.serializationService.getActionEntityFromResultSet(this.resultSet);
 				logList.add(a);
 			}
 

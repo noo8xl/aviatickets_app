@@ -1,21 +1,20 @@
 package aviatickets.app.purchase;
 
+import aviatickets.app.customer.CustomerInterface;
 import aviatickets.app.customer.CustomerService;
 import aviatickets.app.customer.entity.Customer;
-import aviatickets.app.email.EmailService;
+import aviatickets.app.exception.ServerErrorException;
+import aviatickets.app.notification.NotificationInterface;
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
-import aviatickets.app.util.HelperService;
 
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
-import java.sql.SQLException;
 import java.util.List;
 
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
@@ -23,50 +22,72 @@ import com.google.zxing.qrcode.QRCodeWriter;
 @Service
 class PurchaseService implements PurchaseInterface {
 
-	private final PurchaseRepository purchaseRepository;
-	private final EmailService emailService;
-	private final CustomerService customerService;
-	private final HelperService helperService;
+	private final PurchaseInterface purchaseRepository;
+	private final NotificationInterface notificationService;
+	private final CustomerInterface customerService;
 
 	PurchaseService(
-			PurchaseRepository purchaseRepository, EmailService emailService,
-			CustomerService customerService, HelperService helperService) {
+			PurchaseRepository purchaseRepository, CustomerService customerService,
+			NotificationInterface notificationService ) {
 		this.purchaseRepository = purchaseRepository;
-		this.emailService = emailService;
+		this.notificationService = notificationService;
 		this.customerService = customerService;
-		this.helperService = helperService;
 	}
 
 	@Override
-	public void create(CreatePurchaseDto dto) throws SQLException, ClassNotFoundException {
-		this.purchaseRepository.create(dto);
+	public void create(CreatePurchaseDto dto) {
+		try {
+			this.purchaseRepository.create(dto);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	// confirm a purchase and return str
-	public BufferedImage confirm(Integer id) throws SQLException, ClassNotFoundException, WriterException {
+	public BufferedImage confirm(Integer id) {
 		this.confirmPurchase(id);
 		QRCodeWriter barcodeWriter = new QRCodeWriter();
 
-		BitMatrix bitMatrix = barcodeWriter.encode("test str", BarcodeFormat.QR_CODE, 200, 200);
-		return MatrixToImageWriter.toBufferedImage(bitMatrix);
+		try {
+			BitMatrix bitMatrix = barcodeWriter.encode("test str", BarcodeFormat.QR_CODE, 200, 200);
+			return MatrixToImageWriter.toBufferedImage(bitMatrix);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void confirmPurchase(Integer id) throws SQLException, ClassNotFoundException {
-		this.purchaseRepository.confirmPurchase(id);
-		Purchase p = this.purchaseRepository.getDetails(id);
-		Customer c = this.customerService.findOne(p.getCustomerId());
-		this.emailService.sendNewPurchaseEmail(c.getUsername());
+	public void confirmPurchase(Integer id) {
+
+		Purchase p;
+		Customer c;
+		
+		try {
+			this.purchaseRepository.confirmPurchase(id);
+			p = this.purchaseRepository.getDetails(id);
+			c = this.customerService.findOne(p.getCustomerId());
+			this.notificationService.sendNewPurchaseEmail(c.getUsername(), id);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public Purchase getDetails(Integer id) throws SQLException, ClassNotFoundException {
-		return this.purchaseRepository.getDetails(id);
+	public Purchase getDetails(Integer id)  {
+		try {
+			return this.purchaseRepository.getDetails(id);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public List<Purchase> getHistory(Integer customerId, Short skip, Short limit) throws SQLException, ClassNotFoundException {
-		return this.purchaseRepository.getHistory(customerId, skip, limit);
+	public List<Purchase> getHistory(Integer customerId, Short skip, Short limit) {
+		try {
+			return this.purchaseRepository.getHistory(customerId, skip, limit);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 
@@ -75,17 +96,30 @@ class PurchaseService implements PurchaseInterface {
 // ##########################################################################################################
 
 	@Override
-	public List<Purchase> getAll(Short skip, Short limit) throws SQLException, ClassNotFoundException {
-		return this.purchaseRepository.getAll(skip, limit);
+	public List<Purchase> getAll(Short skip, Short limit) {
+		try {
+			return this.purchaseRepository.getAll(skip, limit);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void update(UpdatePurchaseDto dto) throws SQLException, ClassNotFoundException {
-		this.purchaseRepository.update(dto);
+	public void update(UpdatePurchaseDto dto) {
+		try {
+			this.purchaseRepository.update(dto);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void delete(Integer id) throws SQLException, ClassNotFoundException {
-		this.purchaseRepository.delete(id);
+	public void delete(Integer id) {
+		try {
+			this.purchaseRepository.delete(id);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
+	
 }

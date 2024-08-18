@@ -5,7 +5,7 @@ import aviatickets.app.database.dto.DBConnectionDto;
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
-import aviatickets.app.util.HelperInterface;
+import aviatickets.app.util.SerializationInterface;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ class PurchaseRepository implements PurchaseInterface {
 	private ResultSet resultSet = null;
 
 	private final DatabaseInterface database;
-	private final HelperInterface helperService;
+	private final SerializationInterface serializationService;
 
 	private final Logger log = LoggerFactory.getLogger(PurchaseRepository.class);
 
@@ -134,7 +134,7 @@ class PurchaseRepository implements PurchaseInterface {
 
 			this.resultSet = statement.executeQuery();
 			while (this.resultSet.next()) {
-				p = this.helperService.getPurchaseEntityFromResultSet(this.resultSet);
+				p = this.serializationService.getPurchaseEntityFromResultSet(this.resultSet);
 			}
 
 		} catch (Exception e) {
@@ -183,7 +183,7 @@ class PurchaseRepository implements PurchaseInterface {
 
 			this.resultSet = statement.executeQuery();
 			while (this.resultSet.next()) {
-				Purchase p = this.helperService.getPurchaseEntityFromResultSet(this.resultSet);
+				Purchase p = this.serializationService.getPurchaseEntityFromResultSet(this.resultSet);
 				history.add(p);
 			}
 
@@ -234,7 +234,7 @@ class PurchaseRepository implements PurchaseInterface {
 
 			this.resultSet = statement.executeQuery();
 			while (this.resultSet.next()) {
-				Purchase p = this.helperService.getPurchaseEntityFromResultSet(this.resultSet);
+				Purchase p = this.serializationService.getPurchaseEntityFromResultSet(this.resultSet);
 				purchaseList.add(p);
 			}
 

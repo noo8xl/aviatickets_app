@@ -23,7 +23,7 @@ public interface CustomerInterface {
   // handle forgot password route and send new password to current customer email
   void updatePassword(String email, String password) throws SQLException, ClassNotFoundException;
 
-	// enable OR disable customer 2fa status
+	// enable OR turn off customer 2fa status
 	void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException;
 
 	// get customer 2fa status data
@@ -34,7 +34,7 @@ public interface CustomerInterface {
 	// ##################################### ADMIN permission only ##############################################
 	// ##########################################################################################################
 
-  // -> permissions will check by application security service
+  // -> permissions will check by app security service
 
 	// set customer isBanned status as ADMIN
 	void updateBanStatus(Integer customerId, Boolean status) throws SQLException, ClassNotFoundException;

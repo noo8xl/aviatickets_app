@@ -19,7 +19,7 @@ GET http://localhost:9832/customer/get-customer-by-id/9283/
 Content-Type: application/json
 
 ### Change customer password with correct data
-PATCH http://localhost:9832/customer/change-password/
+PATCH http://localhost:9832/customer/update/change-password/
 Content-Type: application/json
 
 {
@@ -28,7 +28,7 @@ Content-Type: application/json
 }
 
 ### Change customer password with WRONG data
-PATCH http://localhost:9832/customer/change-password/
+PATCH http://localhost:9832/customer/update/change-password/
 Content-Type: application/json
 
 {
@@ -37,11 +37,15 @@ Content-Type: application/json
 }
 
 ### Change customer 2fa status
-PATCH http://localhost:9832/customer/change-2fa-status/
+PATCH http://localhost:9832/customer/update/change-2fa-status/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyNDAwODEwNCwiZXhwIjoxNzI0MDA5NTQ0fQ.Fo776UbGlh2J1PwPoi6jBWMmi428DNJPOafwwIBBTmU
+
 
 {
   "customerId": 1,
+  "type": "telegram",
+  "telegramId": "949347540",
   "email": "email@example.com",
   "status": false
 }

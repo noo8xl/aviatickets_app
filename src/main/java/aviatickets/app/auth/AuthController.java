@@ -1,6 +1,7 @@
 package aviatickets.app.auth;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 import com.google.zxing.WriterException;
@@ -35,7 +36,7 @@ public class AuthController {
 
   @ResponseStatus(HttpStatus.ACCEPTED)
   @PatchMapping("/forgot-password/{email}/")
-  void forgotPassword(@PathVariable String email) throws SQLException, ClassNotFoundException {
+  void forgotPassword(@PathVariable String email) throws SQLException, ClassNotFoundException, URISyntaxException {
 		this.authService.forgotPassword(email);
   }
 

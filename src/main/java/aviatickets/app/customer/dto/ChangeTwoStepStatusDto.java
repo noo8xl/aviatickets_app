@@ -8,6 +8,9 @@ public record ChangeTwoStepStatusDto(
 		@Positive
 		Integer customerId,
 		@NotEmpty
+		String type,
+		String telegramId,// email or telegram
+		@NotEmpty
 		@Email
 		String email,
 		@NotEmpty
