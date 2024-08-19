@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -81,6 +82,7 @@ public class Customer implements UserDetails {
 // ############################# getters area #####################################
 
 
+	@JsonIgnore
 	public Customer getCustomer() {
 		return this;
 	}

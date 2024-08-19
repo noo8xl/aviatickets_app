@@ -45,13 +45,13 @@ ________________________________________
 
 ________________________________________
 -> purchases:
-	- create,
+	- create +++,
 	- confirm  (+ create QR-code), +++
-	- getDetails,
-	- getHistory,
+	- getDetails +++ ,
+	- getHistory +++ ,
 	AS ADMIN:
-		- getAll,
-		- update,
+		- getAll, +++
+		- update, +++
 		- delete
 
 ________________________________________ ???

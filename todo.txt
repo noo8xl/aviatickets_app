@@ -18,7 +18,7 @@
 -> actions -> save, get +++
 -> logs -> save ++
 
--> auth area ---  (almost done) ++++
+-> auth area ++++
 
 -> enable caching to flight area +++
 
@@ -46,6 +46,6 @@ ________________________________________________________________________________
 
 ####################################### -- >
 
--> application unit tests !!! *
+-> app unit tests !!! *
 -> run database as docker container *** ?
 -> containerizing app *** ?

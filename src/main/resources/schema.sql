@@ -440,7 +440,7 @@ CREATE TABLE IF NOT EXISTS actions (
 
 
 # delete purchase
-#
+
 # DROP PROCEDURE IF EXISTS delete_purchase;
 #
 # DELIMITER $$
@@ -458,9 +458,9 @@ CREATE TABLE IF NOT EXISTS actions (
 #
 # END $$
 #
-# DELIMITER;
-#
-# CALL delete_purchase(1);
+# DELIMITER ;
+
+CALL delete_purchase(1);
 
 #     __________________________________________________________________
 #     __________________________________________________________________
@@ -519,12 +519,15 @@ CREATE TABLE IF NOT EXISTS actions (
 # DELIMITER ;
 
 
+# DROP FUNCTION IF EXISTS get_purchase_details;
+#
 # DELIMITER $$
-# CREATE FUNCTION IF NOT EXISTS get_purchase_details(
-#     purchaseId INT
+# CREATE PROCEDURE IF NOT EXISTS get_purchase_details(
+#     IN purchaseId INT
 # )
-# RETURNS SMALLINT DETERMINISTIC
 # BEGIN
+#
+#
 #
 #     DECLARE sold_tickets SMALLINT;
 #     DECLARE total_sits SMALLINT;

@@ -3,12 +3,12 @@
 ### Get customer by email with correct data
 GET http://localhost:9832/customer/get-customer-by-email/email@example.com/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyMjc5OTcwNywiZXhwIjoxNzIyODAxMTQ3fQ.DkL9OPLrxwwtWa-1_Y-GF3mVk-URl4LxpYmwex7dT4w
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyNDA5NDUxMSwiZXhwIjoxNzI0MDk1OTUxfQ.XRNDOxa4wE7tXqXOg8JhVPE4jtB3lpxf-wkIAgztFsM
 
 ### Get customer by id with correct data
 GET http://localhost:9832/customer/get-customer-by-id/1/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyMjc5OTcwNywiZXhwIjoxNzIyODAxMTQ3fQ.DkL9OPLrxwwtWa-1_Y-GF3mVk-URl4LxpYmwex7dT4w
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyNDA5NTM3MywiZXhwIjoxNzI0MDk2ODEzfQ.NN4M05wL2-jaKndPOpIJP-YkLQQN3KW55uLOt6rFL2A
 
 ### Get customer by email with WRONG data
 GET http://localhost:9832/customer/get-customer-by-email/email@wrong.data/

@@ -23,7 +23,10 @@ public class SecurityConfiguration {
 			"/auth/**",
 			"/flights/get-hot/**",
 			"/flights/find-filtered-flight/**",
-			"/h2-console/**"
+			"/h2-console/**",
+
+
+			"/purchase/**",
 
 
 //			"/flights/create-new-flight/", // -> test only
@@ -41,10 +44,10 @@ public class SecurityConfiguration {
 
 			"/flights/create-new-flight/",
 
-			"/purchase/update/**",
-			"/purchase/get-purchase-list/**",
-			"/purchase/get-all/**",
-			"/purchase/delete/**",
+//			"/purchase/update/**",
+//			"/purchase/get-purchase-list/**",
+//			"/purchase/get-all/**",
+//			"/purchase/delete/**",
 
 	};
 
@@ -58,7 +61,6 @@ public class SecurityConfiguration {
 
 			"/purchase/create/**",
 			"/purchase/get-details-by-id/**",
-			"/purchase/get-details-by-date/**",
 			"/purchase/get-history/**",
 
 	};

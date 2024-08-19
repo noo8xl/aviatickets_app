@@ -1,6 +1,8 @@
 package aviatickets.app.actions.entity;
 
 import java.sql.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Timestamp;
 
 import jakarta.validation.constraints.Email;
@@ -40,6 +42,7 @@ public void setAction(Integer id, String email, Date date, String action, Intege
 		}
 	}
 
+	@JsonIgnore
 	public ActionLog getActionEntity() {
 		return this;
 	}

@@ -1,5 +1,6 @@
 package aviatickets.app.purchase.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -55,6 +56,7 @@ public class Purchase {
 		this.paymentStatus = paymentStatus;
 	}
 
+	@JsonIgnore
 	public Purchase getPurchase() {
 		return this;
 	}

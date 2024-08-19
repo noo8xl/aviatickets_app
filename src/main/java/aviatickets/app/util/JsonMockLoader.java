@@ -36,7 +36,7 @@ public class JsonMockLoader implements CommandLineRunner {
 	public void run(String... args) {
 
 		try {
-//			this.addCustomerData();
+			this.addCustomerData();
 			this.addFlightData();
 			this.addPurchaseData();
 			this.addActionData();

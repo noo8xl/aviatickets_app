@@ -1,17 +1,19 @@
 package aviatickets.app.purchase;
 
 import aviatickets.app.customer.CustomerInterface;
-import aviatickets.app.customer.CustomerService;
 import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.exception.ServerErrorException;
 import aviatickets.app.notification.NotificationInterface;
+import aviatickets.app.notification.dto.NewPurchaseDto;
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
+import java.sql.Date;
 import java.util.List;
 
 import com.google.zxing.BarcodeFormat;
@@ -19,20 +21,13 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+@RequiredArgsConstructor
 @Service
 class PurchaseService implements PurchaseInterface {
 
 	private final PurchaseInterface purchaseRepository;
 	private final NotificationInterface notificationService;
 	private final CustomerInterface customerService;
-
-	PurchaseService(
-			PurchaseRepository purchaseRepository, CustomerService customerService,
-			NotificationInterface notificationService ) {
-		this.purchaseRepository = purchaseRepository;
-		this.notificationService = notificationService;
-		this.customerService = customerService;
-	}
 
 	@Override
 	public void create(CreatePurchaseDto dto) {
@@ -61,13 +56,22 @@ class PurchaseService implements PurchaseInterface {
 
 		Purchase p;
 		Customer c;
+		NewPurchaseDto dto;
 		
 		try {
 			this.purchaseRepository.confirmPurchase(id);
 			p = this.purchaseRepository.getDetails(id);
 			c = this.customerService.findOne(p.getCustomerId());
-			this.notificationService.sendNewPurchaseEmail(c.getUsername(), id);
+			dto = new NewPurchaseDto(
+				c.getUsername(),
+					c.getName(),
+					new Date(System.currentTimeMillis()),
+					p.getId()
+			);
+
+//			this.notificationService.sendNewPurchaseEmail(dto);
 		} catch (Exception e) {
+			System.out.println("here? _----------------------------------");
 			throw new ServerErrorException(e.getMessage());
 		}
 	}

@@ -1,6 +1,7 @@
 package aviatickets.app.notification;
 
 import aviatickets.app.notification.dto.NewNotifDto;
+import aviatickets.app.notification.dto.NewPurchaseDto;
 
 import java.net.URISyntaxException;
 
@@ -18,7 +19,7 @@ public interface NotificationInterface {
 	void sendRegistrationEmail(String email);
 
 	// send email if purchase has been confirmed
-	void sendNewPurchaseEmail(String email, Integer purchaseId);
+	void sendNewPurchaseEmail(NewPurchaseDto dto);
 
 // ############################### administrator area ##########################
 

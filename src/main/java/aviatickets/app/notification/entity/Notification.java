@@ -18,7 +18,6 @@ public class Notification {
 	private String content; // content to send as a message
 
 
-
 	public void setNotification(String serviceType, String domainName, String recipient, String content) {
 		this.serviceType = serviceType;
 		this.domainName = domainName;

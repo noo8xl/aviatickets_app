@@ -1,6 +1,7 @@
 package aviatickets.app.notification;
 
 import aviatickets.app.notification.dto.NewNotifDto;
+import aviatickets.app.notification.dto.NewPurchaseDto;
 import aviatickets.app.notification.entity.Notification;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,10 +51,10 @@ public class NotificationService implements NotificationInterface {
 
 
 	@Override
-	public void sendNewPurchaseEmail(String email, Integer purchaseId) {
-		String link = String.format("some_client_link_to_the_detailed_page/{%s}/", purchaseId);
+	public void sendNewPurchaseEmail(NewPurchaseDto dto) {
+		String link = String.format("some_client_link_to_the_detailed_page/{%s}/", dto.purchaseId());
 		String msg = String.format("Your purchase successfully created. To get more details follow the link %s", link);
-		this.notification.setNotification("email", this.myApiName, email, msg);
+		this.notification.setNotification("email", this.myApiName, dto.email(), msg);
 		this.sendPOSTRequest();
 	}
 

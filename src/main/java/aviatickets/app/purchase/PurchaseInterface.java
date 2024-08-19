@@ -11,7 +11,7 @@ public interface PurchaseInterface {
 
 	// create a new purchase as customer
 	// -> should return a QR-code as response
-	// and also send it to customer email
+	// and also send it to the customer email
 	void create(CreatePurchaseDto dto) throws SQLException, ClassNotFoundException;
 
 	// confirm purchase -> update status, gen QR, send email
@@ -28,7 +28,7 @@ public interface PurchaseInterface {
 // ##################################### ADMIN permission only ##############################################
 // ##########################################################################################################
 
-	// get a list of all purchase sort by desc date
+	// get a list of all purchase sorts by desc date
 	List<Purchase> getAll(Short skip, Short limit) throws SQLException, ClassNotFoundException;
 
 	// update some data in bought purchase

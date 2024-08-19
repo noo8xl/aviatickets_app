@@ -121,10 +121,9 @@ class PurchaseRepository implements PurchaseInterface {
 	@Override
 	public Purchase getDetails(Integer id) throws SQLException, ClassNotFoundException {
 
-		Purchase p = null;
+		Purchase p = new Purchase();
 		String sql = String.format("%s %s", this.getSQLStringToGetPurchaseQueries(),"WHERE purchase.id = ? ");
-		log.info("str is -> {}", sql);
-//		String sql = this.getSQLStringToGetPurchaseQueries(), "WHERE purchase.id = ? ";
+//		log.info("str is -> {}", sql);
 
 		try {
 			this.initConnection((byte) 1);
@@ -295,8 +294,15 @@ class PurchaseRepository implements PurchaseInterface {
 
 			PreparedStatement statement = this.connection.prepareStatement(sql);
 			statement.setInt(1, id);
-			int updated = statement.executeUpdate();
-			if(updated < 1) {
+
+			System.out.println("statement is -> "+ statement);
+
+			boolean isExec = statement.execute();
+
+			System.out.println("is exec ->  -> "+ isExec);
+			System.out.println("updated count -> "+ statement.getUpdateCount());
+
+			if(Boolean.FALSE.equals(isExec)) {
 				throw new SQLException("failed to delete purchase");
 			}
 
