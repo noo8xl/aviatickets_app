@@ -12,6 +12,8 @@ import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.exception.NotFoundException;
 import aviatickets.app.util.SerializationInterface;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import aviatickets.app.customer.entity.Customer;
@@ -19,6 +21,8 @@ import aviatickets.app.customer.entity.Customer;
 @RequiredArgsConstructor
 @Repository
 class CustomerRepository implements CustomerInterface {
+
+	private static final Logger log = LoggerFactory.getLogger(CustomerRepository.class);
 
 	private Connection connection = null;
 	private Statement statement = null;
@@ -237,16 +241,20 @@ class CustomerRepository implements CustomerInterface {
 
 	@Override
   public void deleteCustomer(Integer idToDelete, Integer adminId) throws SQLException, ClassNotFoundException {
-    // delete each record in each table by userId *
 
-		String sql = String.format("CALL delete_customer(%d, %d)", adminId, idToDelete);
+		String sql = "CALL delete_customer(?,?)";
+
 		try {
-			// only ADMIN db user has access to delete method *
 			this.initConnection((byte) 0);
 
-			PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
-			int updated = preparedStatement.executeUpdate();
-			if (updated < 1) {
+			PreparedStatement statement = this.connection.prepareStatement(sql);
+			statement.setInt(1, idToDelete);
+			statement.setInt(2, adminId);
+
+			statement.execute();
+			log.info("updated count -> {}", statement.getUpdateCount());
+
+			if (statement.getUpdateCount() < 1) {
 				throw new SQLException("Failed to delete customer " + idToDelete);
 			}
 		} finally {

@@ -70,8 +70,8 @@ class PurchaseService implements PurchaseInterface {
 			);
 
 //			this.notificationService.sendNewPurchaseEmail(dto);
+			System.out.println("here? ----------------------------------");
 		} catch (Exception e) {
-			System.out.println("here? _----------------------------------");
 			throw new ServerErrorException(e.getMessage());
 		}
 	}

@@ -295,14 +295,10 @@ class PurchaseRepository implements PurchaseInterface {
 			PreparedStatement statement = this.connection.prepareStatement(sql);
 			statement.setInt(1, id);
 
-			System.out.println("statement is -> "+ statement);
+			statement.execute();
+			log.info("updated count -> {}", statement.getUpdateCount());
 
-			boolean isExec = statement.execute();
-
-			System.out.println("is exec ->  -> "+ isExec);
-			System.out.println("updated count -> "+ statement.getUpdateCount());
-
-			if(Boolean.FALSE.equals(isExec)) {
+			if(statement.getUpdateCount() == 0) {
 				throw new SQLException("failed to delete purchase");
 			}
 

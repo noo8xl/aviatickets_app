@@ -14,6 +14,7 @@ import aviatickets.app.flight.entity.Aircraft;
 import aviatickets.app.flight.entity.Airport;
 import aviatickets.app.flight.entity.FlightsItem;
 import aviatickets.app.flight.entity.Leg;
+import aviatickets.app.util.SerializationInterface;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +31,8 @@ class FlightRepository implements FlightInterface {
 	private ResultSet resultSet = null;
 
 	private final DatabaseInterface database;
+	private final SerializationInterface serializationService;
 	private final Logger log = LoggerFactory.getLogger(FlightRepository.class);
-
-
 
 // ########################################################################################
 // ################################# customer area  #######################################
@@ -191,12 +191,51 @@ class FlightRepository implements FlightInterface {
 	@Override
 	public FlightsItem getFlightDetails(String flightNumber) throws SQLException, ClassNotFoundException {
 
+		boolean isProcedureExecute;
+		boolean isDropped;
 
+		FlightsItem flightItem = null;
+		Aircraft aircraft = null;
+		Leg legItem = null;
+		List<Leg> legs = new ArrayList<>();
 
+		String procedureSql = "CALL create_flight_details_view(?)";
+		String viewSql = "SELECT * FROM GET_DETAILED_FLIGHT";
+		String dropSql = "DROP VIEW GET_DETAILED_FLIGHT";
 
+		try {
+			this.initConnection((byte) 0);
 
+			PreparedStatement preparedStatement = this.connection.prepareStatement(procedureSql);
+			preparedStatement.setString(1, flightNumber);
 
-		return null;
+			isProcedureExecute = preparedStatement.execute();
+			log.info("isProcedureExecute -> {}", isProcedureExecute);
+
+			preparedStatement = this.connection.prepareStatement(viewSql);
+
+			this.resultSet = preparedStatement.executeQuery();
+			while (this.resultSet.next()) {
+				flightItem = this.serializationService.getFlightItemEntityFromResultSet(
+						this.resultSet,
+						aircraft,
+						legs
+				);
+			}
+
+		} finally {
+			PreparedStatement dropStatement = this.connection.prepareStatement(dropSql);
+			isDropped = dropStatement.execute();
+			log.info("drop view exec is  -> {}", isDropped);
+			log.info("drop view count is  -> {}", dropStatement.getUpdateCount());
+
+			if (dropStatement.getUpdateCount() < 1) {
+				log.info("-----------> Failed to drop view <GET_DETAILED_FLIGHT>.");
+			}
+			this.closeAndStopDBInteraction();
+		}
+
+		return flightItem;
 	}
 
 	@Override
@@ -206,14 +245,13 @@ class FlightRepository implements FlightInterface {
 
 
 // ########################################################################################
-// ################################## admin area only #####################################
+// ################################## ADMIN area only #####################################
 // ########################################################################################
 
 
-	// createNewFlight -> add new flight and its details to db as admin
+	// createNewFlight -> add new flight and its details to db as ADMIN
 	@Override
 	public void createFlight(FlightsItem flight) throws RuntimeException, SQLException, ClassNotFoundException {
-
 
 		log.info("flight item is -> {}", flight.toString());
 
@@ -242,19 +280,59 @@ class FlightRepository implements FlightInterface {
 
 
 	@Override
-	public void deleteFlight(Integer id) throws SQLException, ClassNotFoundException {
+	public void deleteFlight(Integer flightId, Integer customerId) throws SQLException, ClassNotFoundException {
+
+		String sql = "CALL delete_flight(?,?)";
+
+		try {
+			this.initConnection((byte) 0);
+
+			PreparedStatement statement = this.connection.prepareStatement(sql);
+			statement.setInt(1, flightId);
+			statement.setInt(2, customerId);
+
+			statement.execute();
+			log.info("updated count -> {}", statement.getUpdateCount());
+
+			if (statement.getUpdateCount() < 1) {
+				throw new SQLException("Failed to delete flight with id _" + flightId + "_.");
+			}
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
 
 	}
 
 	@Override
 	public void updateFlight(FlightsItem flight) throws SQLException, ClassNotFoundException {
 
+		Integer isExist = this.getFlightId(flight.getFlightNumber());
+		if(isExist == 0) {
+			throw new BadRequestException("Flight not found.");
+		}
+
+		if(flight.getItinerary().size() == 1) {
+			this.updateAirport(flight.getItinerary().getFirst().departureAirport());
+			this.updateAirport(flight.getItinerary().getFirst().arrivalAirport());
+			this.updateLegItem(flight.getItinerary().getFirst(), flight.getFlightNumber());
+		} else {
+			for (int i = 0; i < flight.getItinerary().size(); i++) {
+				// run through the itinerary list to save each
+				// leg and airport details
+				Leg item = flight.getItinerary().get(i);
+				log.info("Itinerary item is -> {}", item);
+				this.updateAirport(item.departureAirport());
+				this.updateAirport(item.arrivalAirport());
+				this.updateLegItem(item, flight.getFlightNumber());
+			}
+		}
+		this.updateFlightItem(flight);
 	}
 
 	// saveAircraft -> save new aircraft to db if it doesn't exist by:
 	// -> check if aircraft exists by get an aircraft ID
 	// -> if id != 0 --> continue, else --> stop
-	// -> then create a new aircraft
+	// -> then create a new aircraft,
 	// get an id again and validate it
 	// -> save aircraft details data such as features and cabin class
 	// -> check updated counter before end
@@ -412,7 +490,7 @@ class FlightRepository implements FlightInterface {
 			preparedLeg.setDate(4, leg.departureTime());
 			preparedLeg.setDate(5, leg.arrivalTime());
 			preparedLeg.setString(6, leg.duration());
-			preparedLeg.setInt(7, leg.distance());
+			preparedLeg.setShort(7, leg.distance());
 			preparedLeg.setString(8, leg.status());
 
 			int updated = preparedLeg.executeUpdate();
@@ -495,6 +573,11 @@ class FlightRepository implements FlightInterface {
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
+	}
+
+
+	private void updateFlightItem(FlightsItem item) {
+
 	}
 
 // ########################################################################################

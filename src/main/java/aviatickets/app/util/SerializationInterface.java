@@ -2,11 +2,12 @@ package aviatickets.app.util;
 
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
-import aviatickets.app.flight.entity.FlightsItem;
+import aviatickets.app.flight.entity.*;
 import aviatickets.app.purchase.entity.Purchase;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 // ####################################################################################################
 // ################################ get entity from sql.resultSet area ################################
 // ####################################################################################################
@@ -21,6 +22,27 @@ public interface SerializationInterface {
 
 	Purchase getPurchaseEntityFromResultSet(ResultSet rs) throws SQLException;
 
-	FlightsItem getFlightItemEntityFromResultSet(ResultSet rs) throws SQLException;
+	// #################################################################################################
+	// ################################### flight entity area ##########################################
+
+	FlightsItem getFlightItemEntityFromResultSet(ResultSet rs, Aircraft aircraft, List<Leg> legs) throws SQLException;
+
+	Airport getAirportEntityFromResultSet(ResultSet rs) throws SQLException;
+	AirportContacts getAirportContactsEntityFromResultSet(ResultSet rs) throws SQLException;
+	Location getLocationEntityFromResultSet(ResultSet rs) throws SQLException;
+
+	Aircraft getAircraftEntityFromResultSet(ResultSet rs) throws SQLException;
+	AircraftFeatures getAircraftFeaturesEntityFromResultSet(ResultSet rs) throws SQLException;
+	CabinClass getCabinClassEntityFromResultSet(ResultSet rs) throws SQLException;
+	Price getPriceEntityFromResultSet(ResultSet rs) throws SQLException;
+
+	// ----------------------->
+	// the <Leg> item
+	// will build in the <getFlightItemEntityFromResultSet> method
+	// after receive and built all the entities **
+	// <-----------------------
+
+	// ################################ end of flight entity area ######################################
+	// #################################################################################################
 
 }

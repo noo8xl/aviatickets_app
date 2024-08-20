@@ -104,7 +104,7 @@ public class NotificationService implements NotificationInterface {
 
 //			connection.connect();
 
-			// Get the response code (e.g., 200 for OK)
+			// Get the response code (for example, 200 for OK)
 			int responseCode = connection.getResponseCode();
 			System.out.println("Response Code: " + responseCode);
 

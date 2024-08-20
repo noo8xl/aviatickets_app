@@ -82,17 +82,17 @@ public class CustomerController {
 		return ResponseEntity.ok(this.customerService.findAll(skip, limit));
 	}
 
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/delete/{idToDelete}/{adminId}/")
-	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer adminId) throws SQLException, ClassNotFoundException {
-		this.customerService.deleteCustomer(idToDelete, adminId);
-	}
-
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PatchMapping("/update-ban-status/{customerId}/{status}/")
 	public void updateBanStatus(@PathVariable Integer customerId, @PathVariable Boolean status) throws SQLException, ClassNotFoundException {
 		this.customerService.updateBanStatus(customerId, status);
+	}
+
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping("/delete/{idToDelete}/{adminId}/")
+	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer adminId) throws SQLException, ClassNotFoundException {
+		this.customerService.deleteCustomer(idToDelete, adminId);
 	}
 
 }

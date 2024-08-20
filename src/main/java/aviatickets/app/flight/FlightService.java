@@ -65,9 +65,9 @@ public class FlightService implements FlightInterface {
 	}
 
 	@Override
-	public void deleteFlight(Integer id) {
+	public void deleteFlight(Integer flightId, Integer customerId) {
 		try {
-			this.flightRepository.deleteFlight(id);
+			this.flightRepository.deleteFlight(flightId, customerId);
 		} catch (Exception e) {
 			throw new ServerErrorException(e.getMessage());
 		}

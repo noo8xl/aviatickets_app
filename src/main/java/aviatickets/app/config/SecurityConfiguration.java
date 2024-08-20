@@ -26,9 +26,9 @@ public class SecurityConfiguration {
 			"/h2-console/**",
 
 
-			"/purchase/**",
 
-
+//			"/customer/delete/**",
+//			"/purchase/**",
 //			"/flights/create-new-flight/", // -> test only
 	};
 
@@ -44,10 +44,10 @@ public class SecurityConfiguration {
 
 			"/flights/create-new-flight/",
 
-//			"/purchase/update/**",
-//			"/purchase/get-purchase-list/**",
-//			"/purchase/get-all/**",
-//			"/purchase/delete/**",
+			"/purchase/update/**",
+			"/purchase/get-purchase-list/**",
+			"/purchase/get-all/**",
+			"/purchase/delete/**",
 
 	};
 
@@ -72,7 +72,7 @@ public class SecurityConfiguration {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests( auth -> auth
 					.requestMatchers(this.authlessRoutes).permitAll()  // Allow access to all without authentication
-					.requestMatchers(this.adminWhitelist).hasAuthority("ADMIN")  // Allow only ADMIN role
+					.requestMatchers(this.adminWhitelist).hasAuthority("ADMIN")  // Allow only the ADMIN role
 					.requestMatchers(this.signedUserWhitelist).hasAnyAuthority("USER", "ADMIN")  // Allow USER and ADMIN roles
 					.anyRequest().authenticated()
 				)

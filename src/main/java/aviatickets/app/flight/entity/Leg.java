@@ -15,7 +15,7 @@ public record Leg(
 		Date arrivalTime,
 		String duration,
 		@Positive
-		Integer distance,
+		Short distance,
 		String status
 
 ) {}

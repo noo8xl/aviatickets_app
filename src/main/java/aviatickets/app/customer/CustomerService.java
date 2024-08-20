@@ -1,6 +1,5 @@
 package aviatickets.app.customer;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,6 +11,8 @@ import aviatickets.app.notification.NotificationInterface;
 import aviatickets.app.notification.dto.NewNotifDto;
 import aviatickets.app.util.HelperInterface;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ import aviatickets.app.exception.ServerErrorException;
 @Service
 public class CustomerService implements CustomerInterface {
 
-//  private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
+  private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
   private final CustomerRepository customerRepository; // ->
 	private final NotificationInterface notificationService;
 	private final HelperInterface helperService;
@@ -80,6 +81,7 @@ public class CustomerService implements CustomerInterface {
   public void deleteCustomer(Integer idToDelete, Integer adminId) {
 		try {
 			this.customerRepository.deleteCustomer(idToDelete, adminId);
+			log.info("service -----------------");
 		} catch (Exception e) {
 			throw new ServerErrorException(e.getMessage());
 		}
@@ -104,7 +106,7 @@ public class CustomerService implements CustomerInterface {
 
 			boolean isEqual = Boolean.TRUE.equals(Objects.equals(dto.type(), "telegram"));
 
-			System.out.println("isEqual ->>> "+ isEqual);
+			log.info("isEqual -> {}", isEqual);
 
 			if (isEqual) {
 				notifDto = new NewNotifDto("telegram", "2fa was enabled", dto.telegramId());

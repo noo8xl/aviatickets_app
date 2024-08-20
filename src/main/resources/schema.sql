@@ -33,6 +33,7 @@ DROP USER IF EXISTS testUser@localhost;
 # DROP PROCEDURE IF EXISTS delete_customer;
 
 # DROP FUNCTION IF EXISTS count_available_sits;
+# DROP PROCEDURE IF EXISTS delete_flight;
 
 CREATE USER 'testUser'@'localhost' IDENTIFIED BY '*test_Pa$$w0rd%';
 GRANT SELECT, INSERT, UPDATE ON avia_tickets.* TO 'testUser'@'localhost';
@@ -55,13 +56,13 @@ CREATE TABLE IF NOT EXISTS airport (
 );
 
 CREATE TABLE IF NOT EXISTS airport_location (
-	id INT NOT NULL AUTO_INCREMENT,
-	longitude varchar(30) NOT NULL,
-	latitude varchar(30) NOT NULL,
-	altitude varchar(30),
-	airport_id INT NOT NULL,
-	FOREIGN KEY (airport_id) REFERENCES airport (id),
-	PRIMARY KEY (id)
+    id INT NOT NULL AUTO_INCREMENT,
+    longitude varchar(30) NOT NULL,
+    latitude varchar(30) NOT NULL,
+    altitude varchar(30),
+    airport_id INT NOT NULL,
+    FOREIGN KEY (airport_id) REFERENCES airport (id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS airport_contacts (
@@ -448,19 +449,16 @@ CREATE TABLE IF NOT EXISTS actions (
 # CREATE PROCEDURE IF NOT EXISTS delete_purchase(
 #     IN purchaseId INT
 # )
-# DETERMINISTIC
 # BEGIN
 #
 #     DELETE FROM purchase_details WHERE purchase_id = purchaseId;
 #     DELETE FROM purchase WHERE id = purchaseId;
 #
-#     COMMIT;
-#
 # END $$
 #
 # DELIMITER ;
-
-CALL delete_purchase(1);
+#
+# CALL delete_purchase(1);
 
 #     __________________________________________________________________
 #     __________________________________________________________________
@@ -547,10 +545,13 @@ CALL delete_purchase(1);
 # DELIMITER ;
 
 
-
+# DROP PROCEDURE IF EXISTS delete_customer;
+#
+# DELIMITER $$
+#
 # CREATE PROCEDURE IF NOT EXISTS delete_customer(
-#     IN userId INT,
-#     IN customerToDeleteId INT
+#     IN customerToDeleteId INT,
+#     IN userId INT
 # )
 # BEGIN
 #     DECLARE userRole VARCHAR(10);
@@ -561,17 +562,65 @@ CALL delete_purchase(1);
 #         WHERE customer_details.customer_id=userId;
 #
 #     IF userRole = 'ADMIN' THEN
-#         DELETE FROM customer_details WHERE customer_id=customerToDeleteId;
-#         DELETE FROM customer_two_step_auth WHERE email=(SELECT email FROM customer WHERE id=customerToDeleteId);
+#         DELETE FROM customer_details
+#             WHERE customer_id=customerToDeleteId;
 #
-#         # delete orders, details, tickets, etc ...
-#         # delete <customer> table last
-#         DELETE FROM customer WHERE id=customerToDeleteId;
+#         DELETE FROM customer_two_step_auth
+#             WHERE email=(
+#                 SELECT email
+#                     FROM customer
+#                     WHERE id=customerToDeleteId
+#             );
+#
+#         DELETE
+#             FROM customer
+#             WHERE id=customerToDeleteId;
 #
 #     END IF;
+# END $$
 #
-#     COMMIT;
-# END;
+# DELIMITER ;
+#
+# CALL delete_customer(2,1);
+
+#
+# DROP PROCEDURE IF EXISTS delete_flight;
+#
+# DELIMITER $$
+#
+# CREATE PROCEDURE IF NOT EXISTS delete_flight(
+#     IN flightId INT,
+#     IN userId INT
+# )
+# BEGIN
+#     DECLARE userRole VARCHAR(10);
+#     DECLARE flightNumber VARCHAR(50);
+#     DECLARE priceId INT;
+#
+#     SELECT customer_details.role INTO userRole
+#     FROM customer_details
+#     WHERE customer_details.customer_id=userId;
+#
+#     IF userRole = 'ADMIN' THEN
+#
+#         SELECT flights.flight_number INTO flightNumber FROM flights WHERE id=flightId;
+#         SELECT flights.price INTO priceId FROM flights WHERE id=flightId;
+#
+#         DELETE FROM flights where id=flightId;
+#         DELETE FROM price_details WHERE id=priceId;
+#         DELETE FROM leg_details WHERE flight_number=flightNumber;
+#
+#     ELSE
+#
+#         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Permission denied.';
+#
+#     END IF;
+# END $$
+#
+# DELIMITER ;
+#
+# CALL delete_flight(1,1);
+
 
 
 --

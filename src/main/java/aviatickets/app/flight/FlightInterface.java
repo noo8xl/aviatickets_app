@@ -23,7 +23,7 @@ public interface FlightInterface {
 // ##################################### ADMIN permission only ##############################################
 // ##########################################################################################################
 
-	void deleteFlight(Integer id) throws SQLException, ClassNotFoundException;
+	void deleteFlight(Integer flightId, Integer customerId) throws SQLException, ClassNotFoundException;
 
 	void updateFlight(FlightsItem flight) throws SQLException, ClassNotFoundException;
 

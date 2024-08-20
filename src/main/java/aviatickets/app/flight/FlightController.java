@@ -45,31 +45,32 @@ public class FlightController {
 		return ResponseEntity.ok(this.flightService.getFlightDetails(id));
 	}
 
-
-
 	// #############################################################################
-	// ########################## admin handlers only ##############################
+	// ########################## ADMIN handlers only ##############################
 	// #############################################################################
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create-new-flight/")
   void createNewFlight(@Valid @RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
-		System.out.println("flight ->" + flight);
+//		System.out.println("flight ->" + flight);
 		this.flightService.createFlight(flight);
 	}
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PatchMapping("/update-flight/{id}/")
+	@PutMapping("/update-flight/{id}/")
 	void updateFlightById(
-			@PathVariable Integer id, @Valid @RequestBody FlightsItem flight
+			@PathVariable Integer id,
+			@Valid @RequestBody FlightsItem flight
 	) throws SQLException, ClassNotFoundException {
 		this.flightService.updateFlight(flight);
 	}
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PatchMapping("/delete-flight/{id}/")
-	void updateFlightById(@PathVariable Integer id) throws SQLException, ClassNotFoundException {
-		this.flightService.deleteFlight(id);
+	@PatchMapping("/delete-flight/{flightId}/{customerId}/")
+	void deleteFlightById(
+			@PathVariable Integer flightId, @PathVariable Integer customerId
+	) throws SQLException, ClassNotFoundException {
+		this.flightService.deleteFlight(flightId, customerId);
 	}
 
 

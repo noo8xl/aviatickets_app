@@ -71,3 +71,9 @@ Authorization: Bearer
   "email": "email@example.com",
   "password": "myNew123pwd"
 }
+
+### Delete customer as ADMIN
+DELETE http://localhost:9832/customer/delete/2/1/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyNDE2MzI3NywiZXhwIjoxNzI0MTY0NzE3fQ._UDQrrp6jwHWeeKiDzTC7vZL5X4frfgWbm5qlX8W-Hg
+

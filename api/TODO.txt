@@ -19,14 +19,14 @@ ______________________________________
 	- JWT +++
 
 _______________________________________
--> customer:  ======>>> remove default ADMIN rights
+-> customer:
 	- update, +++
 	- change pwd, +++
 	- change 2fa status, +++
 	AS ADMIN:
 		-> change ban status, +++
 		-> get all, +++
-		-> delete
+		-> delete +++
 
 ________________________________________
 -> action:
@@ -40,7 +40,7 @@ ________________________________________
 	AS ADMIN:
 		- create, +++
 		- update,
-		- delete
+		- delete +++
 
 
 ________________________________________
@@ -52,14 +52,15 @@ ________________________________________
 	AS ADMIN:
 		- getAll, +++
 		- update, +++
-		- delete
+		- delete +++
 
 ________________________________________ ???
--> email service:
-	- sign up email,
+-> notification service:
+	- sign up email, +++
 	- change pwd,
 	- forgot pwd,
 	- 2fa code,
+	- customer message +
 	AS ADMIN:
 		- custom notification
 
@@ -70,6 +71,7 @@ ________________________________________
 	AS ADMIN:
 		- get-list-by-customer-id,
 		- update,
+		- change-payment-status
 
 
 
