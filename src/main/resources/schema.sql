@@ -161,6 +161,9 @@ CREATE TABLE IF NOT EXISTS flights (
 -- customer area
 --
 
+
+
+
 CREATE TABLE IF NOT EXISTS customer (
     id INT NOT NULL AUTO_INCREMENT,
     name varchar(30) NOT NULL,
@@ -246,8 +249,8 @@ CREATE TABLE IF NOT EXISTS actions (
 #     OFFSET 10;
 #
 # SELECT * FROM get_hot_list;
-
--- get_departure_time_filter -> get range for the hot tickets list view
+#
+# get_departure_time_filter -> get range for the hot tickets list view
 
 #     __________________________________________________________________
 #     __________________________________________________________________
@@ -545,6 +548,8 @@ CREATE TABLE IF NOT EXISTS actions (
 # DELIMITER ;
 
 
+# delete_customer func ----------------------->
+
 # DROP PROCEDURE IF EXISTS delete_customer;
 #
 # DELIMITER $$
@@ -583,6 +588,7 @@ CREATE TABLE IF NOT EXISTS actions (
 #
 # CALL delete_customer(2,1);
 
+# delete_flight func ----------------------->
 #
 # DROP PROCEDURE IF EXISTS delete_flight;
 #
@@ -627,10 +633,3 @@ CREATE TABLE IF NOT EXISTS actions (
 --
 --
 --
-
-
-# CREATE FUNCTION calculate_test()
-#    RETURNS FLOAT DETERMINISTIC
-#    RETURN 200.89 - (200.89 * 10 / 100);
-
--- SELECT calculate_test();

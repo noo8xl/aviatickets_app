@@ -14,34 +14,31 @@ import java.util.List;
 @NoArgsConstructor
 public class FlightsItem {
 	@Positive
-	Integer id;
+	private Integer id;
 	@NotEmpty
-	String flightNumber;
+	private String flightNumber;
 	@NotEmpty
-	String airline;
+	private String airline;
 
 	// Itinerary with Transfer: the legs of the journey are detailed,
 	// showing the transfer at some Airport.
 	@Setter
-//	@Getter
-//	@NotEmpty
-	List<Leg> itinerary;
-//	@Getter
+	private List<Leg> itinerary;
 	@Setter
-//	@NotEmpty
-	Aircraft aircraft;
+	private Aircraft aircraft;
 
-//	@Getter
 	@Positive
-	Short totalDistance; // => leg distance += leg distance
-//	@NotEmpty
-	String totalDuration;
-//	@NotEmpty
-	Price price;
+	private Short totalDistance; // => leg distance += leg distance
+	@NotEmpty
+	private String totalDuration;
+
+	@Setter
+	private Price price;
+
 	@Positive
-	Short passengerCount;
+	private Short passengerCount;
 	@Positive
-	Short availableSits;
+	private Short availableSits;
 
 
 	public void setFlightItem(
@@ -63,35 +60,3 @@ public class FlightsItem {
 
 }
 
-
-
-
-
-//public record FlightsItem(
-//		@Positive
-//		Integer id,
-//		@NotEmpty
-//		String flightNumber,
-//		@NotEmpty
-//		String airline,
-//
-//		// Itinerary with Transfer: the legs of the journey are detailed,
-//		// showing the transfer at some Airport.
-//		@NotEmpty
-//		List<Leg> itinerary,
-//		@NotEmpty
-//		Aircraft aircraft,
-//
-//		@Positive
-//		Short totalDistance, // => leg distance += leg distance
-//		@NotEmpty
-//		String totalDuration,
-//		@NotEmpty
-//		Price price,
-//		@Positive
-//		Short passengerCount,
-//		@Positive
-//		Short availableSits
-//) {
-//
-//}

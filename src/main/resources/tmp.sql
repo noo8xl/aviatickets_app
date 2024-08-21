@@ -11,8 +11,6 @@ CREATE PROCEDURE IF NOT EXISTS create_flight_details_view(
 )
 BEGIN
 
-
-
     CREATE VIEW GET_DETAILED_FLIGHT AS
         SELECT
             flights.flight_number, flights.airline,

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -85,7 +86,7 @@ public class SerializationService implements SerializationInterface {
 
 
 	@Override
-	public FlightsItem getFlightItemEntityFromResultSet(ResultSet rs, Aircraft aircraft, List<Leg> legs) {
+	public FlightsItem getFlightItemEntityFromResultSet(ResultSet rs, Aircraft aircraft, List<Leg> legs, Price price) {
 
 		short totalFlightDistance = 0;
 		FlightsItem flight = new FlightsItem();
@@ -93,7 +94,7 @@ public class SerializationService implements SerializationInterface {
 		try {
 
 			for (Leg leg : legs) {
-				totalFlightDistance = (short) (totalFlightDistance + leg.distance());
+				totalFlightDistance = (short) (totalFlightDistance + leg.getDistance());
 			}
 
 			flight.setFlightItem(
@@ -108,86 +109,135 @@ public class SerializationService implements SerializationInterface {
 
 			flight.setAircraft(aircraft);
 			flight.setItinerary(legs);
+			flight.setPrice(price);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return flight;
+		return flight.getFlightItem();
 	}
 
 	@Override
-	public Airport getAirportEntityFromResultSet(ResultSet rs) {
+	public Airport getAirportEntityFromResultSet(ResultSet rs, AirportContacts contacts, Location location) {
 
+		Airport airport = new Airport();
 		try {
+
+			airport.setLocation(location);
+			airport.setContacts(contacts);
+
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return null;
+		return airport.getAirport();
 	}
 
 	@Override
 	public AirportContacts getAirportContactsEntityFromResultSet(ResultSet rs) {
+		AirportContacts airportContacts = new AirportContacts();
 		try {
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return null;
+		return airportContacts.getAirportContacts();
 	}
 
 	@Override
 	public Location getLocationEntityFromResultSet(ResultSet rs) {
 
+		Location location = new Location();
+
 		try {
+
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return null;
+		return location.getLocation();
 	}
 
 	@Override
-	public Aircraft getAircraftEntityFromResultSet(ResultSet rs) {
+	public Aircraft getAircraftEntityFromResultSet(ResultSet rs, AircraftFeatures aircraftFeatures) {
+
+		Aircraft aircraft = new Aircraft();
 
 		try {
 
+			aircraft.setFeatures(aircraftFeatures);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return null;
+		return aircraft.getAircraft();
 	}
 
 	@Override
-	public AircraftFeatures getAircraftFeaturesEntityFromResultSet(ResultSet rs) {
+	public AircraftFeatures getAircraftFeaturesEntityFromResultSet(ResultSet rs, CabinClass cabinClass) {
+
+		AircraftFeatures aircraftFeatures = new AircraftFeatures();
 
 		try {
 
+			aircraftFeatures.setCabinClass(cabinClass);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return null;
+		return aircraftFeatures.getAircraftFeatures();
 	}
 
 	@Override
 	public CabinClass getCabinClassEntityFromResultSet(ResultSet rs) {
 
+		CabinClass cabinClass = new CabinClass();
 		try {
+
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return null;
+		return cabinClass.getCabinClass();
 	}
 
 	@Override
 	public Price getPriceEntityFromResultSet(ResultSet rs) {
 
+		Price price = new Price();
 		try {
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		return null;
+		return price.getPrice();
+	}
+
+	@Override
+	public Leg getLegEntityFromResultSet(ResultSet rs, Airport departureAirport, Airport arrivalAirport) throws SQLException {
+
+
+		Leg leg = new Leg();
+		try {
+
+			leg.setDepartureAirport(departureAirport);
+			leg.setArrivalAirport(arrivalAirport);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return leg.getLegItem();
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

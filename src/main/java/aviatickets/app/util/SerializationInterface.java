@@ -25,16 +25,20 @@ public interface SerializationInterface {
 	// #################################################################################################
 	// ################################### flight entity area ##########################################
 
-	FlightsItem getFlightItemEntityFromResultSet(ResultSet rs, Aircraft aircraft, List<Leg> legs) throws SQLException;
+	FlightsItem getFlightItemEntityFromResultSet(
+			ResultSet rs, Aircraft aircraft, List<Leg> legs, Price price) throws SQLException;
 
-	Airport getAirportEntityFromResultSet(ResultSet rs) throws SQLException;
+	Airport getAirportEntityFromResultSet(ResultSet rs, AirportContacts contacts, Location location) throws SQLException;
 	AirportContacts getAirportContactsEntityFromResultSet(ResultSet rs) throws SQLException;
 	Location getLocationEntityFromResultSet(ResultSet rs) throws SQLException;
 
-	Aircraft getAircraftEntityFromResultSet(ResultSet rs) throws SQLException;
-	AircraftFeatures getAircraftFeaturesEntityFromResultSet(ResultSet rs) throws SQLException;
+	Aircraft getAircraftEntityFromResultSet(ResultSet rs, AircraftFeatures aircraftFeatures) throws SQLException;
+	AircraftFeatures getAircraftFeaturesEntityFromResultSet(ResultSet rs, CabinClass cabinClass) throws SQLException;
 	CabinClass getCabinClassEntityFromResultSet(ResultSet rs) throws SQLException;
+
 	Price getPriceEntityFromResultSet(ResultSet rs) throws SQLException;
+
+	Leg getLegEntityFromResultSet(ResultSet rs, Airport departureAirport, Airport arrivalAirport) throws SQLException;
 
 	// ----------------------->
 	// the <Leg> item
