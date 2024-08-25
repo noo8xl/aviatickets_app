@@ -1,5 +1,6 @@
 package aviatickets.app.notification.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,12 +18,16 @@ public class Notification {
 	@NotEmpty
 	private String content; // content to send as a message
 
-
 	public void setNotification(String serviceType, String domainName, String recipient, String content) {
 		this.serviceType = serviceType;
 		this.domainName = domainName;
 		this.recipient = recipient;
 		this.content = content;
+	}
+
+	@JsonIgnore
+	public Notification getNotification() {
+		return this;
 	}
 
 }

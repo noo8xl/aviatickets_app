@@ -21,7 +21,6 @@ public class SerializationService implements SerializationInterface {
 	public Customer getCustomerEntityFromResultSet(ResultSet rs) {
 
 		Customer c = new Customer();
-
 		try {
 
 			c.setCustomer(
@@ -43,7 +42,6 @@ public class SerializationService implements SerializationInterface {
 	public ActionLog getActionEntityFromResultSet(ResultSet rs) {
 
 		ActionLog a = new ActionLog();
-
 		try {
 
 			a.setAction(
@@ -64,7 +62,6 @@ public class SerializationService implements SerializationInterface {
 	public Purchase getPurchaseEntityFromResultSet(ResultSet rs) {
 
 		Purchase p = new Purchase();
-
 		try {
 
 			p.setPurchase(
@@ -90,7 +87,6 @@ public class SerializationService implements SerializationInterface {
 
 		short totalFlightDistance = 0;
 		FlightsItem flight = new FlightsItem();
-
 		try {
 
 			for (Leg leg : legs) {
@@ -122,10 +118,18 @@ public class SerializationService implements SerializationInterface {
 
 		Airport airport = new Airport();
 		try {
+			airport.setAirport(
+				rs.getInt("id"),
+				rs.getString("code"),
+				rs.getString("airport_name"),
+				rs.getString("city"),
+				rs.getString("country"),
+				rs.getString("terminal"),
+				rs.getString("timezone")
+			);
 
 			airport.setLocation(location);
 			airport.setContacts(contacts);
-
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -135,9 +139,14 @@ public class SerializationService implements SerializationInterface {
 
 	@Override
 	public AirportContacts getAirportContactsEntityFromResultSet(ResultSet rs) {
+
 		AirportContacts airportContacts = new AirportContacts();
 		try {
-
+			airportContacts.setAirportContacts(
+				rs.getString("phone"),
+				rs.getString("email"),
+				rs.getString("website")
+			);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -148,9 +157,12 @@ public class SerializationService implements SerializationInterface {
 	public Location getLocationEntityFromResultSet(ResultSet rs) {
 
 		Location location = new Location();
-
 		try {
-
+			location.setLocation(
+				rs.getString("longitude"),
+				rs.getString("latitude"),
+				rs.getString("altitude")
+			);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -162,10 +174,17 @@ public class SerializationService implements SerializationInterface {
 	public Aircraft getAircraftEntityFromResultSet(ResultSet rs, AircraftFeatures aircraftFeatures) {
 
 		Aircraft aircraft = new Aircraft();
-
 		try {
+			aircraft.setAircraft(
+				rs.getInt("id"),
+				rs.getString("model"),
+				rs.getString("registration"),
+				rs.getShort("seating_capacity"),
+				rs.getShort("year_of_manufacture")
+			);
 
 			aircraft.setFeatures(aircraftFeatures);
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -176,9 +195,13 @@ public class SerializationService implements SerializationInterface {
 	public AircraftFeatures getAircraftFeaturesEntityFromResultSet(ResultSet rs, CabinClass cabinClass) {
 
 		AircraftFeatures aircraftFeatures = new AircraftFeatures();
-
 		try {
-
+			aircraftFeatures.setAircraftFeatures(
+				rs.getInt("id"),
+					rs.getBoolean("wifi"),
+					rs.getBoolean("entertainment"),
+					rs.getBoolean("power_outlets")
+			);
 			aircraftFeatures.setCabinClass(cabinClass);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -191,7 +214,11 @@ public class SerializationService implements SerializationInterface {
 
 		CabinClass cabinClass = new CabinClass();
 		try {
-
+			cabinClass.setCabinClass(
+				rs.getBoolean("economy"),
+				rs.getBoolean("business"),
+				rs.getBoolean("first")
+			);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -204,6 +231,14 @@ public class SerializationService implements SerializationInterface {
 
 		Price price = new Price();
 		try {
+			price.setPrice(
+				rs.getInt("id"),
+				rs.getString("flight_number"),
+				rs.getString("currency"),
+				rs.getFloat("amount"),
+				rs.getShort("discount"),
+				rs.getString("baggage")
+			);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -214,12 +249,21 @@ public class SerializationService implements SerializationInterface {
 	@Override
 	public Leg getLegEntityFromResultSet(ResultSet rs, Airport departureAirport, Airport arrivalAirport) throws SQLException {
 
-
 		Leg leg = new Leg();
 		try {
 
+			leg.setLeg(
+				rs.getInt("id"),
+				rs.getDate("departure_time"),
+				rs.getDate("arrival_time"),
+				rs.getString("duration"),
+				rs.getShort("distance"),
+				rs.getString("status")
+			);
+
 			leg.setDepartureAirport(departureAirport);
 			leg.setArrivalAirport(arrivalAirport);
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

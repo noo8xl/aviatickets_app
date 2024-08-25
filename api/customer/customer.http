@@ -39,7 +39,7 @@ Content-Type: application/json
 ### Change customer 2fa status
 PATCH http://localhost:9832/customer/update/change-2fa-status/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyNDAwODEwNCwiZXhwIjoxNzI0MDA5NTQ0fQ.Fo776UbGlh2J1PwPoi6jBWMmi428DNJPOafwwIBBTmU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyNDYwNDYwNSwiZXhwIjoxNzI0NjA2MDQ1fQ.R4bu_h-iqgYSt8drySnv2GWESwZvrs7Y7GjW-QkobFE
 
 
 {
@@ -53,7 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsI
 ### Get list of customers as ADMIN
 GET http://localhost:9832/customer/get-customer-list/0/10/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyMjc5OTcwNywiZXhwIjoxNzIyODAxMTQ3fQ.DkL9OPLrxwwtWa-1_Y-GF3mVk-URl4LxpYmwex7dT4w
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBleGFtcGxlLmNvbSIsImlhdCI6MTcyNDYwMTcyOSwiZXhwIjoxNzI0NjAzMTY5fQ.ev_MLxWJ7SQvf99OfIk-7jlaPoq5JCackH7F0hx2ANA
 
 ### Get list of customers with WRONG permission
 GET http://localhost:9832/customer/get-customer-list/0/-10/

@@ -81,7 +81,6 @@ public class CustomerService implements CustomerInterface {
   public void deleteCustomer(Integer idToDelete, Integer adminId) {
 		try {
 			this.customerRepository.deleteCustomer(idToDelete, adminId);
-			log.info("service -----------------");
 		} catch (Exception e) {
 			throw new ServerErrorException(e.getMessage());
 		}
@@ -113,7 +112,7 @@ public class CustomerService implements CustomerInterface {
 			} else {
 				notifDto = new NewNotifDto("email", "2fa was enabled", dto.email());
 			}
-			this.notificationService.sendTwoStepCode(notifDto);
+			this.notificationService.sendCustomNotification(notifDto);
 		} catch (Exception e) {
 			throw new ServerErrorException(e.getMessage());
 		}

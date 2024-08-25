@@ -15,7 +15,6 @@ public class AirportContacts {
 	@NotEmpty
 	private String website;
 
-
 	public void setAirportContacts(String phone, String email, String website) {
 		this.phone = phone;
 		this.email = email;

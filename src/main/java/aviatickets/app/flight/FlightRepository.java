@@ -198,17 +198,19 @@ class FlightRepository implements FlightInterface {
 		int departureAirportId = 0;
 		int arrivalAirportId = 0;
 
-		FlightsItem flightItem = null;
-		Leg legItem = null;
+		FlightsItem flightItem = new FlightsItem();
+		Leg legItem = new Leg();
 		List<Leg> legs = new ArrayList<>();
 
-		Aircraft aircraft = null;
-		CabinClass cabinClass = null;
-		AircraftFeatures aircraftFeatures = null;
+		ArrayList<Integer> legIds = new ArrayList<>(0);
 
-		Airport airport = null;
-		AirportContacts contacts = null;
-		Location location = null;
+		Aircraft aircraft = new Aircraft();
+		CabinClass cabinClass = new CabinClass();
+		AircraftFeatures aircraftFeatures = new AircraftFeatures();
+
+		Airport airport = new Airport();
+		AirportContacts contacts = new AirportContacts();
+		Location location = new Location();
 
 		// ################################## sql strings area ##############################################
 
@@ -221,10 +223,8 @@ class FlightRepository implements FlightInterface {
 			+ "WHERE flights.flight_number=?";
 
 		String flightSql = "SELECT "
-			+ "flight_number, airline, aircraft_id, departure_time, "
-			+ "distance=(SELECT calculate_total_distance(?) AS distance), "
-			+ "departure_time, distance, price, passenger_count, "
-			+ "available_sits=(SELECT count_available_sits(?) AS available_sits) "
+			+ "flight_number, airline, aircraft_id, departure_time, distance, "
+			+ "departure_time, distance, price, passenger_count, available_sits "
 			+ "FROM flights "
 			+ "WHERE flight_number = ?";
 
@@ -256,10 +256,11 @@ class FlightRepository implements FlightInterface {
 			PreparedStatement getFlightStatement = this.connection.prepareStatement(flightSql);
 
 
-
+			// ---------- !!! get lig items sorted by date ***
 
 			// count_available_sits(flightNumber)
 			// calculate_current_price(flightNumber)
+
 
 
 
@@ -270,6 +271,9 @@ class FlightRepository implements FlightInterface {
 				priceId = this.resultSet.getInt("price");
 				departureAirportId = this.resultSet.getInt("departure_airport");
 				arrivalAirportId = this.resultSet.getInt("arrival_airport");
+
+//				legIds.add(departureAirportId);
+//				legIds.add(arrivalAirportId);
 			}
 
 
@@ -329,7 +333,7 @@ class FlightRepository implements FlightInterface {
 				// leg and airport details
 				legItem.setLeg(
 						flight.getItinerary().get(i).getId(),
-						flight.getItinerary().get(i).getLegNumber(),
+//						flight.getItinerary().get(i).getLegNumber(),
 						flight.getItinerary().get(i).getDepartureTime(),
 						flight.getItinerary().get(i).getArrivalTime(),
 						flight.getItinerary().get(i).getDuration(),
@@ -375,28 +379,28 @@ class FlightRepository implements FlightInterface {
 
 	@Override
 	public void updateFlight(FlightsItem flight) throws SQLException, ClassNotFoundException {
-
-		Integer isExist = this.getFlightId(flight.getFlightNumber());
-		if(isExist == 0) {
-			throw new BadRequestException("Flight not found.");
-		}
-
-		if(flight.getItinerary().size() == 1) {
-			this.updateAirport(flight.getItinerary().getFirst().getDepartureAirport());
-			this.updateAirport(flight.getItinerary().getFirst().getArrivalAirport());
-			this.updateLegItem(flight.getItinerary().getFirst(), flight.getFlightNumber());
-		} else {
-			for (int i = 0; i < flight.getItinerary().size(); i++) {
-				// run through the itinerary list to save each
-				// leg and airport details
-				Leg item = flight.getItinerary().get(i);
-				log.info("Itinerary item is -> {}", item);
-				this.updateAirport(item.getDepartureAirport());
-				this.updateAirport(item.getArrivalAirport());
-				this.updateLegItem(item, flight.getFlightNumber());
-			}
-		}
-		this.updateFlightItem(flight);
+//
+//		Integer isExist = this.getFlightId(flight.getFlightNumber());
+//		if(isExist == 0) {
+//			throw new BadRequestException("Flight not found.");
+//		}
+//
+//		if(flight.getItinerary().size() == 1) {
+//			this.updateAirport(flight.getItinerary().getFirst().getDepartureAirport());
+//			this.updateAirport(flight.getItinerary().getFirst().getArrivalAirport());
+//			this.updateLegItem(flight.getItinerary().getFirst(), flight.getFlightNumber());
+//		} else {
+//			for (int i = 0; i < flight.getItinerary().size(); i++) {
+//				// run through the itinerary list to save each
+//				// leg and airport details
+//				Leg item = flight.getItinerary().get(i);
+//				log.info("Itinerary item is -> {}", item);
+//				this.updateAirport(item.getDepartureAirport());
+//				this.updateAirport(item.getArrivalAirport());
+//				this.updateLegItem(item, flight.getFlightNumber());
+//			}
+//		}
+//		this.updateFlightItem(flight);
 	}
 
 	// saveAircraft -> save new aircraft to db if it doesn't exist by:
@@ -626,7 +630,7 @@ class FlightRepository implements FlightInterface {
 			preparedFlight.setString(1, flight.getFlightNumber());
 			preparedFlight.setString(2, flight.getAirline());
 			preparedFlight.setInt(3, aircraftId);
-			preparedFlight.setDate(4, flight.getItinerary().getFirst().departureTime());
+			preparedFlight.setDate(4, flight.getItinerary().getFirst().getDepartureTime());
 			preparedFlight.setShort(5, flight.getTotalDistance());
 			preparedFlight.setString(6, flight.getTotalDuration());
 			preparedFlight.setInt(7, priceId);

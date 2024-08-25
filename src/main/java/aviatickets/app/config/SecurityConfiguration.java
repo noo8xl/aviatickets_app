@@ -26,7 +26,7 @@ public class SecurityConfiguration {
 			"/h2-console/**",
 
 
-
+//			"/customer/**",
 //			"/customer/delete/**",
 //			"/purchase/**",
 //			"/flights/create-new-flight/", // -> test only

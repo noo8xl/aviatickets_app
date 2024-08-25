@@ -27,6 +27,7 @@ public class Airport {
 	@NotEmpty
 	@Setter
 	private Location location;
+
 	@NotEmpty
 	@Setter
 	private AirportContacts contacts;

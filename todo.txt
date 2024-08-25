@@ -1,4 +1,51 @@
 
+---------
+---- TODO:
+-
+-
+-
+-
+-
+
+-> refactor aircraft logics (use it to leg item, not to the flight item),
+-> finish getFlightDetails method and make sure there it's working fine,
+-> update getHot and update (flight entity),
+-> add more mock data.
+
+-
+-
+-
+-
+-
+-
+--------------------------------
+
+
+_________________________________________________________________________________
+---- TODO:
+
+-> S - Single-Responsibility principle ++ (	A class should have one and only one reason to change, meaning that
+																						a class should have only one job.)
+-> O - Open-Closed principle ++ (	Objects or entities should be open for extension but closed for modification	)
+-> L - Liskov Substitution principle
+-> I - Interface Segregation principle ++ (client should be forced to impl an interface that it doesn't use)
+-> D - Dependency inversion principle ++ (depends on abstract, not from concretes)
+
+----------------------------------------------------------------------------------
+---- TODO:
+
+-> setup redis configs **
+
+-> notifications -> via email ?*
+
+####################################### -- >
+
+-> app unit tests !!! *
+-> run database as docker container *** ?
+-> containerizing app *** ?
+
+
+
 ---- DONE:
 
 -> mysql migrations via java +++
@@ -25,27 +72,3 @@
 -> setup mysql container ++ <
 -> create sql procedures to store data in the most convenient way +++
 -> create complicated select queries to get filtered flight data +++
-
-
-_________________________________________________________________________________
----- TODO:
-
--> S - Single-Responsibility principle ++ (	A class should have one and only one reason to change, meaning that
-																						a class should have only one job.)
--> O - Open-Closed principle ++ (	Objects or entities should be open for extension but closed for modification	)
--> L - Liskov Substitution principle
--> I - Interface Segregation principle ++ (client should be forced to impl an interface that it doesn't use)
--> D - Dependency inversion principle ++ (depends on abstract, not from concretes)
-
-----------------------------------------------------------------------------------
----- TODO:
-
--> setup redis configs **
-
--> notifications -> via email ?*
-
-####################################### -- >
-
--> app unit tests !!! *
--> run database as docker container *** ?
--> containerizing app *** ?

@@ -9,17 +9,26 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Price {
-	@NotEmpty
-	String currency;
 	@Positive
-	Float amount;
-	@Positive
-	Short discount;
+	private Integer id;
 	@NotEmpty
-	String baggageAllowance;
+	private String flightNumber;
+	@NotEmpty
+	private String currency;
+	@Positive
+	private Float amount;
+	@Positive
+	private Short discount;
+	@NotEmpty
+	private String baggageAllowance;
 
 
-	public void setPrice(String currency, Float amount, Short discount, String baggageAllowance) {
+	public void setPrice(
+			Integer id, String flightNumber, String currency,
+			Float amount, Short discount, String baggageAllowance)
+	{
+		this.id = id;
+		this.flightNumber = flightNumber;
 		this.currency = currency;
 		this.amount = amount;
 		this.discount = discount;

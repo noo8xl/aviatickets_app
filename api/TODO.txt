@@ -1,24 +1,14 @@
 
 
-// call subsequences:
 
-	-> create user
-	---> update mysql rights manually
-	-> add one more user
-	-> sign user to get token *
-	-> create flight
-	->
-
-test :
-
-______________________________________
+______________________________________ +++
 -> auth:
 	- forgot pwd, +++
 	- check 2fa, +++
 	- sign in +++
 	- JWT +++
 
-_______________________________________
+_______________________________________ +++
 -> customer:
 	- update, +++
 	- change pwd, +++
@@ -28,7 +18,7 @@ _______________________________________
 		-> get all, +++
 		-> delete +++
 
-________________________________________
+________________________________________ +++
 -> action:
 	AS ADMIN::
 		-> get customer log list +++
@@ -43,7 +33,7 @@ ________________________________________
 		- delete +++
 
 
-________________________________________
+________________________________________ +++
 -> purchases:
 	- create +++,
 	- confirm  (+ create QR-code), +++
@@ -54,13 +44,11 @@ ________________________________________
 		- update, +++
 		- delete +++
 
-________________________________________ ???
+________________________________________ ++++
 -> notification service:
 	- sign up email, +++
-	- change pwd,
-	- forgot pwd,
-	- 2fa code,
-	- customer message +
+	- customer message +++
+	- handle error messages *
 	AS ADMIN:
 		- custom notification
 
@@ -72,8 +60,6 @@ ________________________________________
 		- get-list-by-customer-id,
 		- update,
 		- change-payment-status
-
-
 
 
 

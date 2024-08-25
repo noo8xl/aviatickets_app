@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Location {
 	@NotEmpty
-	String longitude;
+	private String longitude;
 	@NotEmpty
-	String latitude;
+	private String latitude;
 	@NotEmpty
-	String altitude;
+	private String altitude;
 
 	public void setLocation(String longitude, String latitude, String altitude) {
 		this.longitude = longitude;

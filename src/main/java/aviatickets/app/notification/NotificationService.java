@@ -3,18 +3,14 @@ package aviatickets.app.notification;
 import aviatickets.app.notification.dto.NewNotifDto;
 import aviatickets.app.notification.dto.NewPurchaseDto;
 import aviatickets.app.notification.entity.Notification;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.*;
-//import java.net.http.HttpClient;
-import java.net.http.*;
-import java.net.http.HttpResponse.BodyHandler;
 import java.nio.charset.StandardCharsets;
 
 @NoArgsConstructor
@@ -60,8 +56,7 @@ public class NotificationService implements NotificationInterface {
 
 	@Override
 	public void sendCustomNotification(NewNotifDto dto) {
-		String msg = String.format("Your two step authentication code is %s.", dto.data());
-		this.setParamsAndPerformRequest(dto, msg);
+		this.setParamsAndPerformRequest(dto, dto.data());
 	}
 
 	@Override
@@ -86,120 +81,67 @@ public class NotificationService implements NotificationInterface {
 
 	private void sendGETRequest(String msg) {
 
+		int responseCode = 0;
+		URL url = null;
+		HttpURLConnection connection = null;
+		ObjectMapper mapper = new ObjectMapper();
+
 		String uri = String.format("%s/%s", this.apiPath, msg);
 
 		try {
-			// Define the URL for the request
-			URL url = new URI(uri).toURL();
 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();;
-
-			// Open a connection to the URL
+			url = new URI(uri).toURL();
 			connection = (HttpURLConnection) url.openConnection();
 
-			// Set the request method to GET
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("AccessToken", this.apiAccessKey);
 			connection.setRequestProperty("Content-Type", "application/json");
 
-//			connection.connect();
-
-			// Get the response code (for example, 200 for OK)
-			int responseCode = connection.getResponseCode();
+			responseCode = connection.getResponseCode();
 			System.out.println("Response Code: " + responseCode);
-
-			// Check if the response is successful (response code 200)
-			if (responseCode == HttpURLConnection.HTTP_OK) {
-				// Create a BufferedReader to read the response
-				BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-				String inputLine;
-				StringBuilder response = new StringBuilder();
-
-				// Read the response line by line
-				while ((inputLine = reader.readLine()) != null) {
-					response.append(inputLine);
-				}
-
-				// Close the BufferedReader
-				reader.close();
-
-				// Print the full response
-				System.out.println("Response: " + response.toString());
-			} else {
-				System.out.println("GET request failed.");
-			}
-
-			// Close the connection
-			connection.disconnect();
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		} finally {
+			connection.disconnect();
 		}
 	}
 
 	private void sendPOSTRequest () {
 
+		int responseCode = 0;
+		URL url = null;
+		HttpURLConnection connection = null;
+		ObjectMapper mapper = new ObjectMapper();
+
 		String uri = String.format("%s/send-user-message/", this.apiPath);
 
 		try {
-			// Define the URL for the request
-			URL url = new URI(uri).toURL();
 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			;
+			url = new URI(uri).toURL();
+			connection = (HttpURLConnection) url.openConnection();
+			String jsonStr = mapper.writeValueAsString(this.notification);
 
-			// Set the request method to POST
 			connection.setRequestMethod("POST");
-
-			// Set the request headers
 			connection.setRequestProperty("Content-Type", "application/json; utf-8");
 			connection.setRequestProperty("AccessToken", this.apiAccessKey);
-			connection.setRequestProperty("Accept", "application/json");
-
-			// Enable input and output streams for sending data
 			connection.setDoOutput(true);
 
-			// JSON data to send in the request body
-			String jsonInputString = this.notification.toString();
-
-			System.out.println("jsonInputString: \n->" + jsonInputString);
-
-
-
-			// Send the JSON data
+			System.out.println("jsonInputString: \n->" + jsonStr);
 			try (OutputStream os = connection.getOutputStream()) {
-				byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+				byte[] input = jsonStr.getBytes(StandardCharsets.UTF_8);
 				os.write(input, 0, input.length);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 
-			// Get the response code
-			int responseCode = connection.getResponseCode();
+			responseCode = connection.getResponseCode();
 			System.out.println("Response Code: " + responseCode);
-
-			// Read the response if the request was successful
-			if (responseCode == HttpURLConnection.HTTP_OK) {
-				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-				String inputLine;
-				StringBuilder response = new StringBuilder();
-
-				while ((inputLine = in.readLine()) != null) {
-					response.append(inputLine);
-				}
-
-				// Close the input stream
-				in.close();
-
-				// Print the response
-				System.out.println("Response: " + response.toString());
-			} else {
-				System.out.println("POST request failed.");
-			}
-
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		} finally {
+			connection.disconnect();
 		}
 
 	}

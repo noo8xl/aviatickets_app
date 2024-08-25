@@ -16,9 +16,6 @@ import java.sql.Date;
 public class Leg {
 	@Positive
 	private Integer id;
-	@Positive
-	@NotEmpty
-	private Short legNumber;
 
 	@Setter
 	private Airport departureAirport;
@@ -39,14 +36,11 @@ public class Leg {
 	@NotEmpty
 	private String status;
 
-
-
 	public void setLeg(
-			Integer id, Short legNumber, Date departureTime, Date arrivalTime,
+			Integer id, Date departureTime, Date arrivalTime,
 			String duration, Short distance, String status
 	) {
 		this.id = id;
-		this.legNumber = legNumber;
 		this.departureTime = departureTime;
 		this.arrivalTime = arrivalTime;
 		this.duration = duration;
