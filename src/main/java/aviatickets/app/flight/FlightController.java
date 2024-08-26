@@ -66,11 +66,18 @@ public class FlightController {
 	}
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PatchMapping("/delete-flight/{flightId}/{customerId}/")
+	@DeleteMapping("/delete-flight/{flightId}/{customerId}/")
 	void deleteFlightById(
 			@PathVariable Integer flightId, @PathVariable Integer customerId
 	) throws SQLException, ClassNotFoundException {
 		this.flightService.deleteFlight(flightId, customerId);
+	}
+
+
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/get-flights-details/{flightNumber}/")
+	FlightsItem getFlightDetails(@Valid @PathVariable String flightNumber) throws SQLException, ClassNotFoundException {
+		return this.flightService.getFlightDetails(flightNumber);
 	}
 
 

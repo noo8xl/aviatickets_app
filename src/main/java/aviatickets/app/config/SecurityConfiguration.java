@@ -25,7 +25,7 @@ public class SecurityConfiguration {
 			"/flights/find-filtered-flight/**",
 			"/h2-console/**",
 
-
+			"/flights/get-flights-details/**"
 //			"/customer/**",
 //			"/customer/delete/**",
 //			"/purchase/**",

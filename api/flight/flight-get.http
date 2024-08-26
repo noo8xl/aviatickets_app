@@ -1,5 +1,10 @@
 # Get flitred response flights only
 
+
+### Get detailed flight
+GET http://localhost:9832/flights/get-flights-details/LH2001/
+
+
 ### Get hot flights
 GET http://localhost:9832/flights/get-hot/20/
 Content-Type: application/json

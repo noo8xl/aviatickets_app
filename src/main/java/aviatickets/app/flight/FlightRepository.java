@@ -63,7 +63,7 @@ class FlightRepository implements FlightInterface {
 				+ "OFFSET ?";
 
 			String funcSql = "CALL get_short_flight_data("
-				+ "?,?,?,?, @flight_id, @legs, @departure_airport, @arrival_airport "
+				+ "?,?,?,?, @flight_id, @legs, @departure_airport, @arrival_airport, "
 				+ "@distance, @available_sits, @price)";
 
 		try {
@@ -190,110 +190,84 @@ class FlightRepository implements FlightInterface {
 
 		// ####################################### variables ##############################################
 
-		boolean isProcedureExecute;
-		boolean isDropped;
-
 		int aircraftId = 0;
-		int priceId = 0;
 		int departureAirportId = 0;
 		int arrivalAirportId = 0;
+		short availableSits = 0;
 
 		FlightsItem flightItem = new FlightsItem();
-		Leg legItem = new Leg();
+		Leg legItem;
 		List<Leg> legs = new ArrayList<>();
 
-		ArrayList<Integer> legIds = new ArrayList<>(0);
+		Airport departureAirport;
+		Airport arrivalAirport;
 
-		Aircraft aircraft = new Aircraft();
-		CabinClass cabinClass = new CabinClass();
-		AircraftFeatures aircraftFeatures = new AircraftFeatures();
-
-		Airport airport = new Airport();
-		AirportContacts contacts = new AirportContacts();
-		Location location = new Location();
+		Aircraft aircraft;
+		Price price;
 
 		// ################################## sql strings area ##############################################
 
-		String getIds = "SELECT "
-			+ "flights.aircraft_id, flights.price, "
-			+ "leg_details.departure_airport, leg_details.arrival_airport "
-			+	"FROM flights "
-			+ "JOIN leg_details "
-			+ "ON flights.flight_number=leg_details.flight_number "
-			+ "WHERE flights.flight_number=?";
-
-		String flightSql = "SELECT "
-			+ "flight_number, airline, aircraft_id, departure_time, distance, "
-			+ "departure_time, distance, price, passenger_count, available_sits "
-			+ "FROM flights "
-			+ "WHERE flight_number = ?";
-
-		String getCabinClass = "SELECT * from cabin_class WHERE aircraft_id=?";
-		String getFeatures = "SELECT * from features WHERE aircraft_id=?";
-		String getAircraft = "SELECT * from aircraft WHERE aircraft_id=?";
-
-		String getContacts = "SELECT * from airport_contacts WHERE airport_id=?";
-		String getLocation = "SELECT * from airport_location WHERE location_id=?";
-		String getAirport = "SELECT * from airport WHERE airport_id=?";
-
+		String flightSql = "SELECT * FROM flights WHERE flight_number=?";
+		String getLegsList = "SELECT * FROM leg_details WHERE flight_number=? ORDER BY id";
+		String getAvailableSits = "SELECT count_available_sits(?) AS available_sits";
 
 		// ################################## the main logic ##############################################
 
 		try {
+			aircraftId = this.getAircraftIdToDetailedMethod(flightNumber);
+			aircraft = this.getAircraft(aircraftId);
+			price = this.getPrice(flightNumber);
+
 			this.initConnection((byte) 0);
-			String[] returnedIds = {"aircraft_id, price, departure_airport, arrival_airport"};
 
-			PreparedStatement getIDsStatement = this.connection.prepareStatement(getIds, returnedIds);
+			// ############################### prepare statements ###########################################
 
-			PreparedStatement getAircraftStatement = this.connection.prepareStatement(getAircraft);
-			PreparedStatement getCabinClassStatement = this.connection.prepareStatement(getCabinClass);
-			PreparedStatement getFeaturesStatement = this.connection.prepareStatement(getFeatures);
-
-			PreparedStatement getAirportStatement = this.connection.prepareStatement(getAirport);
-			PreparedStatement getLocationStatement = this.connection.prepareStatement(getLocation);
-			PreparedStatement getContactsStatement = this.connection.prepareStatement(getContacts);
-
+			PreparedStatement getLegsListStatement = this.connection.prepareStatement(getLegsList);
+			PreparedStatement getAvailableSitsStatement = this.connection.prepareStatement(getAvailableSits);
 			PreparedStatement getFlightStatement = this.connection.prepareStatement(flightSql);
 
+			// ################################# perform queries ############################################
 
-			// ---------- !!! get lig items sorted by date ***
-
-			// count_available_sits(flightNumber)
-			// calculate_current_price(flightNumber)
-
-
-
-
-			getIDsStatement.setString(1, flightNumber);
-			this.resultSet = getIDsStatement.executeQuery();
+			getLegsListStatement.setString(1, flightNumber);
+			this.resultSet = getLegsListStatement.executeQuery();
 			while (this.resultSet.next()) {
-				aircraftId = this.resultSet.getInt("aircraft_id");
-				priceId = this.resultSet.getInt("price");
+//				int prevLegDepAirport = 0;
+//				prevLegDepAirport = legs.getLast().getArrivalAirport().getId();
+//
 				departureAirportId = this.resultSet.getInt("departure_airport");
 				arrivalAirportId = this.resultSet.getInt("arrival_airport");
 
-//				legIds.add(departureAirportId);
-//				legIds.add(arrivalAirportId);
+				departureAirport = this.getAirport(departureAirportId);
+				arrivalAirport = this.getAirport(arrivalAirportId);
+
+				legItem = this.serializationService.getLegEntityFromResultSet(
+					this.resultSet,
+					departureAirport,
+					arrivalAirport
+				);
+
+				legs.add(legItem);
 			}
 
+			getFlightStatement.setString(1, flightNumber);
+			this.resultSet = getFlightStatement.executeQuery();
+			while (this.resultSet.next()) {
+				flightItem = this.serializationService.getFlightItemEntityFromResultSet(
+					this.resultSet,
+					aircraft,
+					legs,
+					price
+				);
+			}
 
-
-
-//				flightItem = this.serializationService.getFlightItemEntityFromResultSet(
-//						this.resultSet,
-//						null,
-//						legs
-//				);
+			getAvailableSitsStatement.setString(1, flightNumber);
+			this.resultSet = getAvailableSitsStatement.executeQuery();
+			while (this.resultSet.next()) {
+				availableSits = this.resultSet.getShort("available_sits");
+				flightItem.setAvailableSits(availableSits);
+			}
 
 		} finally {
-//			PreparedStatement dropStatement = this.connection.prepareStatement(dropSql);
-//			isDropped = dropStatement.execute();
-//			log.info("drop view exec is  -> {}", isDropped);
-//			log.info("drop view count is  -> {}", dropStatement.getUpdateCount());
-//
-//			if (dropStatement.getUpdateCount() < 1) {
-//				log.info("-----------> Failed to drop view <GET_DETAILED_FLIGHT>.");
-//			}
 			this.closeAndStopDBInteraction();
 		}
 
@@ -668,9 +642,117 @@ class FlightRepository implements FlightInterface {
 		return this.getItemId(sql, registrationNumber);
 	}
 
+	private Integer getAircraftIdToDetailedMethod(String flightNumber) throws SQLException, ClassNotFoundException {
+		String sql = "SELECT id FROM flights WHERE flight_number=?";
+		return this.getItemId(sql, flightNumber);
+	}
+
 	private Integer getFlightId(String flightNumber) throws SQLException, ClassNotFoundException {
 		String sql = "SELECT id FROM flights WHERE flight_number=?";
 		return this.getItemId(sql, flightNumber);
+	}
+
+	private Airport getAirport(Integer id) throws SQLException {
+
+		ResultSet tempRs;
+		Airport airport = new Airport();
+		AirportContacts airportContacts = new AirportContacts();
+		Location location = new Location();
+
+		String getContacts = "SELECT * from airport_contacts WHERE airport_id=?";
+		String getLocation = "SELECT * from airport_location WHERE airport_id=?";
+		String getAirport = "SELECT * from airport WHERE id=?";
+
+		PreparedStatement getAirportStatement = this.connection.prepareStatement(getAirport);
+		PreparedStatement getLocationStatement = this.connection.prepareStatement(getLocation);
+		PreparedStatement getContactsStatement = this.connection.prepareStatement(getContacts);
+
+
+		getContactsStatement.setInt(1, id);
+		tempRs = getContactsStatement.executeQuery();
+		while (tempRs.next()) {
+			airportContacts = this.serializationService.getAirportContactsEntityFromResultSet(tempRs);
+		}
+
+		getLocationStatement.setInt(1, id);
+		tempRs = getLocationStatement.executeQuery();
+		while (tempRs.next()) {
+			location = this.serializationService.getLocationEntityFromResultSet(tempRs);
+		}
+
+		getAirportStatement.setInt(1, id);
+		tempRs = getAirportStatement.executeQuery();
+		while (tempRs.next()) {
+			airport = this.serializationService.getAirportEntityFromResultSet(tempRs, airportContacts, location);
+		}
+
+		return airport;
+	}
+
+	private Aircraft getAircraft(Integer id) throws SQLException, ClassNotFoundException {
+
+		Aircraft aircraft = new Aircraft();
+		CabinClass cabinClass = new CabinClass();
+		AircraftFeatures aircraftFeatures = new AircraftFeatures();
+
+		String getCabinClass = "SELECT * from cabin_class WHERE aircraft_id=?";
+		String getFeatures = "SELECT * from aircraft_features WHERE aircraft_id=?";
+		String getAircraft = "SELECT * from aircraft WHERE id=?";
+
+		try {
+			this.initConnection((byte) 1);
+
+			PreparedStatement getAircraftStatement = this.connection.prepareStatement(getAircraft);
+			PreparedStatement getCabinClassStatement = this.connection.prepareStatement(getCabinClass);
+			PreparedStatement getFeaturesStatement = this.connection.prepareStatement(getFeatures);
+
+			getCabinClassStatement.setInt(1, id);
+			this.resultSet = getCabinClassStatement.executeQuery();
+			while (this.resultSet.next()) {
+				cabinClass = this.serializationService.getCabinClassEntityFromResultSet(this.resultSet);
+			}
+
+			getFeaturesStatement.setInt(1, id);
+			this.resultSet = getFeaturesStatement.executeQuery();
+			while (this.resultSet.next()) {
+				aircraftFeatures = this.serializationService.
+						getAircraftFeaturesEntityFromResultSet(this.resultSet, cabinClass);
+			}
+
+			getAircraftStatement.setInt(1, id);
+			this.resultSet = getAircraftStatement.executeQuery();
+			while (this.resultSet.next()) {
+				aircraft = this.serializationService.getAircraftEntityFromResultSet(this.resultSet, aircraftFeatures);
+			}
+
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
+
+		return aircraft;
+	}
+
+	private Price getPrice(String flightNumber) throws SQLException, ClassNotFoundException {
+
+		Price price = new Price();
+		String getPrice = "SELECT * FROM price_details WHERE flight_number=?";
+
+		try {
+			this.initConnection((byte) 1);
+
+			PreparedStatement getPriceStatement = this.connection.prepareStatement(getPrice);
+
+			getPriceStatement.setString(1, flightNumber);
+			this.resultSet = getPriceStatement.executeQuery();
+			while (this.resultSet.next()) {
+				price = this.serializationService.getPriceEntityFromResultSet(this.resultSet);
+			}
+
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
+
+		return price;
 	}
 
 //	// getLegId -> return leg id by flight number

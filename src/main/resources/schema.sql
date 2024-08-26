@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS airport_location (
     latitude varchar(30) NOT NULL,
     altitude varchar(30),
     airport_id INT NOT NULL,
+
     FOREIGN KEY (airport_id) REFERENCES airport (id),
     PRIMARY KEY (id)
 );
@@ -71,6 +72,7 @@ CREATE TABLE IF NOT EXISTS airport_contacts (
     email varchar(150) NOT NULL,
     website varchar(255) NOT NULL,
     airport_id INT NOT NULL,
+
     FOREIGN KEY (airport_id) REFERENCES airport (id),
     PRIMARY KEY (id)
 );
@@ -91,6 +93,7 @@ CREATE TABLE IF NOT EXISTS aircraft_features (
     entertainment Boolean NOT NULL,
     power_outlets Boolean NOT NULL,
     aircraft_id INT NOT NULL,
+
     FOREIGN KEY (aircraft_id) REFERENCES aircraft (id),
     PRIMARY KEY (id)
 );
@@ -102,6 +105,7 @@ CREATE TABLE IF NOT EXISTS cabin_class (
   business Boolean NOT NULL,
   first Boolean NOT NULL,
   aircraft_id INT NOT NULL,
+
   FOREIGN KEY (aircraft_id) REFERENCES aircraft (id),
   PRIMARY KEY (id)
 );
@@ -114,6 +118,7 @@ CREATE TABLE IF NOT EXISTS price_details (
   amount FLOAT NOT NULL,
   discount SMALLINT NOT NULL DEFAULT 0,
   baggage varchar(150) NOT NULL,
+
   PRIMARY KEY (id)
 );
 
@@ -169,16 +174,18 @@ CREATE TABLE IF NOT EXISTS customer (
     name varchar(30) NOT NULL,
     email varchar(250) NOT NULL,
     password varchar(30) NOT NULL,
+
     PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS customer_details (
     id INT NOT NULL AUTO_INCREMENT,
-    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     is_banned Boolean NOT NULL DEFAULT 0,
     role varchar(10) NOT NULL DEFAULT 'USER',
     customer_id INT NOT NULL,
+
     FOREIGN KEY (customer_id) REFERENCES customer (id),
     PRIMARY KEY (id)
 );
@@ -191,6 +198,7 @@ CREATE TABLE IF NOT EXISTS customer_two_step_auth (
     status BOOLEAN NOT NULL DEFAULT 0,
     expired_at timestamp,
     code varchar(30),
+
     PRIMARY KEY (id)
 );
 
@@ -201,6 +209,7 @@ CREATE TABLE IF NOT EXISTS purchase (
 
     flight_number varchar(50) NOT NULL,
     customer_id INT NOT NULL,
+
     FOREIGN KEY (customer_id) REFERENCES customer (id),
     PRIMARY KEY (id)
 );
@@ -208,12 +217,13 @@ CREATE TABLE IF NOT EXISTS purchase (
 
  CREATE TABLE IF NOT EXISTS purchase_details (
     id INT NOT NULL AUTO_INCREMENT,
-    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     payment_status BOOLEAN NULL DEFAULT 0,
     quantity SMALLINT NOT NULL,
     price FLOAT NOT NULL,
     purchase_id INT NOT NULL,
+
     FOREIGN KEY (purchase_id) REFERENCES purchase (id),
     PRIMARY KEY (id)
  );
@@ -222,9 +232,10 @@ CREATE TABLE IF NOT EXISTS purchase (
 CREATE TABLE IF NOT EXISTS actions (
   id INT NOT NULL AUTO_INCREMENT,
   email varchar(250) NOT NULL,
-  date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   action varchar(250) NOT NULL,
   customer_id INT NOT NULL,
+
   FOREIGN KEY (customer_id) REFERENCES customer (id),
   PRIMARY KEY (id)
 );

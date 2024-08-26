@@ -198,9 +198,9 @@ public class SerializationService implements SerializationInterface {
 		try {
 			aircraftFeatures.setAircraftFeatures(
 				rs.getInt("id"),
-					rs.getBoolean("wifi"),
-					rs.getBoolean("entertainment"),
-					rs.getBoolean("power_outlets")
+				rs.getBoolean("wifi"),
+				rs.getBoolean("entertainment"),
+				rs.getBoolean("power_outlets")
 			);
 			aircraftFeatures.setCabinClass(cabinClass);
 		} catch (Exception e) {
@@ -223,6 +223,7 @@ public class SerializationService implements SerializationInterface {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+
 		return cabinClass.getCabinClass();
 	}
 
@@ -247,7 +248,7 @@ public class SerializationService implements SerializationInterface {
 	}
 
 	@Override
-	public Leg getLegEntityFromResultSet(ResultSet rs, Airport departureAirport, Airport arrivalAirport) throws SQLException {
+	public Leg getLegEntityFromResultSet(ResultSet rs, Airport departureAirport, Airport arrivalAirport) {
 
 		Leg leg = new Leg();
 		try {

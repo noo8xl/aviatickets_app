@@ -38,6 +38,7 @@ public class FlightsItem {
 	@Positive
 	private Short passengerCount;
 	@Positive
+	@Setter
 	private Short availableSits;
 
 

@@ -6,12 +6,11 @@
 -
 -
 -
-
 -> refactor aircraft logics (use it to leg item, not to the flight item),
 -> finish getFlightDetails method and make sure there it's working fine,
 -> update getHot and update (flight entity),
--> add more mock data.
-
+-> add more mock data,
+-> update exception handling logic (add notification)
 -
 -
 -
