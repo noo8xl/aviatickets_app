@@ -6,7 +6,7 @@ GET http://localhost:9832/flights/get-flights-details/LH2001/
 
 
 ### Get hot flights
-GET http://localhost:9832/flights/get-hot/20/
+GET http://localhost:9832/flights/get-hot/
 Content-Type: application/json
 
 

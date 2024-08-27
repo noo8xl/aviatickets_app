@@ -2,6 +2,7 @@ package aviatickets.app.util;
 
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
+import aviatickets.app.flight.dto.response.ShortFlightDto;
 import aviatickets.app.flight.entity.*;
 import aviatickets.app.purchase.entity.Purchase;
 
@@ -40,6 +41,7 @@ public interface SerializationInterface {
 
 	Leg getLegEntityFromResultSet(ResultSet rs, Airport departureAirport, Airport arrivalAirport) throws SQLException;
 
+	ShortFlightDto getShortFlightDataEntityFromResultSet(ResultSet rs) throws SQLException;
 	// ----------------------->
 	// the <Leg> item
 	// will build in the <getFlightItemEntityFromResultSet> method

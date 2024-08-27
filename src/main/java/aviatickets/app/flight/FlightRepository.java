@@ -37,104 +37,137 @@ class FlightRepository implements FlightInterface {
 
 	@Override
 	@Cacheable("hotFlights")
-  public List<ShortFlightDto> getHotFlightsList(Short offset) throws SQLException, ClassNotFoundException {
+  public List<ShortFlightDto> getHotFlightsList() throws SQLException, ClassNotFoundException {
 
-//		struct temp {
-//			String flightNum
-//			int departureAirport
-//			int arrivalAirport
-//		}
+		// get leg a list with all airports in it by current flight number
 
-
-//		List<temp> baseData = push here cur result set;
-//		-> this.resultSet = new sql query execution;
+		String flightNumber = null;
+		String duration;
+		Date departureDate;
+		Float price = 0.0F;
+		ShortFlightDto dtoItem;
 
 
-		List<ShortFlightDto> flights = new ArrayList<>();
-		String baseSql = "SELECT flights.flight_number, "
+		List<Integer> legIds = new ArrayList<>();
+		List<List<Integer>> flightIds = new ArrayList<>();
+
+		List<ShortFlightDto> hotFlights = new ArrayList<>();
+
+
+		String getLegsSql = "SELECT departure_airport, arrival_airport "
+				+ "FROM leg_details "
+				+ "WHERE flight_number=? "
+				+ "ORDER BY leg_number";
+
+		String baseSql = "SELECT flights.flight_number, flights.total_duration, "
+				+ "flights.departure_time AS departure_date, "
 				+ "leg_details.departure_airport AS departure_airport, "
-				+ "leg_details.arrival_airport AS arrival_airport, "
+				+ "leg_details.arrival_airport AS arrival_airport "
 				+ "FROM flights "
 				+ "JOIN leg_details "
-				+ "ON flights.flight_number = leg_details.flight_number "
-				+ "WHERE leg_details.departure_time = get_departure_time_filter() "
-				+ "DESC "
-				+ "LIMIT 10 "
-				+ "OFFSET ?";
+				+ "ON flights.flight_number=leg_details.flight_number "
+				+ "WHERE leg_details.departure_time "
+				+ "BETWEEN CURRENT_TIMESTAMP() AND NOW() + INTERVAL 1 DAY "
+				+ "ORDER BY leg_details.departure_time DESC "
+				+ "LIMIT 20 ";
 
-			String funcSql = "CALL get_short_flight_data("
-				+ "?,?,?,?, @flight_id, @legs, @departure_airport, @arrival_airport, "
-				+ "@distance, @available_sits, @price)";
+		String getAirportNameSql = "SELECT "
+				+ "code AS departure_airport_code, "
+				+ "city AS arrival_airport_city, "
+				+ "airport_name AS arrival_airport_name "
+				+ "FROM airport "
+				+ "WHERE id=?";
+
+
+		String getPriceSql = "SELECT calculate_current_price(?) AS price";
 
 		try {
-
 			this.initConnection((byte) 1);
 
 			PreparedStatement baseStatement = this.connection.prepareStatement(baseSql);
-			baseStatement.setInt(1, offset);
+			PreparedStatement getLegStatement = this.connection.prepareStatement(getLegsSql);
+			PreparedStatement getPriceStatement = this.connection.prepareStatement(getPriceSql);
+			PreparedStatement getAirportNameStatement = this.connection.prepareStatement(getAirportNameSql);
+
 
 			this.resultSet = baseStatement.executeQuery();
-			log.info("result set is \n->{}", this.resultSet.toString());
+			while (this.resultSet.next()) {
+				flightNumber = this.resultSet.getString("flight_number");
+				duration = this.resultSet.getString("duration");
+				departureDate = this.resultSet.getDate("departure_date");
 
-			PreparedStatement funcStatement = this.connection.prepareStatement(funcSql);
+				dtoItem = new ShortFlightDto(
+						flightNumber,
+						"",
+						"",
+						"",
+						"",
+						"",
+						"",
+						duration,
+						departureDate,
+						price
+				);
 
-			while(this.resultSet.next()) {
-//				String flightNum = this.resultSet.getString("flight_number");
-//				int departureAirport = this.resultSet.getInt("departure_airport");
-//				int arrivalAirport = this.resultSet.getInt("arrival_airport");
-
-
-
-//				temp item = new temp(
-//						this.resultSet.getInt("id"),
-//						this.resultSet.getString("distance"),
-//						this.resultSet.getString("flight_number"),
-//						this.resultSet.getFloat("price")
-//				);
-//				baseData.add(temp);
-//			}
-//
-//			for (int i = 0; i < baseData.size(); i++) {
-//				funcStatement.setString(1, baseData.get(i).flightNum); ....
-//				funcStatement.setBoolean(2, true);
-//				funcStatement.setInt(3, departureAirport);
-//				funcStatement.setInt(4, arrivalAirport);
-//
-//
-//
-//
-//				ShortFlightDto item = new ShortFlightDto(
-//						this.resultSet.getInt("id"),
-//						this.resultSet.getString("distance"),
-//						this.resultSet.getString("flight_number"),
-//						this.resultSet.getFloat("price")
-//				);
-//				flights.add(item);
-//
+				hotFlights.add(dtoItem);
 			}
 
 
-//
-//			this.resultSet = statement.executeQuery();
-//			log.info("result set is \n->{}", this.resultSet.toString());
-//
-//			while(this.resultSet.next()) {
-//				ShortFlightDto item = new ShortFlightDto(
-//					this.resultSet.getInt("id"),
-//					this.resultSet.getString("distance"),
-//					this.resultSet.getString("flight_number"),
-//					this.resultSet.getFloat("price")
-//				);
-//				flights.add(item);
-//			}
-			log.info("flight size is -> {}", flights.size());
+			// here's a list of not-so filed dto items
+			// each item should be updated by exec query **
+
+			//  ------------------------------------------------- >
+			for (ShortFlightDto item : hotFlights) {
+
+				// each price
+				getPriceStatement.setString(1, flightNumber);
+				this.resultSet = getLegStatement.executeQuery();
+				while (this.resultSet.next()) {
+					price = this.resultSet.getFloat("price");
+				}
+				
+				// each airport data
+
+				for (int i = 0; i < flightIds.size(); i++) {
+					// each airport calls here by ids ? *
+					getAirportNameStatement.setInt(1, flightIds.get(i).get(0));
+					this.resultSet = getAirportNameStatement.executeQuery();
+					while (this.resultSet.next()) {
+						departureAirportName = this.resultSet.getString("departure_airport_name");
+//						departureAirportCode
+//						departureAirportCity
+
+						// -> get arrival airport data
+						// -> then put it into the current dtoItem
+
+					}
+				}
+
+				getLegStatement.setString(1, flightNumber);
+				this.resultSet = getLegStatement.executeQuery();
+				while (this.resultSet.next()) {
+
+					int departureAirportId = this.resultSet.getInt("departure_airport");
+					int arrivalAirportId = this.resultSet.getInt("arrival_airport");
+
+					legIds.add(departureAirportId);
+					legIds.add(arrivalAirportId);
+
+					flightIds.add(legIds);
+				}
+
+
+				log.info("current dto state is => {}", item);
+			}
+
+
 
 		} catch (Exception e) {
 			throw e;
 		} finally {
 			this.closeAndStopDBInteraction();
 		}
-		return flights;
+		return hotFlights;
   }
 
 	@Override
@@ -143,38 +176,10 @@ class FlightRepository implements FlightInterface {
 
 		List<ShortFlightDto> flights = new ArrayList<>();
 		String sql = "";
-		System.out.println(filter);
 
-		// select * from leg_details where flight_number=3; ---<
-
-		// --> get flights list here ->
-		// --> get sold ticket with the same flights numbers
-
-		// then get free seats value by multiplying flight total seats on bought ticket to this flight
-		// with the same flights number
-
-		// -> then update flight.availableSeats = total / bought
-		// -> return list to user
 		try {
 			this.initConnection((byte) 1);
 
-			// check filtered fields for not null value **
-			// -> set filter ..
-
-			PreparedStatement preparedFlight = this.connection.prepareStatement(sql);
-//			preparedFlight.setShort(1, offset);
-
-			this.resultSet = preparedFlight.executeQuery();
-
-			while (this.resultSet.next()) {
-				ShortFlightDto item = new ShortFlightDto(
-					this.resultSet.getInt("id"),
-					this.resultSet.getString("flight_number"),
-					this.resultSet.getString("total_duration"),
-					this.resultSet.getFloat("price")
-				);
-				flights.add(item);
-			}
 
 		}	catch (Exception e) {
 			throw e;
@@ -208,7 +213,7 @@ class FlightRepository implements FlightInterface {
 		// ################################## sql strings area ##############################################
 
 		String flightSql = "SELECT * FROM flights WHERE flight_number=?";
-		String getLegsList = "SELECT * FROM leg_details WHERE flight_number=? ORDER BY id";
+		String getLegsList = "SELECT * FROM leg_details WHERE flight_number=? ORDER BY leg_number";
 		String getAvailableSits = "SELECT count_available_sits(?) AS available_sits";
 
 		// ################################## the main logic ##############################################
@@ -231,9 +236,7 @@ class FlightRepository implements FlightInterface {
 			getLegsListStatement.setString(1, flightNumber);
 			this.resultSet = getLegsListStatement.executeQuery();
 			while (this.resultSet.next()) {
-//				int prevLegDepAirport = 0;
-//				prevLegDepAirport = legs.getLast().getArrivalAirport().getId();
-//
+
 				departureAirportId = this.resultSet.getInt("departure_airport");
 				arrivalAirportId = this.resultSet.getInt("arrival_airport");
 
@@ -307,7 +310,7 @@ class FlightRepository implements FlightInterface {
 				// leg and airport details
 				legItem.setLeg(
 						flight.getItinerary().get(i).getId(),
-//						flight.getItinerary().get(i).getLegNumber(),
+						flight.getItinerary().get(i).getLegNumber(),
 						flight.getItinerary().get(i).getDepartureTime(),
 						flight.getItinerary().get(i).getArrivalTime(),
 						flight.getItinerary().get(i).getDuration(),
@@ -521,8 +524,8 @@ class FlightRepository implements FlightInterface {
 	private void saveLegItem(Leg leg, String flightNumber) throws SQLException, ClassNotFoundException {
 
 		String sql = "INSERT INTO leg_details " +
-				"(flight_number, departure_airport, arrival_airport, departure_time, arrival_time, duration, distance, status) " +
-				"VALUES (?,?,?,?,?,?,?,?)";
+				"(leg_number, flight_number, departure_airport, arrival_airport, departure_time, arrival_time, duration, distance, status) " +
+				"VALUES (?,?,?,?,?,?,?,?,?)";
 
 		try {
 			Integer arrivalAirportId = this.getAirportId(leg.getArrivalAirport().getAirportName());
@@ -532,14 +535,16 @@ class FlightRepository implements FlightInterface {
 
 			this.initConnection((byte) 0);
 			PreparedStatement preparedLeg = this.connection.prepareStatement(sql);
-			preparedLeg.setString(1, flightNumber);
-			preparedLeg.setInt(2, arrivalAirportId);
+
+			preparedLeg.setShort(1, leg.getLegNumber());
+			preparedLeg.setString(2, flightNumber);
 			preparedLeg.setInt(3, departureAirportId);
-			preparedLeg.setDate(4, leg.getDepartureTime());
-			preparedLeg.setDate(5, leg.getArrivalTime());
-			preparedLeg.setString(6, leg.getDuration());
-			preparedLeg.setShort(7, leg.getDistance());
-			preparedLeg.setString(8, leg.getStatus());
+			preparedLeg.setInt(4, arrivalAirportId);
+			preparedLeg.setDate(5, leg.getDepartureTime());
+			preparedLeg.setDate(6, leg.getArrivalTime());
+			preparedLeg.setString(7, leg.getDuration());
+			preparedLeg.setShort(8, leg.getDistance());
+			preparedLeg.setString(9, leg.getStatus());
 
 			int updated = preparedLeg.executeUpdate();
 			if(updated < 1) {

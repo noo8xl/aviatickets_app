@@ -1,36 +1,6 @@
 
 
 
-DROP VIEW IF EXISTS GET_DETAILED_FLIGHT;
-DROP PROCEDURE IF EXISTS create_flight_details_view;
-
-DELIMITER $$
-
-CREATE PROCEDURE IF NOT EXISTS create_flight_details_view(
-    IN flightNumber VARCHAR(50)
-)
-BEGIN
-
-    CREATE VIEW GET_DETAILED_FLIGHT AS
-        SELECT
-            flights.flight_number, flights.airline,
-            FROM flights
-            WHERE flight_number = flightNumber;
-
-
-END $$
-
-DELIMITER ;
-
-
-CALL create_flight_details_view('LH2001');
-
-SELECT * FROM GET_DETAILED_FLIGHT;
-
-
-
-
-
 
 
 

@@ -1,12 +1,21 @@
 package aviatickets.app.flight.dto.response;
 
-import jakarta.validation.constraints.Positive;
+import java.sql.Date;
 
 public record ShortFlightDto(
-		@Positive
-		Integer flight_id,
 		String flightNumber,
+
+		String departureAirportName,
+		String departureAirportCode,
+		String departureAirportCity,
+
+		String arrivalAirportName,
+		String arrivalAirportCode,
+		String arrivalAirportCity,
+
 		String duration,
+		Date departureDate,
 		Float price
 ) {
+
 }

@@ -2,6 +2,7 @@ package aviatickets.app.util;
 
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
+import aviatickets.app.flight.dto.response.ShortFlightDto;
 import aviatickets.app.flight.entity.*;
 import aviatickets.app.purchase.entity.Purchase;
 import lombok.NoArgsConstructor;
@@ -255,6 +256,7 @@ public class SerializationService implements SerializationInterface {
 
 			leg.setLeg(
 				rs.getInt("id"),
+				rs.getShort("leg_number"),
 				rs.getDate("departure_time"),
 				rs.getDate("arrival_time"),
 				rs.getString("duration"),
@@ -270,6 +272,24 @@ public class SerializationService implements SerializationInterface {
 		}
 		return leg.getLegItem();
 	}
+
+	@Override
+	public ShortFlightDto getShortFlightDataEntityFromResultSet(ResultSet rs) throws SQLException {
+		ShortFlightDto dto = new ShortFlightDto(
+				rs.getString("flight_number"),
+				rs.getString("departure_airport_name"),
+				rs.getString("departure_airport_code"),
+				rs.getString("departure_airport_city"),
+				rs.getString("arrival_airport_name"),
+				rs.getString("arrival_airport_code"),
+				rs.getString("arrival_airport_city"),
+				rs.getString("duration"),
+				rs.getDate("departure_date"),
+				rs.getFloat("price")
+		);
+		return dto;
+	}
+
 }
 
 

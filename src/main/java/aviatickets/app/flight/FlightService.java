@@ -17,9 +17,9 @@ public class FlightService implements FlightInterface {
   private final FlightInterface flightRepository;
 
 	@Override
-  public List<ShortFlightDto> getHotFlightsList(Short offset) {
+  public List<ShortFlightDto> getHotFlightsList() {
 		try {
-			return this.flightRepository.getHotFlightsList(offset);
+			return this.flightRepository.getHotFlightsList();
 		} catch (Exception e) {
 			throw new ServerErrorException(e.getMessage());
 		}

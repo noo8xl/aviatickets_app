@@ -27,7 +27,7 @@ DROP USER IF EXISTS testUser@localhost;
 # DROP PROCEDURE IF EXISTS get_short_flight_data;
 # DROP FUNCTION IF EXISTS calculate_total_distance;
 
-# DROP FUNCTION IF EXISTS get_departure_time_filter;
+DROP FUNCTION IF EXISTS get_departure_time_filter;
 # DROP FUNCTION IF EXISTS calculate_current_price;
 
 # DROP PROCEDURE IF EXISTS delete_customer;
@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS price_details (
 CREATE TABLE IF NOT EXISTS leg_details (
 	id INT NOT NULL AUTO_INCREMENT,
 
+    leg_number SMALLINT NOT NULL,
     flight_number varchar(50) NOT NULL,
 	departure_airport INT NOT NULL,
 	arrival_airport INT NOT NULL,
@@ -246,32 +247,10 @@ CREATE TABLE IF NOT EXISTS actions (
 
 -- -------------------------------------------------------------------------------------
 
-
-# DROP VIEW IF EXISTS get_hot_list;
-#
-# CREATE VIEW get_hot_list AS
-#     SELECT flights.id, flights.flight_number,
-#            leg_details.departure_airport, leg_details.arrival_airport
-#     FROM flights
-#     JOIN leg_details
-#     ON flights.flight_number = leg_details.flight_number
-#     WHERE leg_details.departure_time = get_departure_time_filter()
-#     LIMIT 10
-#     OFFSET 10;
-#
-# SELECT * FROM get_hot_list;
-#
-# get_departure_time_filter -> get range for the hot tickets list view
-
 #     __________________________________________________________________
 #     __________________________________________________________________
 #     __________________________________________________________________
 
-# CREATE FUNCTION get_departure_time_filter()
-#    RETURNS timestamp DETERMINISTIC
-#    RETURN NOW() + INTERVAL 1 DAY;
-
-# SELECT get_departure_time_filter();
 
 # calc total distance including each leg item
 #
@@ -364,60 +343,6 @@ CREATE TABLE IF NOT EXISTS actions (
 # SELECT get_airport_name(2);
 
 
-# DROP PROCEDURE IF EXISTS get_short_flight_data;
-
-# DELIMITER $$
-#
-# CREATE PROCEDURE IF NOT EXISTS get_short_flight_data(
-#     IN flightNum VARCHAR(50),
-#     IN by_date BOOLEAN,
-#     IN dep_airport INT,
-#     IN arv_airport INT,
-#
-#     OUT flights_id INT,
-#     OUT legs SMALLINT,
-#     OUT departure_airport VARCHAR(255),
-#     OUT arrival_airport VARCHAR(255),
-#
-#     OUT distance SMALLINT,
-#     OUT available_sits SMALLINT,
-#     OUT price FLOAT
-# )
-# BEGIN
-#     SET distance = calculate_total_distance(flightNum);
-#     SET available_sits = count_available_sits(flightNum);
-#     SET price = calculate_current_price(flightNum);
-#     SET departure_airport = get_airport_name(dep_airport);
-#     SET arrival_airport = get_airport_name(arv_airport);
-#
-#     IF by_date != 0 THEN
-#         SELECT COUNT(id)
-#             INTO legs
-#             FROM leg_details
-#             WHERE flight_number = flightNum
-#             AND departure_time = get_departure_time_filter();
-#
-#         SELECT flights.id
-#             INTO flights_id
-#             FROM flights
-#             WHERE flight_number = flightNum
-#             AND departure_time = get_departure_time_filter();
-#     ELSE
-#         SELECT COUNT(id)
-#             INTO legs
-#             FROM leg_details
-#             WHERE flight_number = flightNum;
-#
-#         SELECT flights.id
-#             INTO flights_id
-#             FROM flights
-#             WHERE flight_number = flightNum;
-#     END IF;
-#
-# END $$
-# DELIMITER ;
-
-
 
 # -- count_available_sits -> count sits by (total sits - sold tickets)
 
@@ -478,85 +403,6 @@ CREATE TABLE IF NOT EXISTS actions (
 #     __________________________________________________________________
 #     __________________________________________________________________
 
-
-
-#
-# #  this view is for collect full flight info
-# #  and send it to the customer as <flight details>
-
-# CREATE VIEW FULL_FLIGHT_INFO AS (
-#     SELECT
-#         flights.id, flights.flight_number,
-#         price_details.amount=(SELECT calculate_current_price(flights.flight_number)) AS price
-#         FROM flights
-#         JOIN price_details
-#         ON flights.flight_number = price_details.flight_number
-# );
-
-
-
-
-
-
-
-
-# DELIMITER $$
-#
-# CREATE PROCEDURE IF NOT EXISTS get_hot_flights(
-#     IN flightNum VARCHAR(50),
-#     IN skip SMALLINT,
-#     OUT flights_id INT,
-#     OUT departure_airport VARCHAR(255),
-#     OUT arrival_airport VARCHAR(255),
-#     OUT distance SMALLINT,
-#     OUT available_sits SMALLINT,
-#     OUT price FLOAT
-# )
-# BEGIN
-# #     DECLARE leg_distance SMALLINT DEFAULT 0;
-#     DECLARE done SMALLINT DEFAULT 0;
-#
-#     read_leg: LOOP
-#
-#         IF done = skip THEN
-#             LEAVE read_leg;
-#         END IF;
-# #
-# #         SET total_distance = total_distance + leg_distance;
-#     END LOOP;
-#
-#
-# END $$
-#
-# DELIMITER ;
-
-
-# DROP FUNCTION IF EXISTS get_purchase_details;
-#
-# DELIMITER $$
-# CREATE PROCEDURE IF NOT EXISTS get_purchase_details(
-#     IN purchaseId INT
-# )
-# BEGIN
-#
-#
-#
-#     DECLARE sold_tickets SMALLINT;
-#     DECLARE total_sits SMALLINT;
-#
-#     SELECT COUNT(id)
-#         INTO sold_tickets
-#         FROM purchase
-#         WHERE flight_number=flightNum;
-#
-#     SELECT flights.passenger_count
-#         INTO total_sits
-#         FROM flights
-#         WHERE flight_number=flightNum;
-#
-#     return total_sits - sold_tickets;
-# END $$
-# DELIMITER ;
 
 
 # delete_customer func ----------------------->

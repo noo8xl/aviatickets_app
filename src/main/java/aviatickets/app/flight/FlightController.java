@@ -22,9 +22,9 @@ public class FlightController {
   public final FlightInterface flightService;
 
   @ResponseStatus(HttpStatus.OK)
-  @GetMapping("/get-hot/{offset}/")
-	ResponseEntity<List<ShortFlightDto>> getHotList(@PathVariable Short offset) throws SQLException, ClassNotFoundException {
-		return ResponseEntity.ok(this.flightService.getHotFlightsList(offset));
+  @GetMapping("/get-hot/")
+	ResponseEntity<List<ShortFlightDto>> getHotList() throws SQLException, ClassNotFoundException {
+		return ResponseEntity.ok(this.flightService.getHotFlightsList());
   }
 
   @ResponseStatus(HttpStatus.OK)
@@ -52,7 +52,6 @@ public class FlightController {
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create-new-flight/")
   void createNewFlight(@Valid @RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
-//		System.out.println("flight ->" + flight);
 		this.flightService.createFlight(flight);
 	}
 
