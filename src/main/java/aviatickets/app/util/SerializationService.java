@@ -275,27 +275,10 @@ public class SerializationService implements SerializationInterface {
 
 	@Override
 	public ShortFlightDto getShortFlightDataEntityFromResultSet(ResultSet rs) throws SQLException {
-		ShortFlightDto dto = new ShortFlightDto(
-				rs.getString("flight_number"),
-				rs.getString("departure_airport_name"),
-				rs.getString("departure_airport_code"),
-				rs.getString("departure_airport_city"),
-				rs.getString("arrival_airport_name"),
-				rs.getString("arrival_airport_code"),
-				rs.getString("arrival_airport_city"),
-				rs.getString("duration"),
-				rs.getDate("departure_date"),
-				rs.getFloat("price")
-		);
-		return dto;
+		return new ShortFlightDto();
 	}
 
 }
-
-
-
-
-
 
 
 
