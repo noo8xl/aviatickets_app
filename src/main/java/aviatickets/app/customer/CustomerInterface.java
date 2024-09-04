@@ -26,6 +26,12 @@ public interface CustomerInterface {
 	// enable OR turn off customer 2fa status
 	void update2faStatus(ChangeTwoStepStatusDto dto) throws SQLException, ClassNotFoundException;
 
+	// get 2fa type (email or telegram)
+	String getTwoStepStatusType(String email) throws SQLException, ClassNotFoundException;
+
+	// get customers telegram id by email address
+	String getCustomerTelegramId(String email) throws SQLException, ClassNotFoundException;
+
 	// get customer 2fa status data
 	Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException;
 

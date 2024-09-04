@@ -1,7 +1,7 @@
 package aviatickets.app.notification;
 
-import aviatickets.app.notification.dto.NewNotifDto;
 import aviatickets.app.notification.dto.NewPurchaseDto;
+import aviatickets.app.notification.dto.NotificationDto;
 
 import java.net.URISyntaxException;
 
@@ -10,10 +10,10 @@ public interface NotificationInterface {
 	// ############################### customer area ##########################
 
 	// -> send forgot password email OR telegram
-	void sendNewPwd(NewNotifDto dto);
+	void sendNewPwd(NotificationDto dto);
 
 	// -> send 2fa code to confirm customer action
-	void sendTwoStepCode(NewNotifDto dto);
+	void sendTwoStepCode(NotificationDto dto);
 
 	// -> send mail at signup
 	void sendRegistrationEmail(String email);
@@ -25,7 +25,7 @@ public interface NotificationInterface {
 
 	// send mail with custom notification
 	// which should be created ONLY by ADMIN user
-	void sendCustomNotification(NewNotifDto dto) throws URISyntaxException;
+	void sendCustomNotification(NotificationDto dto) throws URISyntaxException;
 
 	void sendErrorMessage(String message);
 }

@@ -1,6 +1,6 @@
 
 
--> impl an admin panel for aviatickets app 
+-> impl an admin panel for avia tickets app
 
 controllers: 
 -> auth:

@@ -1,7 +1,7 @@
 package aviatickets.app.notification;
 
-import aviatickets.app.notification.dto.NewNotifDto;
 import aviatickets.app.notification.dto.NewPurchaseDto;
+import aviatickets.app.notification.dto.NotificationDto;
 import aviatickets.app.notification.entity.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
@@ -32,13 +32,13 @@ public class NotificationService implements NotificationInterface {
 
 
 	@Override
-	public void sendNewPwd(NewNotifDto dto) {
+	public void sendNewPwd(NotificationDto dto) {
 		String msg = String.format("Your new password is %s", dto.data());
 		this.setParamsAndPerformRequest(dto, msg);
 	}
 
 	@Override
-	public void sendTwoStepCode(NewNotifDto dto) {
+	public void sendTwoStepCode(NotificationDto dto) {
 		String msg = String.format("Your two step authentication code is %s.", dto.data());
 		this.setParamsAndPerformRequest(dto, msg);
 	}
@@ -58,7 +58,7 @@ public class NotificationService implements NotificationInterface {
 	}
 
 	@Override
-	public void sendCustomNotification(NewNotifDto dto) {
+	public void sendCustomNotification(NotificationDto dto) {
 		this.setParamsAndPerformRequest(dto, dto.data());
 	}
 
@@ -69,7 +69,7 @@ public class NotificationService implements NotificationInterface {
 
 	// #########################################################################################
 
-	private void setParamsAndPerformRequest(NewNotifDto dto, String msg) {
+	private void setParamsAndPerformRequest(NotificationDto dto, String msg) {
 		switch (dto.type()){
 			case "email":
 				this.notification.setNotification("email", this.myApiName, dto.recipient(), msg);

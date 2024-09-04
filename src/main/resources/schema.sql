@@ -199,7 +199,9 @@ CREATE TABLE IF NOT EXISTS customer_two_step_auth (
     status BOOLEAN NOT NULL DEFAULT 0,
     expired_at timestamp,
     code varchar(30),
+    customer_id INT NOT NULL,
 
+    FOREIGN KEY (customer_id) REFERENCES customer (id),
     PRIMARY KEY (id)
 );
 

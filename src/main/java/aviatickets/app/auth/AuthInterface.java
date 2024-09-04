@@ -11,11 +11,18 @@ import java.sql.SQLException;
 
 interface AuthInterface {
 
+	// login area
   SignInResponse signIn(SignInDto dto) throws SQLException, ClassNotFoundException;
 
+	// check customer 2fa status by email and if true - send code to the client
 	Boolean checkTwoStepStatus(String email) throws SQLException, ClassNotFoundException;
 
+	//
+	void sendTwoStepCodeToTheCustomer(String email) throws SQLException, ClassNotFoundException;
+
+	// registration for the new customer
   void signUp(SignUpDto dto) throws SQLException, ClassNotFoundException, IOException, WriterException;
 
+	// renew password via send it to the customer email address
   void forgotPassword(String email) throws SQLException, ClassNotFoundException, URISyntaxException;
 }

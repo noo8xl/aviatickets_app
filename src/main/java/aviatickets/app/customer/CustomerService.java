@@ -1,5 +1,6 @@
 package aviatickets.app.customer;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +9,7 @@ import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
 import aviatickets.app.notification.NotificationInterface;
-import aviatickets.app.notification.dto.NewNotifDto;
+import aviatickets.app.notification.dto.NotificationDto;
 import aviatickets.app.util.HelperInterface;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -90,7 +91,7 @@ public class CustomerService implements CustomerInterface {
 	public void update2faStatus(ChangeTwoStepStatusDto dto) {
 
 		ActionLog a;
-		NewNotifDto notifDto;
+		NotificationDto notifDto;
 		String customerAction;
 
 		try {
@@ -108,9 +109,9 @@ public class CustomerService implements CustomerInterface {
 			log.info("isEqual -> {}", isEqual);
 
 			if (isEqual) {
-				notifDto = new NewNotifDto("telegram", "2fa was enabled", dto.telegramId());
+				notifDto = new NotificationDto("telegram", "2fa was enabled", dto.telegramId());
 			} else {
-				notifDto = new NewNotifDto("email", "2fa was enabled", dto.email());
+				notifDto = new NotificationDto("email", "2fa was enabled", dto.email());
 			}
 			this.notificationService.sendCustomNotification(notifDto);
 		} catch (Exception e) {
@@ -119,6 +120,25 @@ public class CustomerService implements CustomerInterface {
 	}
 
 	@Override
+	public Boolean getTwoStepStatus(String email) {
+		try {
+			return this.customerRepository.getTwoStepStatus(email);
+		} catch (Exception e) {
+			throw new ServerErrorException(e.getMessage());
+		}
+	}
+
+	@Override
+	public String getTwoStepStatusType(String email) throws SQLException, ClassNotFoundException {
+		return this.customerRepository.getTwoStepStatusType(email);
+	}
+
+	@Override
+	public String getCustomerTelegramId(String email) throws SQLException, ClassNotFoundException {
+		return this.customerRepository.getCustomerTelegramId(email);
+	}
+
+@Override
 	public List<Customer> findAll(Integer skip, Integer limit) {
 		try {
 			return this.customerRepository.findAll(skip, limit);
@@ -137,15 +157,7 @@ public class CustomerService implements CustomerInterface {
 	}
 
 
-	@Override
-		public Boolean getTwoStepStatus(String email) {
-		try {
-			return this.customerRepository.getTwoStepStatus(email);
-		} catch (Exception e) {
-			throw new ServerErrorException(e.getMessage());
-		}
 
-		}
 }
 
 

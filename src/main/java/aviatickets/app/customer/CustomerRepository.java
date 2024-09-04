@@ -311,6 +311,50 @@ public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFound
 	}
 
 	@Override
+	public String getTwoStepStatusType(String email) throws SQLException, ClassNotFoundException {
+
+		String type = "";
+		String sql = "SELECT type FROM customer_two_step_auth WHERE email=?";
+
+		try {
+			this.initConnection((byte) 1);
+
+			PreparedStatement preparedStatus = this.connection.prepareStatement(sql);
+			preparedStatus.setString(1, email);
+
+			this.resultSet = preparedStatus.executeQuery();
+			while (this.resultSet.next()) {
+				type = this.resultSet.getString("type");
+			}
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
+		return type;
+	}
+
+	@Override
+	public String getCustomerTelegramId(String email) throws SQLException, ClassNotFoundException {
+
+		String telegramId = "";
+		String sql = "SELECT telegramId FROM customer_two_step_auth WHERE email=?";
+
+		try {
+			this.initConnection((byte) 1);
+
+			PreparedStatement preparedStatus = this.connection.prepareStatement(sql);
+			preparedStatus.setString(1, email);
+
+			this.resultSet = preparedStatus.executeQuery();
+			while (this.resultSet.next()) {
+				telegramId = this.resultSet.getString("telegramId");
+			}
+		} finally {
+			this.closeAndStopDBInteraction();
+		}
+		return telegramId;
+	}
+
+@Override
 	public void updateBanStatus(Integer id, Boolean status) throws SQLException, ClassNotFoundException {
 
 		int updated = 0;

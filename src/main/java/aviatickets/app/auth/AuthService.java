@@ -6,7 +6,7 @@ import aviatickets.app.customer.CustomerInterface;
 import aviatickets.app.exception.ServerErrorException;
 import aviatickets.app.jwt.JwtInterface;
 import aviatickets.app.notification.NotificationInterface;
-import aviatickets.app.notification.dto.NewNotifDto;
+import aviatickets.app.notification.dto.NotificationDto;
 import aviatickets.app.util.HelperInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +15,8 @@ import aviatickets.app.auth.dto.request.SignInDto;
 import aviatickets.app.auth.dto.request.SignUpDto;
 import aviatickets.app.auth.dto.response.SignInResponse;
 import aviatickets.app.customer.entity.Customer;
+
+import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @Service
@@ -33,33 +35,65 @@ class AuthService implements AuthInterface {
 		Customer c;
 		String token;
 		SignInResponse resp;
+		Boolean twoStepStatus;
+		ActionLog a;
 
 		try {
 
 			c = this.customerService.findOne(dto.email());
-			token = this.jwtService.generateToken(c);
+			twoStepStatus = this.customerService.getTwoStepStatus(dto.email());
 
-			//  print token here only for use it in tests *
-			System.out.println("auth token is -> "+ token);
+			if(Boolean.TRUE.equals(twoStepStatus)) {
+				this.sendTwoStepCodeToTheCustomer(dto.email());
+				return null;
+			} else {
+				token = this.jwtService.generateToken(c);
 
-			resp = new SignInResponse(
-					c.getId(),
-					c.getName(),
-					c.getUsername(),
-					c.getIsBanned(),
-					c.getTwoStepStatus(),
-					token
-			);
+				resp = new SignInResponse(
+						c.getId(),
+						c.getName(),
+						c.getUsername(),
+						c.getIsBanned(),
+						c.getTwoStepStatus(),
+						token
+				);
+			}
+
+			a = this.helperService.setActionLog(c.getUsername(), "User successfully signed in.", c.getId());
+			this.actionService.saveLog(a);
+
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new ServerErrorException(e.getMessage());
 		}
 		return resp;
   }
 
 	@Override
-	public Boolean checkTwoStepStatus(String email) {
+	public Boolean checkTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
+		return this.customerService.getTwoStepStatus(email);
+	}
+
+	@Override
+	public void sendTwoStepCodeToTheCustomer(String email) {
+
+		String code;
+		NotificationDto notificationDto;
+		String type;
+		String telegramId;
+
 		try {
-			return this.customerService.getTwoStepStatus(email);
+
+			code = this.helperService.generateUniqueString(8);
+			type = this.customerService.getTwoStepStatusType(email);
+
+			if(type.equalsIgnoreCase("email"))
+				notificationDto = new NotificationDto("email", code, email);
+			else {
+				telegramId = this.customerService.getCustomerTelegramId(email);
+				notificationDto = new NotificationDto(type, code, telegramId);
+			}
+
+			this.notificationService.sendTwoStepCode(notificationDto);
 		} catch (Exception e) {
 			throw new ServerErrorException(e.getMessage());
 		}
@@ -88,7 +122,7 @@ class AuthService implements AuthInterface {
 		Customer c;
 		ActionLog a;
 		String pwd;
-		NewNotifDto dto;
+		NotificationDto dto;
 
 		try {
 			c = this.customerService.findOne(email);
@@ -96,7 +130,7 @@ class AuthService implements AuthInterface {
 			this.customerService.updatePassword(email, pwd);
 			a = this.helperService.setActionLog(email, "Password has been changed.", c.getId());
 			this.actionService.saveLog(a);
-			dto = new NewNotifDto("email", pwd, email);
+			dto = new NotificationDto("email", pwd, email);
 			this.notificationService.sendNewPwd(dto);
 		} catch (Exception e) {
 			throw new ServerErrorException(e.getMessage());
