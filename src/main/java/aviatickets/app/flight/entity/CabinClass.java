@@ -6,9 +6,11 @@ import jdk.jfr.BooleanFlag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
-public class CabinClass {
+public class CabinClass implements Serializable {
 
 	@BooleanFlag
 	@NotEmpty

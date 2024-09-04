@@ -1,7 +1,18 @@
 
+run:
+first you need to run the <notification-server>
+ via ./notification-server command in the root directory.
+-> this will start a notification server written in go.
+-> then you should run an app via mvn spring-boot:run on your local machine
+-> and waiting for the mock data will be initialized and saved,
+-> and make sure that it's running correctly.
+-> then you could use the api and sign up and follow the main logic
+
+
+
 #------------------- main things ------------------#
 
-So, here is a simple REST API written used spring boot 3.
+So, here's a simple REST API written used spring boot 3.
 It has basic areas such as
 	- auth,
 	- logs,

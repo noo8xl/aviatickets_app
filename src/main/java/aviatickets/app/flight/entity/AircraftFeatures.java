@@ -9,9 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
-public class AircraftFeatures {
+public class AircraftFeatures implements Serializable {
 	@Positive
 	private Integer id;
 	@BooleanFlag

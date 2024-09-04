@@ -1,8 +1,5 @@
 package aviatickets.app.exception;
 
-
-import aviatickets.app.notification.NotificationInterface;
-import aviatickets.app.notification.NotificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -15,7 +12,5 @@ public class BadRequestException extends RuntimeException {
 
   public BadRequestException(String msg) {
     super(msg);
-		NotificationInterface notification = new NotificationService();
-		notification.sendErrorMessage(msg);
 	}
 }

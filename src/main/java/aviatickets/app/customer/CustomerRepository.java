@@ -350,7 +350,7 @@ public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFound
 	private void isCustomerExists(String email) throws SQLException, ClassNotFoundException {
 		Customer c = this.findOne(email);
 		if (Boolean.FALSE.equals((c != null))) {
-			throw new NotFoundException("Customer with email '" + email + "' not found.");
+			throw new NotFoundException();
 		}
 	}
 

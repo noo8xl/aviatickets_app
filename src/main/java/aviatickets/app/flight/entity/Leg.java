@@ -8,12 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 
 @Getter
 @NoArgsConstructor
-public class Leg {
+public class Leg implements Serializable {
 	@Positive
 	@NotEmpty
 	private Integer id;

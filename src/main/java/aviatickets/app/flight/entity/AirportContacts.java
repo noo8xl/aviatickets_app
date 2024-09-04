@@ -5,9 +5,11 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
-public class AirportContacts {
+public class AirportContacts implements Serializable {
 	@NotEmpty
 	private String phone;
 	@NotEmpty

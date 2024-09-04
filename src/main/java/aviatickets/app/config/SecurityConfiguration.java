@@ -24,6 +24,8 @@ public class SecurityConfiguration {
 			"/flights/get-hot/**",
 			"/flights/find-filtered-flight/**",
 			"/h2-console/**",
+			"/action/**",
+			"/customer/**",
 
 			"/flights/get-flights-details/**"
 //			"/customer/**",
@@ -35,12 +37,12 @@ public class SecurityConfiguration {
 	// <- administrator permission only **
 	private final String[] adminWhitelist = {
 
-			"/customer/update-ban-status/**",
-			"/customer/get-customer-list/**",
-			"/customer/delete/**",
-			"/customer/create/**",
+//			"/customer/update-ban-status/**",
+//			"/customer/get-customer-list/**",
+//			"/customer/delete/**",
+//			"/customer/create/**",
 
-			"/action/get-action-list/**",
+//			"/action/get-action-list/**",
 
 			"/flights/create-new-flight/",
 
@@ -53,10 +55,10 @@ public class SecurityConfiguration {
 
 	// -> signed user only
 	private final String[] signedUserWhitelist = {
-
-			"/customer/get-customer-by-id/**",
-			"/customer/get-customer-by-email/**",
-			"/customer/update/**",
+//
+//			"/customer/get-customer-by-id/**",
+//			"/customer/get-customer-by-email/**",
+//			"/customer/update/**",
 
 
 			"/purchase/create/**",

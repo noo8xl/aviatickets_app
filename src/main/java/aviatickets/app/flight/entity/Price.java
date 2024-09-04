@@ -6,9 +6,11 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
-public class Price {
+public class Price implements Serializable {
 	@Positive
 	private Integer id;
 	@NotEmpty

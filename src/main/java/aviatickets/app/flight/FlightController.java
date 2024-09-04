@@ -8,6 +8,8 @@ import aviatickets.app.flight.dto.request.GetFilteredFlight;
 import aviatickets.app.flight.dto.response.ShortFlightDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,26 +25,34 @@ public class FlightController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-hot/")
-	ResponseEntity<List<ShortFlightDto>> getHotList() throws SQLException, ClassNotFoundException {
+	public ResponseEntity<List<ShortFlightDto>> getHotList() throws SQLException, ClassNotFoundException {
 		return ResponseEntity.ok(this.flightService.getHotFlightsList());
   }
 
   @ResponseStatus(HttpStatus.OK)
   @PostMapping("/find-filtered-flight/")
-	ResponseEntity<List<ShortFlightDto>> findFlight(@Valid @RequestBody GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
+	@Cacheable(value = "hotFlights", key = "#filter.toString()")
+	public ResponseEntity<List<ShortFlightDto>> findFlight(@Valid @RequestBody GetFilteredFlight filter) throws SQLException, ClassNotFoundException {
 		return ResponseEntity.ok(this.flightService.findFlightsByFilter(filter));
   }
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/find-filtered-flight/{flightNumber}/")
-	ResponseEntity<FlightsItem> findFlightByNumber(@PathVariable String flightNumber ) throws SQLException, ClassNotFoundException {
+	public ResponseEntity<FlightsItem> findFlightByNumber(@PathVariable String flightNumber ) throws SQLException, ClassNotFoundException {
 		return ResponseEntity.ok(this.flightService.getFlightDetails(flightNumber));
 	}
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/find-filtered-flight/{id}/")
-	ResponseEntity<FlightsItem> findFlightById(@PathVariable Integer id ) throws SQLException, ClassNotFoundException {
+	public ResponseEntity<FlightsItem> findFlightById(@PathVariable Integer id ) throws SQLException, ClassNotFoundException {
 		return ResponseEntity.ok(this.flightService.getFlightDetails(id));
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/get-flights-details/{flightNumber}/")
+	@Cacheable(value = "flightDetails", key = "#flightNumber")
+	public FlightsItem getFlightDetails(@Valid @PathVariable String flightNumber) throws SQLException, ClassNotFoundException {
+		return this.flightService.getFlightDetails(flightNumber);
 	}
 
 	// #############################################################################
@@ -51,33 +61,22 @@ public class FlightController {
 
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping("/create-new-flight/")
-  void createNewFlight(@Valid @RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
+	public void createNewFlight(@Valid @RequestBody FlightsItem flight) throws BadRequestException, SQLException, ClassNotFoundException {
 		this.flightService.createFlight(flight);
 	}
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	@PutMapping("/update-flight/{id}/")
-	void updateFlightById(
-			@PathVariable Integer id,
-			@Valid @RequestBody FlightsItem flight
-	) throws SQLException, ClassNotFoundException {
+	@PutMapping("/update-flight/")
+	public void updateFlightById(@Valid @RequestBody FlightsItem flight) throws SQLException, ClassNotFoundException {
 		this.flightService.updateFlight(flight);
 	}
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@DeleteMapping("/delete-flight/{flightId}/{customerId}/")
-	void deleteFlightById(
+	public void deleteFlightById(
 			@PathVariable Integer flightId, @PathVariable Integer customerId
 	) throws SQLException, ClassNotFoundException {
 		this.flightService.deleteFlight(flightId, customerId);
 	}
-
-
-	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/get-flights-details/{flightNumber}/")
-	FlightsItem getFlightDetails(@Valid @PathVariable String flightNumber) throws SQLException, ClassNotFoundException {
-		return this.flightService.getFlightDetails(flightNumber);
-	}
-
 
 }

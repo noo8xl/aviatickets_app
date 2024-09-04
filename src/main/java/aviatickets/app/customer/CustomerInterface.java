@@ -29,12 +29,9 @@ public interface CustomerInterface {
 	// get customer 2fa status data
 	Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException;
 
-
 	// ##########################################################################################################
 	// ##################################### ADMIN permission only ##############################################
 	// ##########################################################################################################
-
-  // -> permissions will check by app security service
 
 	// set customer isBanned status as ADMIN
 	void updateBanStatus(Integer customerId, Boolean status) throws SQLException, ClassNotFoundException;

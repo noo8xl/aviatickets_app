@@ -6,11 +6,10 @@
 -
 -
 -
--> refactor aircraft logics (use it to leg item, not to the flight item),
--> finish getFlightDetails method and make sure there it's working fine, ++
--> update getHot and update (flight entity),
+-> notifications -> via email ?*
+-> refactor aircraft logics (use it to leg item, not to the flight item), ?*
+
 -> add more mock data,
--> update exception handling logic (add notification)
 -
 -
 -
@@ -23,6 +22,14 @@
 _________________________________________________________________________________
 ---- TODO:
 
+-> S +++
+-> O +++
+-> L +
+-> I +++
+-> D +++
+-> factory pattern to db init ?
+
+
 -> S - Single-Responsibility principle ++ (	A class should have one and only one reason to change, meaning that
 																						a class should have only one job.)
 -> O - Open-Closed principle ++ (	Objects or entities should be open for extension but closed for modification	)
@@ -33,9 +40,6 @@ ________________________________________________________________________________
 ----------------------------------------------------------------------------------
 ---- TODO:
 
--> setup redis configs **
-
--> notifications -> via email ?*
 
 ####################################### -- >
 
@@ -44,8 +48,13 @@ ________________________________________________________________________________
 -> containerizing app *** ?
 
 
-
 ---- DONE:
+
+-> setup redis configs +++
+
+-> finish getFlightDetails method and make sure there it's working fine, ++
+-> update getHot and update (flight entity), +++
+-> update exception handling logic (add notification) ++++
 
 -> mysql migrations via java +++
 -> test User area  ++

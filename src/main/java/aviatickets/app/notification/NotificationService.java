@@ -5,6 +5,7 @@ import aviatickets.app.notification.dto.NewPurchaseDto;
 import aviatickets.app.notification.entity.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,16 @@ import java.nio.charset.StandardCharsets;
 @Service
 public class NotificationService implements NotificationInterface {
 
-	@Value("${spring.datasource.notification-api-path}")
-	private String apiPath;
+//	@Value("${spring.datasource.notification-api-path}")
+//	private String apiPath;
+//	@Value("${spring.datasource.notification-api-access-key}")
+//	private String apiAccessKey;
 
-	@Value("${spring.datasource.notification-api-access-key}")
-	private String apiAccessKey;
+	private final String apiPath = "http://127.0.0.1:7493/api/v1/notification";
 
+	private final Logger log = org.slf4j.LoggerFactory.getLogger(NotificationService.class);
+	private final ObjectMapper mapper = new ObjectMapper();
 	private final String myApiName = "localhost.domain.test";
-
 	private final Notification notification = new Notification();
 
 
@@ -71,9 +74,11 @@ public class NotificationService implements NotificationInterface {
 			case "email":
 				this.notification.setNotification("email", this.myApiName, dto.recipient(), msg);
 				this.sendPOSTRequest();
+				break;
 			case "telegram":
 				this.notification.setNotification("telegram", this.myApiName, dto.recipient(), msg);
 				this.sendPOSTRequest();
+				break;
 			default:
 				throw new RuntimeException("unknown notification type");
 		}
@@ -83,10 +88,10 @@ public class NotificationService implements NotificationInterface {
 
 		int responseCode = 0;
 		URL url = null;
-		HttpURLConnection connection = null;
-		ObjectMapper mapper = new ObjectMapper();
-
-		String uri = String.format("%s/%s", this.apiPath, msg);
+		HttpURLConnection connection = null;;
+		String encodedMsg = URLEncoder.encode(msg, StandardCharsets.UTF_8);
+		String uri = String.format("%s/handle-error/%s/", this.apiPath, encodedMsg);
+		log.info("uri is -> {}", uri);
 
 		try {
 
@@ -94,16 +99,16 @@ public class NotificationService implements NotificationInterface {
 			connection = (HttpURLConnection) url.openConnection();
 
 			connection.setRequestMethod("GET");
-			connection.setRequestProperty("AccessToken", this.apiAccessKey);
-			connection.setRequestProperty("Content-Type", "application/json");
+//			connection.setRequestProperty("AccessToken", this.apiAccessKey);
 
 			responseCode = connection.getResponseCode();
-			System.out.println("Response Code: " + responseCode);
+			log.info("Response code is -> {}", responseCode);
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
-			connection.disconnect();
+			if (connection != null)
+				connection.disconnect();
 		}
 	}
 
@@ -112,7 +117,6 @@ public class NotificationService implements NotificationInterface {
 		int responseCode = 0;
 		URL url = null;
 		HttpURLConnection connection = null;
-		ObjectMapper mapper = new ObjectMapper();
 
 		String uri = String.format("%s/send-user-message/", this.apiPath);
 
@@ -120,14 +124,14 @@ public class NotificationService implements NotificationInterface {
 
 			url = new URI(uri).toURL();
 			connection = (HttpURLConnection) url.openConnection();
-			String jsonStr = mapper.writeValueAsString(this.notification);
+			String jsonStr = this.mapper.writeValueAsString(this.notification);
 
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json; utf-8");
-			connection.setRequestProperty("AccessToken", this.apiAccessKey);
+//			connection.setRequestProperty("AccessToken", this.apiAccessKey);
 			connection.setDoOutput(true);
 
-			System.out.println("jsonInputString: \n->" + jsonStr);
+			log.info("jsonInputString: \n->{}", jsonStr);
 			try (OutputStream os = connection.getOutputStream()) {
 				byte[] input = jsonStr.getBytes(StandardCharsets.UTF_8);
 				os.write(input, 0, input.length);
@@ -136,12 +140,14 @@ public class NotificationService implements NotificationInterface {
 			}
 
 			responseCode = connection.getResponseCode();
-			System.out.println("Response Code: " + responseCode);
+			log.info("Response Code: {}", responseCode);
+
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
-			connection.disconnect();
+			if (connection != null)
+				connection.disconnect();
 		}
 
 	}

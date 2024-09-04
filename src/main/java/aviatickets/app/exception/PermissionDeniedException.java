@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.FORBIDDEN)
 public class PermissionDeniedException extends RuntimeException {
 
-	public PermissionDeniedException() {
-		super("Rejected. Permission denied!");
-		NotificationInterface notification = new NotificationService();
-		notification.sendErrorMessage("Rejected. Permission denied!");
+	private final static String DEFAULT_MESSAGE = "Rejected. Permission denied!";
+	private final static NotificationInterface notification = new NotificationService();
+
+	public PermissionDeniedException(String area) {
+		super(DEFAULT_MESSAGE);
+		notification.sendErrorMessage(DEFAULT_MESSAGE + area);
 	}
 }

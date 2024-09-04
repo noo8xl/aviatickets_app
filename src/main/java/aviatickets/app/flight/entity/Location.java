@@ -5,9 +5,11 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
-public class Location {
+public class Location implements Serializable {
 	@NotEmpty
 	private String longitude;
 	@NotEmpty

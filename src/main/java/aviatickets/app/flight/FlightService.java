@@ -36,6 +36,7 @@ public class FlightService implements FlightInterface {
 
 	@Override
 	public FlightsItem getFlightDetails(String flightNumber) {
+		System.out.println("log from service --------------------------------->");
 		try {
 			return this.flightRepository.getFlightDetails(flightNumber);
 		} catch (Exception e) {
