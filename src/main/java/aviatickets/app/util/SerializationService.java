@@ -2,14 +2,12 @@ package aviatickets.app.util;
 
 import aviatickets.app.actions.entity.ActionLog;
 import aviatickets.app.customer.entity.Customer;
-import aviatickets.app.flight.dto.response.ShortFlightDto;
 import aviatickets.app.flight.entity.*;
 import aviatickets.app.purchase.entity.Purchase;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -271,11 +269,6 @@ public class SerializationService implements SerializationInterface {
 			throw new RuntimeException(e);
 		}
 		return leg.getLegItem();
-	}
-
-	@Override
-	public ShortFlightDto getShortFlightDataEntityFromResultSet(ResultSet rs) throws SQLException {
-		return new ShortFlightDto();
 	}
 
 }

@@ -4,6 +4,21 @@
       "quantity": 3,
       "customerId": 1,
       "flightNumber": "LH2001"
+    },
+    {
+      "quantity": 3,
+      "customerId": 3,
+      "flightNumber": "DY1234"
+    },
+    {
+      "quantity": 3,
+      "customerId": 2,
+      "flightNumber": "LH2001"
+    },
+    {
+      "quantity": 2,
+      "customerId": 2,
+      "flightNumber": "LH2001"
     }
   ]
 }

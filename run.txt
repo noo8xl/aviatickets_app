@@ -1,0 +1,11 @@
+
+run:
+first you need to run the <notification-server>
+ via ./notification-server command in the root directory.
+-> this will start a notification server written in go,
+-> which is compiled only for linux machine.
+-> then you should run an app via mvn spring-boot:run on your local machine
+-> and waiting for the mock data will be initialized and saved,
+-> and make sure that it's running correctly.
+
+

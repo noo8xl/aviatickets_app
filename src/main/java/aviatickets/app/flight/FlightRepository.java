@@ -1,9 +1,5 @@
 package aviatickets.app.flight;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import aviatickets.app.database.DatabaseInterface;
 import aviatickets.app.database.dto.DBConnectionDto;
 import aviatickets.app.exception.BadRequestException;
@@ -18,10 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
-class FlightRepository implements FlightInterface {
+class FlightRepository extends AbstractFlight implements FlightInterface {
 
 	private Connection connection = null;
 	private Statement statement = null;
@@ -365,7 +364,7 @@ class FlightRepository implements FlightInterface {
 	// get an id again and validate it
 	// -> save aircraft details data such as features and cabin class
 	// -> check updated counter before the end
-	private void saveAircraft(Aircraft aircraft) throws RuntimeException, SQLException, ClassNotFoundException {
+	protected void saveAircraft(Aircraft aircraft) throws RuntimeException, SQLException, ClassNotFoundException {
 
 		int updated = 0;
 		int aircraftId = 0;
@@ -434,7 +433,7 @@ class FlightRepository implements FlightInterface {
 	// get an id again and validate it
 	// -> save airport details data such as location and contacts
 	// -> check updated counter before the end
-	private void saveAirport(Airport airport) throws RuntimeException, SQLException, ClassNotFoundException {
+	protected void saveAirport(Airport airport) throws RuntimeException, SQLException, ClassNotFoundException {
 
 		String[] returnedId = {"id"};
 		int updated = 0;
@@ -499,7 +498,7 @@ class FlightRepository implements FlightInterface {
 	}
 
 	// saveLegItem -> call it to save each leg in flight
-	private void saveLegItem(Leg leg, String flightNumber) throws SQLException, ClassNotFoundException {
+	protected void saveLegItem(Leg leg, String flightNumber) throws SQLException, ClassNotFoundException {
 
 		String sql = "INSERT INTO leg_details " +
 				"(leg_number, flight_number, departure_airport, arrival_airport, departure_time, arrival_time, duration, distance, status) " +
@@ -537,7 +536,7 @@ class FlightRepository implements FlightInterface {
 
 	// saveFlight -> save flight obj
 	// if flightNumber == flight.flightNumber -> continue without saving flight
-	private void saveFlight(FlightsItem flight) throws SQLException, ClassNotFoundException {
+	protected void saveFlight(FlightsItem flight) throws SQLException, ClassNotFoundException {
 
 		String[] returnedId = {"id"};
 		Integer aircraftId;
@@ -606,36 +605,31 @@ class FlightRepository implements FlightInterface {
 		}
 	}
 
-
-	private void updateFlightItem(FlightsItem item) {
-
-	}
-
 // ########################################################################################
 // ############################## get item id by filter ###################################
 // ########################################################################################
 
-	private Integer getAirportId(String airportName) throws SQLException, ClassNotFoundException {
+protected Integer getAirportId(String airportName) throws SQLException, ClassNotFoundException {
 		String sql = "SELECT id FROM airport WHERE airport_name=?";
 		return this.getItemId(sql, airportName);
 	}
 
-	private Integer getAircraftId(String registrationNumber) throws SQLException, ClassNotFoundException {
+protected Integer getAircraftId(String registrationNumber) throws SQLException, ClassNotFoundException {
 		String sql = "SELECT id FROM aircraft WHERE registration=?";
 		return this.getItemId(sql, registrationNumber);
 	}
 
-	private Integer getAircraftIdToDetailedMethod(String flightNumber) throws SQLException, ClassNotFoundException {
+protected Integer getAircraftIdToDetailedMethod(String flightNumber) throws SQLException, ClassNotFoundException {
 		String sql = "SELECT id FROM flights WHERE flight_number=?";
 		return this.getItemId(sql, flightNumber);
 	}
 
-	private Integer getFlightId(String flightNumber) throws SQLException, ClassNotFoundException {
+protected Integer getFlightId(String flightNumber) throws SQLException, ClassNotFoundException {
 		String sql = "SELECT id FROM flights WHERE flight_number=?";
 		return this.getItemId(sql, flightNumber);
 	}
 
-	private Airport getAirport(Integer id) throws SQLException {
+protected Airport getAirport(Integer id) throws SQLException {
 
 		ResultSet tempRs;
 		Airport airport = new Airport();
@@ -672,7 +666,7 @@ class FlightRepository implements FlightInterface {
 		return airport;
 	}
 
-	private Aircraft getAircraft(Integer id) throws SQLException, ClassNotFoundException {
+protected Aircraft getAircraft(Integer id) throws SQLException, ClassNotFoundException {
 
 		Aircraft aircraft = new Aircraft();
 		CabinClass cabinClass = new CabinClass();
@@ -715,7 +709,7 @@ class FlightRepository implements FlightInterface {
 		return aircraft;
 	}
 
-	private Price getPrice(String flightNumber) throws SQLException, ClassNotFoundException {
+protected Price getPrice(String flightNumber) throws SQLException, ClassNotFoundException {
 
 		Price price = new Price();
 		String getPrice = "SELECT * FROM price_details WHERE flight_number=?";
@@ -738,15 +732,8 @@ class FlightRepository implements FlightInterface {
 		return price;
 	}
 
-//	// getLegId -> return leg id by flight number
-//	// if it exists and return 0 if not
-//	private Integer getPriceId(String flightNumber) throws SQLException, ClassNotFoundException {
-//		String sql = "SELECT id FROM price_details WHERE flight_number=?";
-//		return this.getItemId(sql, flightNumber);
-//	}
-
 // getItemId -> get item id from db (airport, aircraft, flight) or 0 if it doesn't exists
-private Integer getItemId(String sql, String filter) throws SQLException, ClassNotFoundException {
+protected Integer getItemId(String sql, String filter) throws SQLException, ClassNotFoundException {
 	int itemId = 0;
 	String[] returnedId = {"id"};
 
@@ -757,17 +744,21 @@ private Integer getItemId(String sql, String filter) throws SQLException, ClassN
 		statement.setString(1, filter);
 
 		this.resultSet = statement.executeQuery();
-		while(this.resultSet.next()) {
+		while (this.resultSet.next()) {
 			itemId = this.resultSet.getInt("id");
 		}
 
 		log.info("returned value from -getItemId- func -> {}", itemId);
-	} catch (Exception e ) {
+	} catch (Exception e) {
 		throw e;
 	} finally {
 		this.closeAndStopDBInteraction();
 	}
 	return itemId;
+}
+
+protected void updateFlightItem(FlightsItem item) {
+
 }
 
 // ########################################################################################

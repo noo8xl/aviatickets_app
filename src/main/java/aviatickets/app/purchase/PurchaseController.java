@@ -3,6 +3,7 @@ package aviatickets.app.purchase;
 import aviatickets.app.purchase.dto.request.CreatePurchaseDto;
 import aviatickets.app.purchase.dto.request.UpdatePurchaseDto;
 import aviatickets.app.purchase.entity.Purchase;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +23,7 @@ public class PurchaseController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/create/")
-	public void createPurchase(@RequestBody CreatePurchaseDto dto) {
+	public void createPurchase(@Valid @RequestBody CreatePurchaseDto dto) {
 		this.purchaseService.create(dto);
 	}
 
@@ -53,7 +54,7 @@ public class PurchaseController {
 
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@PutMapping("/update/")
-	public void updatePurchaseData(@RequestBody UpdatePurchaseDto dto) {
+	public void updatePurchaseData(@Valid @RequestBody UpdatePurchaseDto dto) {
 		this.purchaseService.update(dto);
 	}
 

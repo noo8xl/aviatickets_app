@@ -1,8 +1,13 @@
 package aviatickets.app.notification.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public record NotificationDto(
-		String type, // email or telegram
-		String data, // code or password
+		@NotEmpty
+		String type,
+		@NotEmpty// email or telegram
+		String data,
+		@NotEmpty// code or password
 		String recipient // email str or telegram id
 ) {
 }

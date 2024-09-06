@@ -1,34 +1,21 @@
 package aviatickets.app.customer;
 
-import java.sql.SQLException;
-import java.util.List;
-
+import aviatickets.app.customer.dto.ChangePwdDto;
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
-import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-import aviatickets.app.customer.dto.ChangePwdDto;
 import aviatickets.app.customer.entity.Customer;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/customer")
-//@CacheConfig(cacheNames = "customer")
 public class CustomerController {
 
   private final CustomerInterface customerService;
@@ -42,7 +29,6 @@ public class CustomerController {
 
   @ResponseStatus(HttpStatus.OK)
   @GetMapping("/get-customer-by-id/{id}/")
-//	@Cacheable(value = "customer", key = "#id")
   public ResponseEntity<Customer> findOneById(@PathVariable Integer id) throws SQLException, ClassNotFoundException {
 		return ResponseEntity.ok(this.customerService.findOne(id));
   }
@@ -82,7 +68,6 @@ public class CustomerController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/get-customer-list/{skip}/{limit}/")
-//	@Cacheable(value = "customerList", key = "#id")
 	public ResponseEntity<List<Customer>> findAll( @PathVariable Integer skip, @PathVariable Integer limit) throws SQLException, ClassNotFoundException {
 		System.out.println("Customer Controller findAll");
 		return ResponseEntity.ok(this.customerService.findAll(skip, limit));
@@ -97,7 +82,6 @@ public class CustomerController {
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/delete/{idToDelete}/{adminId}/")
-//	@Cacheable(value = "customerList", key = "#idToDelete")
 	public void delete(@PathVariable Integer idToDelete, @PathVariable Integer adminId) throws SQLException, ClassNotFoundException {
 		this.customerService.deleteCustomer(idToDelete, adminId);
 	}

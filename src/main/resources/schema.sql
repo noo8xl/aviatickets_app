@@ -1,7 +1,5 @@
 -- drop tables before create a new one:
 
--- DROP TABLE IF EXISTS ticket;
--- DROP TABLE IF EXISTS ticket_details;
 DROP TABLE IF EXISTS customer_two_step_auth;
 DROP TABLE IF EXISTS customer_details;
 DROP TABLE IF EXISTS actions;
@@ -22,27 +20,22 @@ DROP TABLE IF EXISTS airport;
 
 
 # REVOKE ALL ON avia_tickets.* FROM testUser@localhost;
-DROP USER IF EXISTS testUser@localhost;
+DROP USER IF EXISTS 'testUser'@'localhost';
 
-# DROP PROCEDURE IF EXISTS get_short_flight_data;
-# DROP FUNCTION IF EXISTS calculate_total_distance;
-
+DROP FUNCTION IF EXISTS calculate_total_distance;
 DROP FUNCTION IF EXISTS get_departure_time_filter;
-# DROP FUNCTION IF EXISTS calculate_current_price;
-
-# DROP PROCEDURE IF EXISTS delete_customer;
-
-# DROP FUNCTION IF EXISTS count_available_sits;
-# DROP PROCEDURE IF EXISTS delete_flight;
+DROP FUNCTION IF EXISTS calculate_current_price;
+DROP PROCEDURE IF EXISTS delete_customer;
+DROP FUNCTION IF EXISTS count_available_sits;
+DROP PROCEDURE IF EXISTS delete_flight;
 
 CREATE USER 'testUser'@'localhost' IDENTIFIED BY '*test_Pa$$w0rd%';
 GRANT SELECT, INSERT, UPDATE ON avia_tickets.* TO 'testUser'@'localhost';
 FLUSH PRIVILEGES;
 
--- -------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
 
--- flights area
---
+# flights area
 
 CREATE TABLE IF NOT EXISTS airport (
   id INT NOT NULL AUTO_INCREMENT,
@@ -122,7 +115,7 @@ CREATE TABLE IF NOT EXISTS price_details (
   PRIMARY KEY (id)
 );
 
--- time format is hh:mm:ss ??*
+
 CREATE TABLE IF NOT EXISTS leg_details (
 	id INT NOT NULL AUTO_INCREMENT,
 
@@ -161,12 +154,6 @@ CREATE TABLE IF NOT EXISTS flights (
 
   PRIMARY KEY (id)
 );
-
--- -------------------------------------------------------------------------------------
-
--- customer area
---
-
 
 
 
@@ -243,11 +230,7 @@ CREATE TABLE IF NOT EXISTS actions (
   PRIMARY KEY (id)
 );
 
--- end of
--- customer area
---
-
--- -------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------
 
 #     __________________________________________________________________
 #     __________________________________________________________________
@@ -255,7 +238,7 @@ CREATE TABLE IF NOT EXISTS actions (
 
 
 # calc total distance including each leg item
-#
+
 # DELIMITER $$
 #
 # CREATE FUNCTION IF NOT EXISTS calculate_total_distance(
@@ -347,7 +330,7 @@ CREATE TABLE IF NOT EXISTS actions (
 
 
 # -- count_available_sits -> count sits by (total sits - sold tickets)
-
+#
 # DELIMITER $$
 #
 # CREATE FUNCTION IF NOT EXISTS count_available_sits(

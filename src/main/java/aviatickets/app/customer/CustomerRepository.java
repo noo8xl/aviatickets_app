@@ -1,11 +1,8 @@
 package aviatickets.app.customer;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import aviatickets.app.customer.dto.ChangeTwoStepStatusDto;
 import aviatickets.app.customer.dto.UpdateCustomerDto;
+import aviatickets.app.customer.entity.Customer;
 import aviatickets.app.database.DatabaseInterface;
 import aviatickets.app.database.dto.DBConnectionDto;
 import aviatickets.app.exception.BadRequestException;
@@ -16,7 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import aviatickets.app.customer.entity.Customer;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
@@ -113,6 +112,7 @@ class CustomerRepository implements CustomerInterface {
 		return customersList;
   }
 
+@Override
   public Customer findOne(Integer id) throws SQLException, ClassNotFoundException {
 		Customer c = null;
 		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, "
@@ -139,6 +139,7 @@ class CustomerRepository implements CustomerInterface {
 		return c;
   }
 
+@Override
   public Customer findOne(String email) throws SQLException, ClassNotFoundException {
 		Customer c = null;
 		String sql = "SELECT customer.id, customer.name, customer.email, customer.password, "
@@ -262,9 +263,7 @@ class CustomerRepository implements CustomerInterface {
 		}
   }
 
-
-
-
+@Override
 public Boolean getTwoStepStatus(String email) throws SQLException, ClassNotFoundException {
 
 		boolean status = false;

@@ -34,7 +34,7 @@ public class SecurityConfiguration {
 //			"/flights/create-new-flight/", // -> test only
 	};
 
-	// <- administrator permission only **
+// <- ADMIN permission only **
 	private final String[] adminWhitelist = {
 
 //			"/customer/update-ban-status/**",

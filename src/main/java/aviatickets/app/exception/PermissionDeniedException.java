@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class PermissionDeniedException extends RuntimeException {
 
 	private final static String DEFAULT_MESSAGE = "Rejected. Permission denied!";
-	private final static NotificationInterface notification = new NotificationService();
+private final NotificationInterface notification = new NotificationService();
 
 	public PermissionDeniedException(String area) {
 		super(DEFAULT_MESSAGE);
-		notification.sendErrorMessage(DEFAULT_MESSAGE + area);
+		this.notification.sendErrorMessage(DEFAULT_MESSAGE + area);
 	}
 }

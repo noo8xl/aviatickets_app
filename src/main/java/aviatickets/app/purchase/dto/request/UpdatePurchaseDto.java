@@ -17,5 +17,6 @@ public record UpdatePurchaseDto(
 		@NonNull
 		Float price,
 		@BooleanFlag
+		@NonNull
 		Boolean paymentStatus
 ) {}

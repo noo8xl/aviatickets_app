@@ -1,20 +1,18 @@
 package aviatickets.app.flight;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import aviatickets.app.exception.BadRequestException;
 import aviatickets.app.flight.dto.request.GetFilteredFlight;
 import aviatickets.app.flight.dto.response.ShortFlightDto;
+import aviatickets.app.flight.entity.FlightsItem;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import aviatickets.app.flight.entity.FlightsItem;
+import java.sql.SQLException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -51,7 +49,7 @@ public class FlightController {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/get-flights-details/{flightNumber}/")
 	@Cacheable(value = "flightDetails", key = "#flightNumber")
-	public FlightsItem getFlightDetails(@Valid @PathVariable String flightNumber) throws SQLException, ClassNotFoundException {
+	public FlightsItem getFlightDetails(@PathVariable String flightNumber) throws SQLException, ClassNotFoundException {
 		return this.flightService.getFlightDetails(flightNumber);
 	}
 
@@ -74,7 +72,8 @@ public class FlightController {
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	@DeleteMapping("/delete-flight/{flightId}/{customerId}/")
 	public void deleteFlightById(
-			@PathVariable Integer flightId, @PathVariable Integer customerId
+			@PathVariable Integer flightId,
+			@PathVariable Integer customerId
 	) throws SQLException, ClassNotFoundException {
 		this.flightService.deleteFlight(flightId, customerId);
 	}

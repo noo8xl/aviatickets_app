@@ -1,7 +1,6 @@
 package aviatickets.app.util;
 
 import aviatickets.app.actions.entity.ActionLog;
-
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,23 +22,11 @@ public class HelperService implements HelperInterface {
 		return str.toString();
   }
 
-
 	@Override
 	public ActionLog setActionLog(String email, String action, Integer customerId) {
 		ActionLog a = new ActionLog();
 		a.setAction(null, email, null, action, customerId);
 		return a.getActionEntity();
 	}
-
-// ####################################################################################################
-// ################################ get entity from sql.resultSet area ################################
-// ####################################################################################################
-
-
-
-// ####################################################################################################
-// #################################### end of sql.resultSet area #####################################
-// ####################################################################################################
-
 
 }

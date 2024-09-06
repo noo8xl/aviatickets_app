@@ -1,26 +1,29 @@
 package aviatickets.app.actions.entity;
 
-import java.sql.Date;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jdk.jfr.Timestamp;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+import jdk.jfr.Timestamp;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.sql.Date;
 
 
 @NoArgsConstructor
 public class ActionLog {
+
 	@Positive
+	@Setter
 	private Integer id;
 	@Getter
 	@NotEmpty
 	@Email
 	private String email;
 
+@Setter
 	@Timestamp
 	private Date date = new Date(System.currentTimeMillis());
 

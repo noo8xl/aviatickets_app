@@ -7,11 +7,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @NoArgsConstructor
 @Component
-public class Database implements DatabaseInterface {
+public class Database extends AbstractDatabase implements DatabaseInterface {
 
 	@Value("${spring.datasource.url}")
 	private String dbUrl;
@@ -59,7 +62,7 @@ public class Database implements DatabaseInterface {
 
 	// ##########################################################################################################
 
-	private DBConnectionDto initAdminConnection() throws ClassNotFoundException, SQLException {
+protected DBConnectionDto initAdminConnection() throws ClassNotFoundException, SQLException {
 		Connection connection;
 		try {
 			connection = DriverManager.getConnection(this.dbUrl, this.adminDbUsername, this.adminDbPassword);
@@ -68,10 +71,10 @@ public class Database implements DatabaseInterface {
 			throw e;
 		}
 
-		return init(connection);
+	return this.init(connection);
 	}
 
-	private DBConnectionDto initRegularConnection() throws ClassNotFoundException, SQLException {
+protected DBConnectionDto initRegularConnection() throws ClassNotFoundException, SQLException {
 		Connection connection;
 		try {
 			connection = DriverManager.getConnection(this.dbUrl, this.userDbName, this.userDbPassword);
@@ -80,10 +83,10 @@ public class Database implements DatabaseInterface {
 			throw e;
 		}
 
-		return init(connection);
+	return this.init(connection);
 	}
 
-	private DBConnectionDto init(Connection connection) throws SQLException, ClassNotFoundException {
+protected DBConnectionDto init(Connection connection) throws SQLException, ClassNotFoundException {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Statement statement = connection.createStatement();
